@@ -4,11 +4,10 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  KeyboardAvoidingView,
   Platform,
-  Keyboard,
   StatusBar as RNStatusBar,
   ActivityIndicator,
+  Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArrowLeft, Lightbulb, ChevronDown, ChevronUp, Play, BookOpen } from 'lucide-react-native';
@@ -18,6 +17,7 @@ import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 import { SymbolBar } from '../components/SymbolBar';
 import { ResultsSheet } from '../components/ResultsSheet';
 import { TutorCard } from '../components/TutorCard';
+import { useKeyboardAnimation } from '../hooks/useKeyboardAnimation';
 import { PROBLEMS } from '../../content/data';
 import { RUNNER_HTML } from '../../services/runner-html';
 import { checkConstructs } from '../../core/genuine/constructs';
@@ -61,25 +61,18 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
   const [isHintLoading, setIsHintLoading] = useState(false);
   const [isTutorNextLoading, setIsTutorNextLoading] = useState(false);
 
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const bottomInset = Math.max(insets.bottom, 10);
+  const { isKeyboardVisible, animatedHeight, dismissKeyboard } = useKeyboardAnimation({
+    initialBottom: bottomInset,
+  });
   const [isStatementExpanded, setStatementExpanded] = useState(false);
-
   const webViewRef = useRef<WebView>(null);
 
-  // Keyboard visibility tracking
   useEffect(() => {
-    const showSub = Keyboard.addListener('keyboardDidShow', () => {
-      setKeyboardVisible(true);
-      setStatementExpanded(false); // Auto-collapse to maximize editor space
-    });
-    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardVisible(false);
-    });
-    return () => {
-      showSub.remove();
-      hideSub.remove();
-    };
-  }, []);
+    if (isKeyboardVisible) {
+      setStatementExpanded(false); // Auto-collapse statement to maximize editor space
+    }
+  }, [isKeyboardVisible]);
 
   useEffect(() => {
     saveDraft(problem.id, code);
@@ -123,6 +116,8 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
         );
       } else if (msg.type === 'code_change') {
         setCode(msg.code);
+      } else if (msg.type === 'editor_focus') {
+        setStatementExpanded(false);
       } else if (msg.type === 'run_complete' || msg.type === 'run_error' || msg.type === 'run_timeout') {
         setIsRunning(false);
         const isPassed = msg.status === 'tests_passed';
@@ -248,10 +243,7 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.bg }]}>
-      <KeyboardAvoidingView
-        style={styles.innerContainer}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
+      <View style={styles.innerContainer}>
         {/* Top Header Bar with robust notch/status-bar safe padding */}
         <View
           style={[
@@ -506,13 +498,18 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
           </View>
         )}
 
-        {/* Docked Symbol Toolbar above keyboard */}
+        {/* Docked Symbol Toolbar directly on top of keyboard */}
         <SymbolBar
           onInsertSymbol={handleInsertSymbol}
           onRunTests={handleRunTests}
           isRunning={isRunning}
           isKeyboardVisible={isKeyboardVisible}
+          language={problem.language}
+          onDismissKeyboard={dismissKeyboard}
         />
+
+        {/* Dynamic Animated Keyboard Spacer: docks SymbolBar directly on top of the keyboard */}
+        <Animated.View style={{ height: animatedHeight }} />
 
         {/* Results Bottom Sheet */}
         {showResultsSheet && (
@@ -525,7 +522,7 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
             onContinuePassed={handleCompleteSuccess}
           />
         )}
-      </KeyboardAvoidingView>
+      </View>
     </View>
   );
 }

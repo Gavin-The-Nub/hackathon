@@ -229,6 +229,14 @@ export const SANDBOX_RUNNER_HTML = `
       postToRN({ type: 'code_change', code: textarea.value });
     });
 
+    textarea.addEventListener('focus', () => {
+      postToRN({ type: 'editor_focus' });
+    });
+
+    textarea.addEventListener('blur', () => {
+      postToRN({ type: 'editor_blur' });
+    });
+
     textarea.addEventListener('scroll', () => {
       highlightLayer.scrollTop = textarea.scrollTop;
       highlightLayer.scrollLeft = textarea.scrollLeft;
@@ -394,6 +402,7 @@ export const SANDBOX_RUNNER_HTML = `
         currentErrorInfo = null;
         renderEditor();
         postToRN({ type: 'code_change', code: textarea.value });
+        textarea.focus();
       } else if (msg.type === 'run_sandbox') {
         runSandbox(msg);
       }

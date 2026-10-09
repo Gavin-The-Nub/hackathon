@@ -1,17 +1,19 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
-import { Play } from 'lucide-react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator, Keyboard } from 'react-native';
+import { Play, ChevronDown, Keyboard as KeyboardIcon } from 'lucide-react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 
-interface SymbolBarProps {
+export interface SymbolBarProps {
   onInsertSymbol: (symbol: string) => void;
   onRunTests?: () => void;
   isRunning?: boolean;
   isKeyboardVisible?: boolean;
+  language?: 'javascript' | 'python';
+  onDismissKeyboard?: () => void;
 }
 
-const SYMBOLS = [
+const JS_SYMBOLS = [
   { label: 'Tab', val: 'tab' },
   { label: '{ }', val: '{}' },
   { label: '( )', val: '()' },
@@ -23,6 +25,7 @@ const SYMBOLS = [
   { label: '=', val: '=' },
   { label: '=>', val: ' => ' },
   { label: '===', val: ' === ' },
+  { label: '!==', val: ' !== ' },
   { label: '<', val: '<' },
   { label: '>', val: '>' },
   { label: '+', val: '+' },
@@ -35,14 +38,50 @@ const SYMBOLS = [
   { label: '||', val: ' || ' },
 ];
 
+const PYTHON_SYMBOLS = [
+  { label: 'Tab', val: 'tab' },
+  { label: ':', val: ':' },
+  { label: '( )', val: '()' },
+  { label: '[ ]', val: '[]' },
+  { label: '{ }', val: '{}' },
+  { label: '" "', val: '""' },
+  { label: "' '", val: "''" },
+  { label: '=', val: '=' },
+  { label: '==', val: ' == ' },
+  { label: '!=', val: ' != ' },
+  { label: '<', val: '<' },
+  { label: '>', val: '>' },
+  { label: '+', val: '+' },
+  { label: '-', val: '-' },
+  { label: '*', val: '*' },
+  { label: '/', val: '/' },
+  { label: '%', val: '%' },
+  { label: 'in', val: ' in ' },
+  { label: 'and', val: ' and ' },
+  { label: 'or', val: ' or ' },
+  { label: 'not', val: 'not ' },
+];
+
 export function SymbolBar({
   onInsertSymbol,
   onRunTests,
   isRunning = false,
   isKeyboardVisible = false,
+  language = 'javascript',
+  onDismissKeyboard,
 }: SymbolBarProps) {
   const themeMode = useUserStore((s) => s.theme);
   const colors = themeMode === 'dark' ? DARK_THEME : LIGHT_THEME;
+
+  const symbols = language === 'python' ? PYTHON_SYMBOLS : JS_SYMBOLS;
+
+  const handleDismiss = () => {
+    if (onDismissKeyboard) {
+      onDismissKeyboard();
+    } else {
+      Keyboard.dismiss();
+    }
+  };
 
   return (
     <View
@@ -60,7 +99,7 @@ export function SymbolBar({
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="always"
       >
-        {SYMBOLS.map((s) => (
+        {symbols.map((s) => (
           <TouchableOpacity
             key={s.label}
             style={[
@@ -71,33 +110,49 @@ export function SymbolBar({
             ]}
             onPress={() => onInsertSymbol(s.val)}
             activeOpacity={0.65}
+            accessibilityLabel={`Insert ${s.label}`}
           >
             <Text style={[styles.btnText, { color: colors.text }]}>{s.label}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
-      {/* Docked compact Run button visible when keyboard is active */}
-      {isKeyboardVisible && onRunTests && (
-        <TouchableOpacity
-          style={[
-            styles.compactRunBtn,
-            {
-              backgroundColor: isRunning ? colors.textMuted : colors.primary,
-              borderBottomColor: colors.primaryLip,
-            },
-          ]}
-          onPress={onRunTests}
-          disabled={isRunning}
-          activeOpacity={0.8}
-        >
-          {isRunning ? (
-            <ActivityIndicator size="small" color="#FFFFFF" />
-          ) : (
-            <Play size={14} color="#FFFFFF" fill="#FFFFFF" />
+      {/* Docked Action Group visible when keyboard is active */}
+      {isKeyboardVisible && (
+        <View style={styles.rightGroup}>
+          {onRunTests && (
+            <TouchableOpacity
+              style={[
+                styles.compactRunBtn,
+                {
+                  backgroundColor: isRunning ? colors.textMuted : colors.primary,
+                  borderBottomColor: colors.primaryLip,
+                },
+              ]}
+              onPress={onRunTests}
+              disabled={isRunning}
+              activeOpacity={0.8}
+              accessibilityLabel="Run Code"
+            >
+              {isRunning ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Play size={13} color="#FFFFFF" fill="#FFFFFF" />
+              )}
+              <Text style={styles.compactRunText}>{isRunning ? '...' : 'Run'}</Text>
+            </TouchableOpacity>
           )}
-          <Text style={styles.compactRunText}>{isRunning ? '...' : 'Run'}</Text>
-        </TouchableOpacity>
+
+          {/* Quick Dismiss Keyboard Button */}
+          <TouchableOpacity
+            style={[styles.dismissBtn, { backgroundColor: colors.surface2 }]}
+            onPress={handleDismiss}
+            activeOpacity={0.7}
+            accessibilityLabel="Hide keyboard"
+          >
+            <ChevronDown size={18} color={colors.text} />
+          </TouchableOpacity>
+        </View>
       )}
     </View>
   );
@@ -105,10 +160,11 @@ export function SymbolBar({
 
 const styles = StyleSheet.create({
   bar: {
-    height: 50,
+    height: 48,
     borderTopWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    zIndex: 10,
   },
   scrollContent: {
     paddingHorizontal: 8,
@@ -116,8 +172,8 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   btn: {
-    minWidth: 44,
-    height: 38,
+    minWidth: 42,
+    height: 36,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -128,19 +184,32 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
     fontWeight: '700',
   },
-  compactRunBtn: {
+  rightGroup: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    height: 38,
-    paddingHorizontal: 14,
-    borderRadius: 12,
-    marginRight: 8,
+    paddingRight: 8,
+    paddingLeft: 4,
+  },
+  compactRunBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    height: 36,
+    paddingHorizontal: 12,
+    borderRadius: 10,
     borderBottomWidth: 3,
   },
   compactRunText: {
     color: '#FFFFFF',
     fontWeight: '800',
-    fontSize: 14,
+    fontSize: 13,
+  },
+  dismissBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

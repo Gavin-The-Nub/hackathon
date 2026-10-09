@@ -10,6 +10,7 @@ import {
   ScrollView,
   TextInput,
   ActivityIndicator,
+  Animated,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -37,6 +38,7 @@ import { SymbolBar } from '../components/SymbolBar';
 import { SANDBOX_RUNNER_HTML } from '../../services/sandbox-runner-html';
 import { askSandboxTutor, SandboxTutorResponse } from '../../services/sandbox-tutor-service';
 import { JavaScriptLogo, PythonLogo } from '../components/LanguageLogos';
+import { useKeyboardAnimation } from '../hooks/useKeyboardAnimation';
 
 interface SandboxScreenProps {
   navigation: any;
@@ -104,9 +106,10 @@ export function SandboxScreen({ navigation }: SandboxScreenProps) {
 
   const [code, setCode] = useState<string>(templates[0].code);
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState<boolean>(false);
-  const [keyboardHeight, setKeyboardHeight] = useState<number>(0);
-  const [lastKeyboardHeight, setLastKeyboardHeight] = useState<number>(310);
+  const bottomInset = Math.max(insets.bottom, 12);
+  const { isKeyboardVisible, keyboardHeight, animatedHeight, dismissKeyboard } = useKeyboardAnimation({
+    initialBottom: bottomInset,
+  });
   const [isAiInputFocused, setIsAiInputFocused] = useState<boolean>(false);
 
   // Console output state
@@ -128,25 +131,10 @@ export function SandboxScreen({ navigation }: SandboxScreenProps) {
   const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
-
-    const showSub = Keyboard.addListener(showEvent, (e) => {
-      const h = e.endCoordinates.height;
-      setKeyboardHeight(h);
-      if (h > 0) setLastKeyboardHeight(h);
-      setIsKeyboardVisible(true);
-    });
-    const hideSub = Keyboard.addListener(hideEvent, () => {
-      setKeyboardHeight(0);
-      setIsKeyboardVisible(false);
+    if (!isKeyboardVisible) {
       setIsAiInputFocused(false);
-    });
-    return () => {
-      showSub.remove();
-      hideSub.remove();
-    };
-  }, []);
+    }
+  }, [isKeyboardVisible]);
 
   const topPadding = Math.max(
     insets.top,
@@ -155,6 +143,7 @@ export function SandboxScreen({ navigation }: SandboxScreenProps) {
   );
 
   const handleRunCode = () => {
+    Keyboard.dismiss();
     setIsRunning(true);
     setExecutionError(null);
     setReturnValue(null);
@@ -181,6 +170,8 @@ export function SandboxScreen({ navigation }: SandboxScreenProps) {
         );
       } else if (msg.type === 'code_change') {
         setCode(msg.code);
+      } else if (msg.type === 'editor_focus') {
+        setIsAiInputFocused(false);
       } else if (msg.type === 'sandbox_complete') {
         setIsRunning(false);
         setLogs(msg.logs || []);
@@ -242,23 +233,13 @@ export function SandboxScreen({ navigation }: SandboxScreenProps) {
     }
   };
 
-  // Chat elevation flag: active whenever user is asking AI or has keyboard open on AI tab
-  const isChatElevated = activeBottomTab === 'ai' && (isAiInputFocused || isKeyboardVisible);
-  const activeBottomPadding = isKeyboardVisible
-    ? keyboardHeight
-    : isAiInputFocused
-    ? lastKeyboardHeight
-    : 0;
+  // Chat elevation flag: active whenever user is asking AI or has keyboard open specifically on AI tab
+  const isChatElevated = activeBottomTab === 'ai' && isAiInputFocused;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.bg }]}>
       <StatusBar style={isDark ? 'light' : 'dark'} />
-      <View
-        style={[
-          styles.innerContainer,
-          { paddingBottom: activeBottomPadding },
-        ]}
-      >
+      <View style={styles.innerContainer}>
 
       {/* TOP NAVBAR (Course-Locked: No switching across languages) */}
       <View style={[styles.topBar, { paddingTop: topPadding + 4, borderBottomColor: colors.surface2 }]}>
@@ -406,22 +387,26 @@ export function SandboxScreen({ navigation }: SandboxScreenProps) {
             onRunTests={handleRunCode}
             isRunning={isRunning}
             isKeyboardVisible={isKeyboardVisible && !isAiInputFocused}
+            language={activeCourse}
+            onDismissKeyboard={dismissKeyboard}
           />
         )}
 
         {/* BOTTOM DRAWER / CONSOLE & AI COACH */}
-        <View
-          style={[
-            styles.drawer,
-            {
-              backgroundColor: colors.surface,
-              borderTopColor: colors.surface2,
-            },
-            isChatElevated
-              ? styles.drawerChatElevated
-              : (isDrawerExpanded ? styles.drawerNormal : undefined),
-          ]}
-        >
+        {/* When typing in editor with keyboard open, drawer is hidden so SymbolBar is docked directly on top of the keyboard */}
+        {(!isKeyboardVisible || isChatElevated) && (
+          <View
+            style={[
+              styles.drawer,
+              {
+                backgroundColor: colors.surface,
+                borderTopColor: colors.surface2,
+              },
+              isChatElevated
+                ? styles.drawerChatElevated
+                : (isDrawerExpanded ? styles.drawerNormal : undefined),
+            ]}
+          >
         {/* Drawer Header Tabs */}
         <View style={styles.drawerHeader}>
           <View style={styles.drawerTabs}>
@@ -722,10 +707,14 @@ export function SandboxScreen({ navigation }: SandboxScreenProps) {
             )}
           </View>
         )}
+        </View>
+        )}
+
+        {/* Dynamic Animated Keyboard Spacer: docks SymbolBar directly on top of the keyboard */}
+        <Animated.View style={{ height: animatedHeight }} />
       </View>
     </View>
-  </View>
-);
+  );
 }
 
 const styles = StyleSheet.create({

@@ -299,6 +299,14 @@ export const RUNNER_HTML = `
       postToRN({ type: 'code_change', code: textarea.value });
     });
 
+    textarea.addEventListener('focus', () => {
+      postToRN({ type: 'editor_focus' });
+    });
+
+    textarea.addEventListener('blur', () => {
+      postToRN({ type: 'editor_blur' });
+    });
+
     function postToRN(msg) {
       if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
         window.ReactNativeWebView.postMessage(JSON.stringify(msg));
@@ -493,6 +501,7 @@ export const RUNNER_HTML = `
         currentErrorInfo = null;
         renderEditor();
         postToRN({ type: 'code_change', code: textarea.value });
+        textarea.focus();
       } else if (msg.type === 'run_tests') {
         runCode(msg);
       }
