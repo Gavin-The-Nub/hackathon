@@ -86,6 +86,7 @@ export function LearnScreen({ navigation }: LearnScreenProps) {
   const completedProblems = useUserStore((s) => s.completedProblems);
   const masteryMap = useUserStore((s) => s.mastery);
   const struggles = useUserStore((s) => s.consecutiveStruggles);
+  const selectedLanguage = useUserStore((s) => s.selectedLanguage);
 
   const colors = themeMode === 'dark' ? DARK_THEME : LIGHT_THEME;
 
@@ -111,9 +112,12 @@ export function LearnScreen({ navigation }: LearnScreenProps) {
     return () => loop.stop();
   }, [bounceAnim]);
 
+  // Active language problems
+  const languageProblems = PROBLEMS.filter((p) => p.language === selectedLanguage);
+
   // Compute recommendation for next step
   const rec = recommendNext({
-    unlockedProblems: PROBLEMS,
+    unlockedProblems: languageProblems,
     completedProblemIds: completedProblems,
     masteryMap,
     consecutiveStruggles: struggles,
@@ -135,10 +139,10 @@ export function LearnScreen({ navigation }: LearnScreenProps) {
         {/* Duolingo Winding Lesson Path */}
         <View style={styles.pathContainer}>
           {UNITS.map((unit, unitIdx) => {
-            const unitProblems = PROBLEMS.filter((p) => p.primaryConcept === unit.concept);
+            const unitProblems = languageProblems.filter((p) => p.primaryConcept === unit.concept);
             const isUnitUnlocked =
               unitIdx === 0 ||
-              PROBLEMS.filter((p) => p.primaryConcept === UNITS[unitIdx - 1].concept).some((p) =>
+              languageProblems.filter((p) => p.primaryConcept === UNITS[unitIdx - 1].concept).some((p) =>
                 completedProblems.has(p.id)
               );
 

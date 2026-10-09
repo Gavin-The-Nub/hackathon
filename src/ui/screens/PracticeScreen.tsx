@@ -16,11 +16,14 @@ export function PracticeScreen({ navigation }: PracticeScreenProps) {
   const completedProblems = useUserStore((s) => s.completedProblems);
   const masteryMap = useUserStore((s) => s.mastery);
   const struggles = useUserStore((s) => s.consecutiveStruggles);
+  const selectedLanguage = useUserStore((s) => s.selectedLanguage);
 
   const colors = themeMode === 'dark' ? DARK_THEME : LIGHT_THEME;
 
+  const languageProblems = PROBLEMS.filter((p) => p.language === selectedLanguage);
+
   const rec = recommendNext({
-    unlockedProblems: PROBLEMS,
+    unlockedProblems: languageProblems,
     completedProblemIds: completedProblems,
     masteryMap,
     consecutiveStruggles: struggles,
@@ -37,7 +40,9 @@ export function PracticeScreen({ navigation }: PracticeScreenProps) {
 
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.header}>
-          <Text style={[styles.title, { color: colors.text }]}>Practice Gym</Text>
+          <Text style={[styles.title, { color: colors.text }]}>
+            Practice Gym ({selectedLanguage === 'python' ? 'Python' : 'JavaScript'})
+          </Text>
           <Text style={[styles.subtitle, { color: colors.textMuted }]}>
             Master your coding foundations with targeted practice.
           </Text>
@@ -69,7 +74,7 @@ export function PracticeScreen({ navigation }: PracticeScreenProps) {
         {/* Quick Practice List */}
         <Text style={[styles.sectionTitle, { color: colors.text }]}>All Unlocked Problems</Text>
         <View style={styles.list}>
-          {PROBLEMS.slice(0, 10).map((prob) => {
+          {languageProblems.map((prob) => {
             const isDone = completedProblems.has(prob.id);
             return (
               <TouchableOpacity

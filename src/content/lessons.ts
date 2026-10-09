@@ -680,3 +680,13 @@ export const LESSONS: Record<ConceptId, LessonData> = {
     offlineFaq: [],
   },
 };
+
+import { PYTHON_LESSONS } from './python-lessons';
+export { PYTHON_LESSONS };
+
+export function getLesson(conceptId: ConceptId, language: LanguageId = 'javascript'): LessonData {
+  if (language === 'python' && PYTHON_LESSONS[conceptId]) {
+    return PYTHON_LESSONS[conceptId];
+  }
+  return LESSONS[conceptId] || LESSONS.variables_types;
+}

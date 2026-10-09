@@ -142,6 +142,12 @@ export function SandboxScreen({ navigation }: SandboxScreenProps) {
     16
   );
 
+  useEffect(() => {
+    webViewRef.current?.postMessage(
+      JSON.stringify({ type: 'set_language', language: activeCourse })
+    );
+  }, [activeCourse]);
+
   const handleRunCode = () => {
     Keyboard.dismiss();
     setIsRunning(true);
@@ -156,6 +162,7 @@ export function SandboxScreen({ navigation }: SandboxScreenProps) {
         type: 'run_sandbox',
         runId: `sandbox-${Date.now()}`,
         code,
+        language: activeCourse,
       })
     );
   };
@@ -164,7 +171,9 @@ export function SandboxScreen({ navigation }: SandboxScreenProps) {
     try {
       const msg = JSON.parse(event.nativeEvent.data);
       if (msg.type === 'runner_ready') {
-        webViewRef.current?.postMessage(JSON.stringify({ type: 'set_code', code }));
+        webViewRef.current?.postMessage(
+          JSON.stringify({ type: 'set_code', code, language: activeCourse })
+        );
         webViewRef.current?.postMessage(
           JSON.stringify({ type: 'set_theme', isDark })
         );

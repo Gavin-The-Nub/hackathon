@@ -1,18 +1,23 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Platform, StatusBar as RNStatusBar } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { Trophy, Flame, Shield, Sparkles, Award } from 'lucide-react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 import { MODEL_CONFIG } from '../../config/model';
+import { JavaScriptLogo, PythonLogo } from '../components/LanguageLogos';
 
 export function MeScreen() {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation<any>();
   const themeMode = useUserStore((s) => s.theme);
   const setTheme = useUserStore((s) => s.setTheme);
   const totalXp = useUserStore((s) => s.totalXp);
   const level = useUserStore((s) => s.level);
   const streak = useUserStore((s) => s.streak);
+  const selectedLanguage = useUserStore((s) => s.selectedLanguage);
+  const setSelectedLanguage = useUserStore((s) => s.setSelectedLanguage);
 
   const colors = themeMode === 'dark' ? DARK_THEME : LIGHT_THEME;
   const androidBarHeight = Platform.OS === 'android' ? (RNStatusBar.currentHeight ?? 36) : 0;
@@ -81,6 +86,73 @@ export function MeScreen() {
           <Text style={[styles.metaVal, { color: colors.text }]}>
             {(MODEL_CONFIG.sizeBytes / 1000000).toFixed(0)} MB
           </Text>
+        </View>
+      </View>
+
+      {/* Learning Track / Language Picker */}
+      <View style={[styles.sectionCard, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}>
+        <View style={styles.sectionHeader}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Learning Track</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('PathSelection')}
+            activeOpacity={0.7}
+          >
+            <Text style={{ color: colors.primary, fontWeight: '700', fontSize: 13 }}>Change Track</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={[styles.sectionDesc, { color: colors.textMuted }]}>
+          Your current roadmap is set to {selectedLanguage === 'python' ? 'Python Basics' : 'JavaScript Foundations'}.
+        </Text>
+
+        <View style={styles.themeRow}>
+          <TouchableOpacity
+            style={[
+              styles.themeBtn,
+              {
+                backgroundColor: selectedLanguage === 'javascript' ? colors.primary : colors.surface2,
+                borderColor: selectedLanguage === 'javascript' ? colors.primaryLip : 'transparent',
+                flexDirection: 'row',
+                gap: 8,
+              },
+            ]}
+            onPress={() => setSelectedLanguage('javascript')}
+            activeOpacity={0.8}
+          >
+            <JavaScriptLogo size={18} />
+            <Text
+              style={[
+                styles.themeBtnText,
+                { color: selectedLanguage === 'javascript' ? '#FFFFFF' : colors.text },
+              ]}
+            >
+              JavaScript
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.themeBtn,
+              {
+                backgroundColor: selectedLanguage === 'python' ? colors.primary : colors.surface2,
+                borderColor: selectedLanguage === 'python' ? colors.primaryLip : 'transparent',
+                flexDirection: 'row',
+                gap: 8,
+              },
+            ]}
+            onPress={() => setSelectedLanguage('python')}
+            activeOpacity={0.8}
+          >
+            <PythonLogo size={18} />
+            <Text
+              style={[
+                styles.themeBtnText,
+                { color: selectedLanguage === 'python' ? '#FFFFFF' : colors.text },
+              ]}
+            >
+              Python
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
 

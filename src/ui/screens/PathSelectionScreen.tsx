@@ -94,22 +94,11 @@ export function PathSelectionScreen({ navigation }: PathSelectionScreenProps) {
 
   const handleChoosePython = () => {
     setSelectedLanguage('python');
-    Alert.alert(
-      'Python Path Selected',
-      'You are now set up for Python. Explore the roadmap, concepts, and practice coding with our on-device tutor!',
-      [
-        {
-          text: 'Start Exploring',
-          onPress: () => {
-            if (navigation.canGoBack() && hasSelectedLanguage) {
-              navigation.goBack();
-            } else {
-              navigation.replace('MainTabs');
-            }
-          },
-        },
-      ]
-    );
+    if (navigation.canGoBack() && hasSelectedLanguage) {
+      navigation.goBack();
+    } else {
+      navigation.replace('MainTabs');
+    }
   };
 
   const isJsActive = selectedLanguage === 'javascript' && hasSelectedLanguage;

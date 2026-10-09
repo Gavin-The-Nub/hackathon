@@ -31,7 +31,7 @@ import {
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 import { ConceptId } from '../../core/types';
-import { LESSONS, LessonData } from '../../content/lessons';
+import { getLesson, LessonData } from '../../content/lessons';
 import { PROBLEMS } from '../../content/data';
 import { askLessonTutor } from '../../services/lesson-tutor-service';
 
@@ -50,12 +50,13 @@ interface ChatMessage {
 export function LessonScreen({ route, navigation }: LessonScreenProps) {
   const insets = useSafeAreaInsets();
   const themeMode = useUserStore((s) => s.theme);
+  const selectedLanguage = useUserStore((s) => s.selectedLanguage);
   const colors = themeMode === 'dark' ? DARK_THEME : LIGHT_THEME;
 
   const conceptId: ConceptId = route.params?.conceptId || 'variables_types';
   const targetProblemId: string | undefined = route.params?.problemId;
 
-  const lesson: LessonData = LESSONS[conceptId] || LESSONS.variables_types;
+  const lesson: LessonData = getLesson(conceptId, selectedLanguage);
 
   const androidBarHeight = Platform.OS === 'android' ? (RNStatusBar.currentHeight ?? 36) : 0;
   const safeTop = Math.max(insets.top, androidBarHeight, 44);
@@ -129,8 +130,11 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
       return;
     }
 
-    // Otherwise find the first problem for this concept
-    const firstProb = PROBLEMS.find((p) => p.primaryConcept === conceptId) || PROBLEMS[0];
+    // Otherwise find the first problem for this concept matching active language
+    const firstProb =
+      PROBLEMS.find((p) => p.primaryConcept === conceptId && p.language === selectedLanguage) ||
+      PROBLEMS.find((p) => p.language === selectedLanguage) ||
+      PROBLEMS[0];
     navigation.navigate('Problem', { problemId: firstProb.id });
   };
 

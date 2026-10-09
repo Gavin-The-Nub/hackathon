@@ -1,6 +1,7 @@
 import { Problem } from '../core/types';
+import { PYTHON_PROBLEMS } from './python-data';
 
-export const PROBLEMS: Problem[] = [
+export const JS_PROBLEMS: Problem[] = [
   // ================= VARIABLES & TYPES =================
   {
     id: 'js-vars-01',
@@ -1093,3 +1094,6 @@ export const PROBLEMS: Problem[] = [
     variantOf: 'js-arr-01',
   },
 ];
+
+export { PYTHON_PROBLEMS };
+export const PROBLEMS: Problem[] = [...JS_PROBLEMS, ...PYTHON_PROBLEMS];

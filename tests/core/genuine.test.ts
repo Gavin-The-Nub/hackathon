@@ -47,4 +47,16 @@ describe('Genuine Use - AST Construct Verification', () => {
     expect(res.label).toBe('GENUINE_UNVERIFIED');
     expect(res.reason).toBe('parse_failed');
   });
+
+  it('verifies Python for_loop construct', () => {
+    const validPython = `def sum_up_to(n):\n    total = 0\n    for i in range(1, n + 1):\n        total += i\n    return total`;
+    const res = checkConstructs(validPython, 'sum_up_to', ['for_loop'], 'run-py', 'python');
+    expect(res.label).toBe('GENUINE');
+    expect(res.reason).toBeNull();
+
+    const missingLoop = `def sum_up_to(n):\n    return n * (n + 1) // 2`;
+    const failRes = checkConstructs(missingLoop, 'sum_up_to', ['for_loop'], 'run-py', 'python');
+    expect(failRes.label).toBe('CORRECT_NOT_GENUINE');
+    expect(failRes.missingConstruct).toBe('for_loop');
+  });
 });

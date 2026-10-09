@@ -102,6 +102,7 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
         code,
         functionName: problem.functionName,
         visibleTests: problem.visibleTests,
+        language: problem.language,
       })
     );
   };
@@ -110,7 +111,9 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
     try {
       const msg = JSON.parse(event.nativeEvent.data);
       if (msg.type === 'runner_ready') {
-        webViewRef.current?.postMessage(JSON.stringify({ type: 'set_code', code }));
+        webViewRef.current?.postMessage(
+          JSON.stringify({ type: 'set_code', code, language: problem.language })
+        );
         webViewRef.current?.postMessage(
           JSON.stringify({ type: 'set_theme', textColor: colors.text, isDark: themeMode === 'dark' })
         );
@@ -124,7 +127,7 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
 
         let genRes: GenuineResult = { runId: msg.runId, label: 'NOT_CHECKED', reason: null };
         if (isPassed) {
-          genRes = checkConstructs(code, problem.functionName, problem.requiredConstructs);
+          genRes = checkConstructs(code, problem.functionName, problem.requiredConstructs, msg.runId, problem.language);
         }
 
         let parsedError: RunResult['error'] = undefined;
@@ -432,7 +435,9 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
             originWhitelist={['*']}
             onMessage={handleWebViewMessage}
             onLoadEnd={() => {
-              webViewRef.current?.postMessage(JSON.stringify({ type: 'set_code', code }));
+              webViewRef.current?.postMessage(
+                JSON.stringify({ type: 'set_code', code, language: problem.language })
+              );
               webViewRef.current?.postMessage(
                 JSON.stringify({ type: 'set_theme', textColor: colors.text, isDark: themeMode === 'dark' })
               );

@@ -1,5 +1,5 @@
 import { ConceptId, LanguageId } from '../core/types';
-import { LESSONS } from '../content/lessons';
+import { LESSONS, getLesson } from '../content/lessons';
 import { getOrInitLlama } from './tutor-service';
 import { AI } from '../config/constants';
 
@@ -18,8 +18,12 @@ export interface LessonQuestionResponse {
 /**
  * Searches the lesson's pre-authored offline knowledge base for an immediate match
  */
-export function getOfflineFaqAnswer(conceptId: ConceptId, question: string): string | null {
-  const lesson = LESSONS[conceptId];
+export function getOfflineFaqAnswer(
+  conceptId: ConceptId,
+  question: string,
+  language: LanguageId = 'javascript'
+): string | null {
+  const lesson = getLesson(conceptId, language);
   if (!lesson || !lesson.offlineFaq || lesson.offlineFaq.length === 0) return null;
 
   const qLower = question.toLowerCase().trim();
@@ -39,8 +43,12 @@ export function getOfflineFaqAnswer(conceptId: ConceptId, question: string): str
 /**
  * Provides an intelligent fallback answer based on the lesson's conceptual fundamentals
  */
-export function getDefaultConceptAnswer(conceptId: ConceptId, question: string): string {
-  const lesson = LESSONS[conceptId];
+export function getDefaultConceptAnswer(
+  conceptId: ConceptId,
+  question: string,
+  language: LanguageId = 'javascript'
+): string {
+  const lesson = getLesson(conceptId, language);
   if (!lesson) {
     return 'In programming, we build software by giving the computer small, exact instructions step by step. Try writing a small test line in the editor to see how it behaves!';
   }
@@ -58,10 +66,10 @@ export async function askLessonTutor(
   params: AskLessonQuestionParams
 ): Promise<LessonQuestionResponse> {
   const { conceptId, question, language = 'javascript', onToken } = params;
-  const lesson = LESSONS[conceptId] || LESSONS.variables_types;
+  const lesson = getLesson(conceptId, language);
 
   // 1. Check offline knowledge base first for instant answers if available
-  const faqAnswer = getOfflineFaqAnswer(conceptId, question);
+  const faqAnswer = getOfflineFaqAnswer(conceptId, question, language);
 
   // 2. Try on-device Llama model
   try {

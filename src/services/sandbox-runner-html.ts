@@ -1,3 +1,5 @@
+import { SKULPT_CORE_JS, SKULPT_STDLIB_JS } from './skulpt-bundle';
+
 /**
  * Self-contained HTML bundle for Sandbox Playground runner.
  * Completely offline with zero external network requests.
@@ -149,6 +151,7 @@ export const SANDBOX_RUNNER_HTML = `
     const textarea = document.getElementById('textarea');
     const highlightLayer = document.getElementById('highlight-layer');
 
+    let currentLanguage = 'javascript';
     let currentErrorInfo = null;
     let currentWorker = null;
     let runTimeoutTimer = null;
@@ -162,9 +165,46 @@ export const SANDBOX_RUNNER_HTML = `
         .replace(/'/g, '&#039;');
     }
 
+    function highlightPython(code) {
+      const tokens = [];
+      const regex = /("(?:\\\\.|[^"\\\\\\n])*"|'(?:\\\\.|[^'\\\\\\n])*'|"""[\\s\\S]*?"""|'''[\\s\\S]*?'''|#.*|\\b(?:def|return|if|elif|else|for|while|break|continue|pass|in|is|not|and|or|import|from|as|try|except|finally|raise|class|lambda|with|yield|global|nonlocal|assert|del)\\b|\\b(?:True|False|None)\\b|\\b(?:print|len|range|sum|min|max|int|float|str|list|dict|set|tuple|bool|abs|round|any|all|sorted|type|isinstance|enumerate|zip|input)\\b|\\b\\d+(?:\\.\\d+)?\\b|[a-zA-Z_][a-zA-Z0-9_]*(?=\\s*\\()|==|!=|<=|>=|\\/\\/|\\*\\*|[-+*\\/%&|^!=<>?:]+)/g;
+
+      let lastIndex = 0;
+      let match;
+
+      while ((match = regex.exec(code)) !== null) {
+        if (match.index > lastIndex) {
+          tokens.push(escapeHtml(code.slice(lastIndex, match.index)));
+        }
+
+        const m = match[0];
+        if (m.startsWith('#')) {
+          tokens.push('<span class="hl-com">' + escapeHtml(m) + '</span>');
+        } else if (m.startsWith('"') || m.startsWith("'")) {
+          tokens.push('<span class="hl-str">' + escapeHtml(m) + '</span>');
+        } else if (/^(?:def|return|if|elif|else|for|while|break|continue|pass|in|is|not|and|or|import|from|as|try|except|finally|raise|class|lambda|with|yield|global|nonlocal|assert|del)$/.test(m)) {
+          tokens.push('<span class="hl-kw">' + escapeHtml(m) + '</span>');
+        } else if (/^(?:True|False|None)$/.test(m) || /^\d+(?:\.\d+)?$/.test(m)) {
+          tokens.push('<span class="hl-num">' + escapeHtml(m) + '</span>');
+        } else if (/^[a-zA-Z_]/.test(m)) {
+          tokens.push('<span class="hl-fn">' + escapeHtml(m) + '</span>');
+        } else {
+          tokens.push('<span class="hl-op">' + escapeHtml(m) + '</span>');
+        }
+
+        lastIndex = regex.lastIndex;
+      }
+
+      if (lastIndex < code.length) {
+        tokens.push(escapeHtml(code.slice(lastIndex)));
+      }
+
+      return tokens.join('');
+    }
+
     function highlightJS(code) {
       const tokens = [];
-      const regex = /("(?:\\\\.|[^"\\\\\\n])*"|'(?:\\\\.|[^'\\\\\\n])*'|\`[\\s\\S]*?\`|\\/\\/.*|\\/\\*[\\s\\S]*?\\*\\/|\\b(?:const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|class|import|export|default|try|catch|finally|throw|typeof|instanceof|void|async|await|yield|this|super)\\b|\\b(?:true|false|null|undefined|NaN|Infinity)\\b|\\b\\d+(?:\\.\\d+)?\\b|[a-zA-Z_$][a-zA-Z0-9_$]*(?=\\s*\\()|[+\\-*\\/%&|^!=<>?:]+)/g;
+      const regex = /("(?:\\\\.|[^"\\\\\\n])*"|'(?:\\\\.|[^'\\\\\\n])*'|\`[\\s\\S]*?\`|\\/\\/.*|\\/\\*[\\s\\S]*?\\*\\/|\\b(?:const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|class|import|export|default|try|catch|finally|throw|typeof|instanceof|void|async|await|yield|this|super)\\b|\\b(?:true|false|null|undefined|NaN|Infinity)\\b|\\b\\d+(?:\\.\\d+)?\\b|[a-zA-Z_$][a-zA-Z0-9_$]*(?=\\s*\\()|[-+*\\/%&|^!=<>?:]+)/g;
 
       let lastIndex = 0;
       let match;
@@ -177,11 +217,11 @@ export const SANDBOX_RUNNER_HTML = `
         const m = match[0];
         if (m.startsWith('//') || m.startsWith('/*')) {
           tokens.push('<span class="hl-com">' + escapeHtml(m) + '</span>');
-        } else if (m.startsWith('"') || m.startsWith("'") || m.startsWith('\`')) {
+        } else if (m.startsWith('"') || m.startsWith("'") || m.startsWith(String.fromCharCode(96))) {
           tokens.push('<span class="hl-str">' + escapeHtml(m) + '</span>');
         } else if (/^(?:const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|class|import|export|default|try|catch|finally|throw|typeof|instanceof|void|async|await|yield|this|super)$/.test(m)) {
           tokens.push('<span class="hl-kw">' + escapeHtml(m) + '</span>');
-        } else if (/^(?:true|false|null|undefined|NaN|Infinity)$/.test(m) || /^\\d+(?:\\.\\d+)?$/.test(m)) {
+        } else if (/^(?:true|false|null|undefined|NaN|Infinity)$/.test(m) || /^\d+(?:\.\d+)?$/.test(m)) {
           tokens.push('<span class="hl-num">' + escapeHtml(m) + '</span>');
         } else if (/^[a-zA-Z_$]/.test(m)) {
           tokens.push('<span class="hl-fn">' + escapeHtml(m) + '</span>');
@@ -201,7 +241,7 @@ export const SANDBOX_RUNNER_HTML = `
 
     function renderEditor() {
       const code = textarea.value;
-      const lines = code.split('\\n');
+      const lines = code.split(String.fromCharCode(10));
       const errLine = currentErrorInfo && currentErrorInfo.line ? currentErrorInfo.line : null;
 
       let gutterHtml = '';
@@ -213,14 +253,14 @@ export const SANDBOX_RUNNER_HTML = `
 
       const highlightedLines = lines.map((line, idx) => {
         const lineNum = idx + 1;
-        const hl = highlightJS(line) || '&nbsp;';
+        const hl = (currentLanguage === 'python' ? highlightPython(line) : highlightJS(line)) || '&nbsp;';
         if (lineNum === errLine) {
           return '<span class="err-line">' + hl + '</span>';
         }
         return hl;
       });
 
-      highlightLayer.innerHTML = highlightedLines.join('\\n') + (code.endsWith('\\n') ? '\\n&nbsp;' : '');
+      highlightLayer.innerHTML = highlightedLines.join(String.fromCharCode(10)) + (code.endsWith(String.fromCharCode(10)) ? String.fromCharCode(10) + '&nbsp;' : '');
     }
 
     textarea.addEventListener('input', () => {
@@ -361,7 +401,11 @@ export const SANDBOX_RUNNER_HTML = `
     function handleRNMessage(msg) {
       if (msg.type === 'set_code') {
         textarea.value = msg.code || '';
+        if (msg.language) currentLanguage = msg.language;
         currentErrorInfo = null;
+        renderEditor();
+      } else if (msg.type === 'set_language') {
+        currentLanguage = msg.language || 'javascript';
         renderEditor();
       } else if (msg.type === 'set_theme') {
         document.body.className = msg.isDark ? 'dark' : '';
@@ -377,9 +421,10 @@ export const SANDBOX_RUNNER_HTML = `
         const end = textarea.selectionEnd;
         const val = textarea.value;
         const sym = msg.symbol;
+        const indent = currentLanguage === 'python' ? '    ' : '  ';
         if (sym === 'tab') {
-          textarea.value = val.substring(0, start) + '  ' + val.substring(end);
-          textarea.selectionStart = textarea.selectionEnd = start + 2;
+          textarea.value = val.substring(0, start) + indent + val.substring(end);
+          textarea.selectionStart = textarea.selectionEnd = start + indent.length;
         } else if (sym === '{}') {
           textarea.value = val.substring(0, start) + '{}' + val.substring(end);
           textarea.selectionStart = textarea.selectionEnd = start + 1;
@@ -404,11 +449,97 @@ export const SANDBOX_RUNNER_HTML = `
         postToRN({ type: 'code_change', code: textarea.value });
         textarea.focus();
       } else if (msg.type === 'run_sandbox') {
-        runSandbox(msg);
+        if (msg.language) currentLanguage = msg.language;
+        if (currentLanguage === 'python') {
+          runPythonSandbox(msg);
+        } else {
+          runJSSandbox(msg);
+        }
       }
     }
 
-    function runSandbox(msg) {
+    function runPythonSandbox(msg) {
+      clearTimeout(runTimeoutTimer);
+      const logs = [];
+
+      if (typeof Sk === 'undefined') {
+        postToRN({
+          type: 'sandbox_complete',
+          runId: msg.runId,
+          status: 'error',
+          logs: [],
+          error: { name: 'RuntimeError', message: 'Python runtime initializing. Please try again in a moment.' },
+          durationMs: 0
+        });
+        return;
+      }
+
+      Sk.configure({
+        output: function(text) {
+          const cleaned = text.replace(new RegExp(String.fromCharCode(10) + '$'), '').replace(new RegExp(String.fromCharCode(13) + '$'), '');
+          if (cleaned.length > 0) {
+            logs.push({ level: 'log', text: cleaned });
+          }
+        },
+        read: function(x) {
+          if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined) {
+            throw "File not found: " + x;
+          }
+          return Sk.builtinFiles["files"][x];
+        },
+        execLimit: 3000,
+        __future__: Sk.python3
+      });
+
+      const startTime = Date.now();
+      runTimeoutTimer = setTimeout(function() {
+        postToRN({
+          type: 'sandbox_timeout',
+          runId: msg.runId,
+          error: { name: 'TimeoutError', message: 'Execution timed out (3s). Check for an infinite loop.' }
+        });
+      }, 3000);
+
+      Sk.misceval.asyncToPromise(function() {
+        return Sk.importMainWithBody("<stdin>", false, msg.code, true);
+      }).then(function(mod) {
+        clearTimeout(runTimeoutTimer);
+        const durationMs = Date.now() - startTime;
+        currentErrorInfo = null;
+        renderEditor();
+        postToRN({
+          type: 'sandbox_complete',
+          runId: msg.runId,
+          status: 'success',
+          logs: logs,
+          result: logs.length > 0 ? logs[logs.length - 1].text : 'None',
+          durationMs: durationMs
+        });
+      }).catch(function(err) {
+        clearTimeout(runTimeoutTimer);
+        const durationMs = Date.now() - startTime;
+        let line = null;
+        if (err.traceback && err.traceback.length > 0) {
+          line = err.traceback[0].lineno;
+        }
+        currentErrorInfo = { name: err.tp$name || 'Error', message: err.toString(), line: line || undefined };
+        renderEditor();
+        postToRN({
+          type: 'sandbox_complete',
+          runId: msg.runId,
+          status: 'error',
+          logs: logs,
+          error: {
+            name: err.tp$name || 'RuntimeError',
+            message: err.toString(),
+            line: line || undefined
+          },
+          durationMs: durationMs
+        });
+      });
+    }
+
+    function runJSSandbox(msg) {
       if (currentWorker) {
         currentWorker.terminate();
       }
@@ -467,6 +598,12 @@ export const SANDBOX_RUNNER_HTML = `
 
     renderEditor();
     postToRN({ type: 'runner_ready' });
+  </script>
+  <script>
+    ${SKULPT_CORE_JS}
+  </script>
+  <script>
+    ${SKULPT_STDLIB_JS}
   </script>
 </body>
 </html>

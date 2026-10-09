@@ -1,14 +1,52 @@
 import * as acorn from 'acorn';
 import * as walk from 'acorn-walk';
-import { GenuineResult, RequiredConstruct } from '../types';
+import { GenuineResult, LanguageId, RequiredConstruct } from '../types';
 
 export function checkConstructs(
   code: string,
   functionName: string,
   requiredConstructs: RequiredConstruct[],
-  runId = 'run-verify'
+  runId = 'run-verify',
+  language: LanguageId = 'javascript'
 ): GenuineResult {
   if (!requiredConstructs || requiredConstructs.length === 0) {
+    return {
+      runId,
+      label: 'GENUINE',
+      reason: null,
+    };
+  }
+
+  // Handle Python construct verification via syntax pattern analysis
+  if (language === 'python') {
+    for (const construct of requiredConstructs) {
+      let satisfied = false;
+      if (construct === 'for_loop') {
+        satisfied = /\bfor\s+[a-zA-Z0-9_,\s()]+\s+in\b/.test(code);
+      } else if (construct === 'while_loop') {
+        satisfied = /\bwhile\b/.test(code);
+      } else if (construct === 'any_loop') {
+        satisfied = /\bfor\s+[a-zA-Z0-9_,\s()]+\s+in\b/.test(code) || /\bwhile\b/.test(code);
+      } else if (construct === 'recursion') {
+        // Look for recursive call to functionName in the body
+        const fnPattern = new RegExp(`def\\s+${functionName}\\s*\\([^)]*\\):([\\s\\S]*)`);
+        const match = code.match(fnPattern);
+        if (match && match[1]) {
+          const body = match[1];
+          satisfied = new RegExp(`\\b${functionName}\\s*\\(`).test(body);
+        }
+      }
+
+      if (!satisfied) {
+        return {
+          runId,
+          label: 'CORRECT_NOT_GENUINE',
+          reason: 'missing_construct',
+          missingConstruct: construct,
+        };
+      }
+    }
+
     return {
       runId,
       label: 'GENUINE',
