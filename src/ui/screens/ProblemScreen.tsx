@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WebView } from 'react-native-webview';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
@@ -18,6 +19,7 @@ interface ProblemScreenProps {
 }
 
 export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
+  const insets = useSafeAreaInsets();
   const { problemId } = route.params;
   const problem = PROBLEMS.find((p) => p.id === problemId) ?? PROBLEMS[0];
 
@@ -193,7 +195,16 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       {/* Top Header Bar */}
-      <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.surface2 }]}>
+      <View
+        style={[
+          styles.header,
+          {
+            backgroundColor: colors.surface,
+            borderBottomColor: colors.surface2,
+            paddingTop: Math.max(insets.top, 12),
+          },
+        ]}
+      >
         <TouchableOpacity
           onPress={() => {
             if (runsCount > 0) recordAbandonment(problem.id, problem.primaryConcept);
@@ -289,7 +300,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    height: 56,
+    minHeight: 56,
+    paddingBottom: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

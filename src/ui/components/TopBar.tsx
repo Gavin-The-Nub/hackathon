@@ -2,8 +2,10 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export function TopBar() {
+  const insets = useSafeAreaInsets();
   const themeMode = useUserStore((s) => s.theme);
   const totalXp = useUserStore((s) => s.totalXp);
   const level = useUserStore((s) => s.level);
@@ -12,7 +14,16 @@ export function TopBar() {
   const colors = themeMode === 'dark' ? DARK_THEME : LIGHT_THEME;
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: colors.surface,
+          borderColor: colors.surface2,
+          paddingTop: Math.max(insets.top, 12),
+        },
+      ]}
+    >
       {/* Streak */}
       <View style={styles.item}>
         <Text style={styles.icon}>🔥</Text>
