@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { Sparkles, Lightbulb, X } from 'lucide-react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 
@@ -31,7 +32,11 @@ export function TutorCard({
     <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.primary }]}>
       <View style={styles.header}>
         <View style={styles.badgeRow}>
-          <Text style={styles.sparkle}>{isAi ? '✨' : '💡'}</Text>
+          {isAi ? (
+            <Sparkles size={16} color={colors.primary} strokeWidth={2.4} />
+          ) : (
+            <Lightbulb size={16} color={colors.warn} strokeWidth={2.4} />
+          )}
           <View style={[styles.badge, { backgroundColor: isAi ? colors.primary : colors.surface2 }]}>
             <Text style={[styles.badgeText, { color: isAi ? '#FFFFFF' : colors.text }]}>
               {isAi ? 'On-Device AI Tutor' : 'Quick hint'}
@@ -45,7 +50,7 @@ export function TutorCard({
         </View>
 
         <TouchableOpacity onPress={onDismiss} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Text style={[styles.closeBtn, { color: colors.textMuted }]}>✕</Text>
+          <X size={16} color={colors.textMuted} strokeWidth={2.5} />
         </TouchableOpacity>
       </View>
 
@@ -93,9 +98,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  sparkle: {
-    fontSize: 16,
-  },
   badge: {
     paddingHorizontal: 8,
     paddingVertical: 3,
@@ -108,11 +110,6 @@ const styles = StyleSheet.create({
   levelLabel: {
     fontSize: 12,
     fontWeight: '600',
-  },
-  closeBtn: {
-    fontSize: 16,
-    fontWeight: '700',
-    paddingHorizontal: 4,
   },
   bodyText: {
     fontSize: 14,

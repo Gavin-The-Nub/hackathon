@@ -12,7 +12,22 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ArrowLeft, Sparkles, Send, CheckCircle, HelpCircle, AlertTriangle, Code2 } from 'lucide-react-native';
+import {
+  ArrowLeft,
+  Sparkles,
+  Send,
+  CheckCircle,
+  HelpCircle,
+  AlertTriangle,
+  Code2,
+  Lightbulb,
+  Bot,
+  Package,
+  GitFork,
+  Repeat,
+  Cpu,
+  Layers,
+} from 'lucide-react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 import { ConceptId } from '../../core/types';
@@ -174,7 +189,13 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
             ]}
           >
             <View style={styles.analogyHeader}>
-              <Text style={styles.analogyIcon}>{lesson.analogy.icon}</Text>
+              <View style={[styles.analogyIconBox, { backgroundColor: lesson.themeColor + '18' }]}>
+                {lesson.conceptId === 'variables_types' && <Package size={26} color={lesson.themeColor} strokeWidth={2.4} />}
+                {lesson.conceptId === 'conditionals' && <GitFork size={26} color={lesson.themeColor} strokeWidth={2.4} />}
+                {lesson.conceptId === 'loops' && <Repeat size={26} color={lesson.themeColor} strokeWidth={2.4} />}
+                {lesson.conceptId === 'functions' && <Cpu size={26} color={lesson.themeColor} strokeWidth={2.4} />}
+                {lesson.conceptId === 'arrays_lists' && <Layers size={26} color={lesson.themeColor} strokeWidth={2.4} />}
+              </View>
               <View style={{ flex: 1 }}>
                 <Text style={[styles.analogySub, { color: lesson.themeColor }]}>
                   THE BIG PICTURE ANALOGY
@@ -245,9 +266,12 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
                   <View style={[styles.codeContainer, { backgroundColor: '#0D1117' }]}>
                     <Text style={styles.codeText}>{ex.code}</Text>
                   </View>
-                  <Text style={[styles.exampleExplanation, { color: colors.textMuted }]}>
-                    💡 {ex.explanation}
-                  </Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6 }}>
+                    <Lightbulb size={15} color={colors.primary} style={{ marginTop: 2 }} />
+                    <Text style={[styles.exampleExplanation, { color: colors.textMuted, flex: 1 }]}>
+                      {ex.explanation}
+                    </Text>
+                  </View>
                 </View>
               ))}
             </View>
@@ -271,7 +295,10 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
                     { backgroundColor: colors.surface, borderColor: 'rgba(239, 68, 68, 0.3)' },
                   ]}
                 >
-                  <Text style={styles.pitfallMistake}>⚠️ {pit.mistake}</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                    <AlertTriangle size={15} color="#EF4444" />
+                    <Text style={styles.pitfallMistake}>{pit.mistake}</Text>
+                  </View>
                   <Text style={[styles.pitfallWhy, { color: colors.textMuted }]}>
                     <Text style={{ fontWeight: '700' }}>Why it happens: </Text>
                     {pit.whyItHappens}
@@ -407,7 +434,8 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
                     disabled={isAsking}
                     activeOpacity={0.7}
                   >
-                    <Text style={[styles.pillText, { color: colors.text }]}>💡 {q}</Text>
+                    <Lightbulb size={14} color={colors.primary} />
+                    <Text style={[styles.pillText, { color: colors.text }]}>{q}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -433,7 +461,7 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
                 >
                   {m.sender === 'tutor' && (
                     <View style={styles.tutorHeaderRow}>
-                      <Text style={styles.tutorAvatar}>🤖</Text>
+                      <Bot size={18} color={colors.primary} />
                       <Text style={[styles.tutorName, { color: colors.text }]}>AI Tutor</Text>
                       <View style={styles.offlinePill}>
                         <Text style={styles.offlinePillText}>OFFLINE</Text>
@@ -591,6 +619,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+  },
+  analogyIconBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   analogyIcon: {
     fontSize: 36,

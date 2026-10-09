@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, Platform, StatusBar as RNStatusBar, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Flame, ChevronDown } from 'lucide-react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { JavaScriptLogo, PythonLogo } from './LanguageLogos';
 
 export function TopBar() {
   const insets = useSafeAreaInsets();
@@ -35,17 +37,23 @@ export function TopBar() {
         onPress={() => navigation.navigate('PathSelection')}
         activeOpacity={0.8}
       >
-        <Text style={styles.langIcon}>{selectedLanguage === 'python' ? '🐍' : '🟡'}</Text>
+        <View style={styles.langIconWrap}>
+          {selectedLanguage === 'python' ? (
+            <PythonLogo size={18} />
+          ) : (
+            <JavaScriptLogo size={18} />
+          )}
+        </View>
         <Text style={[styles.langText, { color: colors.text }]}>
           {selectedLanguage === 'python' ? 'Python' : 'JavaScript'}
         </Text>
-        <Text style={[styles.chevron, { color: colors.textMuted }]}>▾</Text>
+        <ChevronDown size={14} color={colors.textMuted} strokeWidth={2.6} />
       </TouchableOpacity>
 
       <View style={styles.rightGroup}>
         {/* Streak */}
         <View style={styles.item}>
-          <Text style={styles.icon}>🔥</Text>
+          <Flame size={18} color={colors.streak} strokeWidth={2.4} />
           <Text style={[styles.value, { color: colors.streak }]}>{streak}</Text>
         </View>
 
@@ -72,9 +80,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
   },
-  icon: {
-    fontSize: 18,
-  },
   value: {
     fontSize: 16,
     fontWeight: '800',
@@ -93,25 +98,21 @@ const styles = StyleSheet.create({
   langSwitcher: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
     borderWidth: 1.5,
     borderBottomWidth: 3,
   },
-  langIcon: {
-    fontSize: 16,
+  langIconWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   langText: {
     fontSize: 14,
     fontWeight: '800',
     letterSpacing: 0.2,
-  },
-  chevron: {
-    fontSize: 12,
-    fontWeight: '800',
-    marginTop: 1,
   },
   rightGroup: {
     flexDirection: 'row',

@@ -417,15 +417,16 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
                 </View>
               )}
               {problem.conceptNote && (
-                <View style={[styles.noteBox, { backgroundColor: colors.surface2 }]}>
-                  <Text style={[styles.conceptNoteText, { color: colors.text }]}>
-                    💡 {problem.conceptNote}
+                <View style={[styles.noteBox, { backgroundColor: colors.surface2, flexDirection: 'row', alignItems: 'flex-start', gap: 6 }]}>
+                  <Lightbulb size={15} color={colors.primary} style={{ marginTop: 2 }} />
+                  <Text style={[styles.conceptNoteText, { color: colors.text, flex: 1 }]}>
+                    {problem.conceptNote}
                   </Text>
                 </View>
               )}
 
               <TouchableOpacity
-                style={[styles.openLessonLink, { backgroundColor: colors.surface2 }]}
+                style={[styles.openLessonLink, { backgroundColor: colors.surface2, flexDirection: 'row', alignItems: 'center', gap: 8 }]}
                 onPress={() =>
                   navigation.navigate('Lesson', {
                     conceptId: problem.primaryConcept,
@@ -434,8 +435,9 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
                 }
                 activeOpacity={0.8}
               >
+                <BookOpen size={15} color={colors.primary} />
                 <Text style={[styles.openLessonLinkText, { color: colors.primary }]}>
-                  📖 Read Full Lesson & Ask AI Tutor →
+                  Read Full Lesson & Ask AI Tutor →
                 </Text>
               </TouchableOpacity>
             </View>

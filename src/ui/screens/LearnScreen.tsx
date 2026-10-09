@@ -14,6 +14,7 @@ import { TopBar } from '../components/TopBar';
 import { PROBLEMS } from '../../content/data';
 import { recommendNext } from '../../core/mastery/recommend';
 import { ConceptId } from '../../core/types';
+import { BookOpen, Lock, Trophy, Gift, Sparkles } from 'lucide-react-native';
 
 interface LearnScreenProps {
   navigation: any;
@@ -197,7 +198,7 @@ export function LearnScreen({ navigation }: LearnScreenProps) {
                     onPress={() => navigation.navigate('Lesson', { conceptId: unit.concept })}
                     activeOpacity={0.8}
                   >
-                    <Text style={styles.unitLessonBtnIcon}>📖</Text>
+                    <BookOpen size={16} color={isUnitUnlocked ? '#FFFFFF' : colors.text} strokeWidth={2.4} />
                     <Text style={[styles.unitLessonBtnText, { color: isUnitUnlocked ? '#FFFFFF' : colors.text }]}>
                       Read Lesson & Ask AI
                     </Text>
@@ -315,7 +316,7 @@ export function LearnScreen({ navigation }: LearnScreenProps) {
                                 {probIdx + 1}
                               </Text>
                             ) : (
-                              <Text style={styles.stoneIconLock}>🔒</Text>
+                              <Lock size={18} color="#9CA3AF" strokeWidth={2.4} />
                             )}
                           </TouchableOpacity>
 
@@ -333,7 +334,9 @@ export function LearnScreen({ navigation }: LearnScreenProps) {
                             </Text>
                             {isCompleted && (
                               <View style={styles.starsRow}>
-                                <Text style={styles.starText}>⭐⭐⭐</Text>
+                                <Sparkles size={13} color="#F59E0B" strokeWidth={2.4} />
+                                <Sparkles size={13} color="#F59E0B" strokeWidth={2.4} />
+                                <Sparkles size={13} color="#F59E0B" strokeWidth={2.4} />
                               </View>
                             )}
                           </View>
@@ -405,9 +408,11 @@ export function LearnScreen({ navigation }: LearnScreenProps) {
                       disabled={!isUnitFullyCompleted}
                       activeOpacity={0.8}
                     >
-                      <Text style={styles.milestoneIcon}>
-                        {isUnitFullyCompleted ? '🏆' : '🎁'}
-                      </Text>
+                      {isUnitFullyCompleted ? (
+                        <Trophy size={26} color="#FFFFFF" strokeWidth={2.4} />
+                      ) : (
+                        <Gift size={26} color={colors.textMuted} strokeWidth={2.4} />
+                      )}
                     </TouchableOpacity>
                     <Text
                       style={[

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,11 +7,36 @@ import {
   StyleSheet,
   Alert,
   Platform,
+  useWindowDimensions,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
   StatusBar as RNStatusBar,
 } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  ArrowRight,
+  Check,
+  Sparkles,
+  Terminal,
+  Code2,
+  Globe,
+  Smartphone,
+  Server,
+  Gamepad2,
+  Bot,
+  ChartBar,
+  Cloud,
+  X,
+} from 'lucide-react-native';
+
 import { useUserStore } from '../../state/userStore';
-import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
+import {
+  JavaScriptLogo,
+  PythonLogo,
+  JavaScriptHeroLogo,
+  PythonHeroLogo,
+} from '../components/LanguageLogos';
 
 interface PathSelectionScreenProps {
   navigation: any;
@@ -20,14 +45,22 @@ interface PathSelectionScreenProps {
 
 export function PathSelectionScreen({ navigation }: PathSelectionScreenProps) {
   const insets = useSafeAreaInsets();
-  const themeMode = useUserStore((s) => s.theme);
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+
   const selectedLanguage = useUserStore((s) => s.selectedLanguage);
   const hasSelectedLanguage = useUserStore((s) => s.hasSelectedLanguage);
   const setSelectedLanguage = useUserStore((s) => s.setSelectedLanguage);
 
-  const colors = themeMode === 'dark' ? DARK_THEME : LIGHT_THEME;
-  const androidBarHeight = Platform.OS === 'android' ? (RNStatusBar.currentHeight ?? 36) : 0;
-  const topPadding = Math.max(insets.top, androidBarHeight, 44) + 12;
+  // Active carousel page (0 = JavaScript, 1 = Python)
+  const [activeIndex, setActiveIndex] = useState<number>(
+    selectedLanguage === 'python' && hasSelectedLanguage ? 1 : 0
+  );
+
+  const scrollRef = useRef<ScrollView>(null);
+
+  const isSmallScreen = screenHeight < 720;
+  const topPadding = Math.max(insets.top, Platform.OS === 'android' ? (RNStatusBar.currentHeight ?? 24) : 0, 16);
+  const bottomPadding = Math.max(insets.bottom, 16);
 
   const handleClose = () => {
     if (navigation.canGoBack()) {
@@ -37,7 +70,20 @@ export function PathSelectionScreen({ navigation }: PathSelectionScreenProps) {
     }
   };
 
-  const handleSelectJavaScript = () => {
+  const handleTabPress = (index: number) => {
+    setActiveIndex(index);
+    scrollRef.current?.scrollTo({ x: index * screenWidth, animated: true });
+  };
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const page = Math.round(offsetX / screenWidth);
+    if (page !== activeIndex && (page === 0 || page === 1)) {
+      setActiveIndex(page);
+    }
+  };
+
+  const handleChooseJavaScript = () => {
     setSelectedLanguage('javascript');
     if (navigation.canGoBack() && hasSelectedLanguage) {
       navigation.goBack();
@@ -46,214 +92,346 @@ export function PathSelectionScreen({ navigation }: PathSelectionScreenProps) {
     }
   };
 
-  const handleSelectPython = () => {
+  const handleChoosePython = () => {
+    setSelectedLanguage('python');
     Alert.alert(
-      'Python Path Coming Soon!',
-      'Our team is crafting Python lessons and local AI models. Start with the JavaScript path today to master core programming fundamentals!',
+      'Python Path Selected',
+      'You are now set up for Python. Explore the roadmap, concepts, and practice coding with our on-device tutor!',
       [
-        { text: 'Start JavaScript', onPress: handleSelectJavaScript },
-        { text: 'Got it', style: 'cancel' },
+        {
+          text: 'Start Exploring',
+          onPress: () => {
+            if (navigation.canGoBack() && hasSelectedLanguage) {
+              navigation.goBack();
+            } else {
+              navigation.replace('MainTabs');
+            }
+          },
+        },
       ]
     );
   };
 
   const isJsActive = selectedLanguage === 'javascript' && hasSelectedLanguage;
+  const isPyActive = selectedLanguage === 'python' && hasSelectedLanguage;
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.bg }]}>
-      {/* Top Header */}
-      <View style={[styles.header, { paddingTop: topPadding, borderBottomColor: colors.surface2 }]}>
-        <View style={styles.headerLeft}>
-          <Text style={[styles.brandText, { color: colors.primary }]}>CodeChamp</Text>
-          <View style={styles.offlinePill}>
-            <Text style={styles.offlinePillText}>OFFLINE TUTOR</Text>
-          </View>
-        </View>
+    <View style={styles.container}>
+      <StatusBar style="dark" />
 
-        {hasSelectedLanguage && (
-          <TouchableOpacity
-            style={[styles.closeBtn, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}
-            onPress={handleClose}
-            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-            activeOpacity={0.8}
-          >
-            <Text style={[styles.closeBtnText, { color: colors.text }]}>✕</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Screen Title */}
-        <View style={styles.titleSection}>
-          <Text style={[styles.title, { color: colors.text }]}>Choose Your Path</Text>
-          <Text style={[styles.subtitle, { color: colors.textMuted }]}>
-            Select a programming language to master with hands-on exercises and on-device AI guidance. You can switch at any time.
-          </Text>
-        </View>
-
-        {/* Path Cards */}
-        <View style={styles.cardsContainer}>
-          {/* JAVASCRIPT CARD */}
-          <TouchableOpacity
-            style={[
-              styles.card,
+      {/* FULL-SCREEN HORIZONTAL CAROUSEL - Top section is included inside each page */}
+      <ScrollView
+        ref={scrollRef}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={handleScroll}
+        scrollEventThrottle={16}
+        bounces={false}
+        style={styles.carousel}
+      >
+        {/* ================= PAGE 1: JAVASCRIPT (PASTEL YELLOW) ================= */}
+        <View style={[styles.page, { width: screenWidth, backgroundColor: '#FEE75C' }]}>
+          <ScrollView
+            contentContainerStyle={[
+              styles.pageScrollContent,
               {
-                backgroundColor: colors.surface,
-                borderColor: isJsActive ? colors.primary : colors.surface2,
-                borderBottomColor: isJsActive ? colors.primaryLip : colors.surface2,
+                paddingTop: topPadding + 6,
+                paddingBottom: bottomPadding + 16,
               },
-              isJsActive && styles.cardActive,
             ]}
-            onPress={handleSelectJavaScript}
-            activeOpacity={0.9}
+            showsVerticalScrollIndicator={false}
           >
-            {/* Card Header Row */}
-            <View style={styles.cardHeaderRow}>
-              <View style={styles.langIdentity}>
-                <View style={[styles.iconBox, { backgroundColor: '#F59E0B' }]}>
-                  <Text style={styles.iconBoxText}>JS</Text>
-                </View>
-                <View>
-                  <Text style={[styles.langTitle, { color: colors.text }]}>JavaScript</Text>
-                  <Text style={[styles.langLevel, { color: colors.textMuted }]}>5 Units · 25 Lessons</Text>
+            {/* Top Navigation Row */}
+            <View style={styles.topRow}>
+              <View style={styles.brandBadge}>
+                <Terminal color="#18181B" size={16} strokeWidth={2.6} />
+                <Text style={styles.brandText}>CODECHAMP</Text>
+                <View style={styles.badgePill}>
+                  <Text style={styles.badgePillText}>OFFLINE</Text>
                 </View>
               </View>
 
-              <View
-                style={[
-                  styles.statusBadge,
-                  { backgroundColor: isJsActive ? 'rgba(45, 184, 76, 0.15)' : 'rgba(91, 75, 219, 0.12)' },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.statusBadgeText,
-                    { color: isJsActive ? colors.success : colors.primary },
-                  ]}
+              {hasSelectedLanguage && (
+                <TouchableOpacity
+                  style={styles.closeBtn}
+                  onPress={handleClose}
+                  hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                  activeOpacity={0.7}
+                  accessibilityLabel="Close path picker"
                 >
-                  {isJsActive ? 'ACTIVE PATH' : 'READY TO LEARN'}
-                </Text>
-              </View>
+                  <X color="#18181B" size={18} strokeWidth={2.8} />
+                </TouchableOpacity>
+              )}
             </View>
 
-            {/* Description */}
-            <Text style={[styles.cardDesc, { color: colors.text }]}>
-              The language of the web and modern applications. JavaScript powers interactive user interfaces, mobile apps, and full-stack servers across the globe.
-            </Text>
+            {/* Segmented Tabs inside Page 1 */}
+            <View style={styles.segmentedTabsContainer}>
+              <TouchableOpacity
+                style={[styles.tabPill, styles.tabPillActive]}
+                activeOpacity={0.9}
+              >
+                <Code2 color="#FFFFFF" size={15} strokeWidth={2.6} />
+                <Text style={[styles.tabText, styles.tabTextActive]}>JavaScript</Text>
+                {isJsActive && (
+                  <View style={styles.activeDot}>
+                    <Check color="#FFFFFF" size={10} strokeWidth={3.5} />
+                  </View>
+                )}
+              </TouchableOpacity>
 
-            {/* Career & Real-World Outcomes */}
-            <View style={styles.outcomesSection}>
-              <Text style={[styles.outcomesHeader, { color: colors.textMuted }]}>
-                WHAT YOU CAN BUILD:
+              <TouchableOpacity
+                style={styles.tabPill}
+                onPress={() => handleTabPress(1)}
+                activeOpacity={0.7}
+              >
+                <Terminal color="#3F3F46" size={15} strokeWidth={2.6} />
+                <Text style={styles.tabText}>Python</Text>
+                {isPyActive && (
+                  <View style={styles.activeDot}>
+                    <Check color="#FFFFFF" size={10} strokeWidth={3.5} />
+                  </View>
+                )}
+              </TouchableOpacity>
+            </View>
+
+            {/* Title Section (Matching screenshot's Speak With Confidence layout) */}
+            <View style={styles.heroTextSection}>
+              <Text style={styles.bigHeroTitle}>Code</Text>
+              <View style={styles.titleRow}>
+                <Text style={styles.bigHeroTitle}>With</Text>
+                {/* Waveform / Badge Pill from screenshot */}
+                <View style={styles.waveformPill}>
+                  <View style={styles.waveBar} />
+                  <View style={[styles.waveBar, { height: 18 }]} />
+                  <View style={[styles.waveBar, { height: 14 }]} />
+                  <View style={[styles.waveBar, { height: 20 }]} />
+                  <View style={[styles.waveBar, { height: 12 }]} />
+                  <View style={styles.micCircle}>
+                    <Sparkles color="#FFFFFF" size={12} strokeWidth={2.8} />
+                  </View>
+                </View>
+              </View>
+              <Text style={styles.bigHeroTitle}>Confidence</Text>
+
+              <Text style={styles.heroSubtitle}>
+                Master variables, functions, and algorithms with hands-on exercises and instant on-device AI coaching.
               </Text>
-              <View style={styles.tagsWrap}>
-                <View style={[styles.tagPill, { backgroundColor: colors.surface2 }]}>
-                  <Text style={[styles.tagText, { color: colors.text }]}>🌐 Web Development</Text>
-                </View>
-                <View style={[styles.tagPill, { backgroundColor: colors.surface2 }]}>
-                  <Text style={[styles.tagText, { color: colors.text }]}>📱 Mobile Apps (React Native)</Text>
-                </View>
-                <View style={[styles.tagPill, { backgroundColor: colors.surface2 }]}>
-                  <Text style={[styles.tagText, { color: colors.text }]}>💻 Full-Stack Software</Text>
-                </View>
-                <View style={[styles.tagPill, { backgroundColor: colors.surface2 }]}>
-                  <Text style={[styles.tagText, { color: colors.text }]}>🎮 Interactive Games</Text>
+            </View>
+
+            {/* Prominent JavaScript Logo in the center */}
+            <JavaScriptHeroLogo size={isSmallScreen ? 100 : 124} />
+
+            {/* Language Identity Meta Card */}
+            <View style={styles.infoGlassCard}>
+              <View style={styles.infoLeft}>
+                <JavaScriptLogo size={42} />
+                <View style={styles.infoMeta}>
+                  <View style={styles.langTitleRow}>
+                    <Text style={styles.cardLangName}>JavaScript</Text>
+                    {isJsActive && (
+                      <View style={styles.activePillBadge}>
+                        <Text style={styles.activePillText}>CURRENT PATH</Text>
+                      </View>
+                    )}
+                  </View>
+                  <Text style={styles.cardLangSubtitle}>5 Units · 25 Interactive Lessons</Text>
                 </View>
               </View>
             </View>
 
-            {/* Primary Action Button */}
+            {/* Real-World Outcomes Pills with Actual Vector Icons */}
+            <View style={styles.tagChipsWrap}>
+              <View style={styles.tagChip}>
+                <Globe color="#18181B" size={13} strokeWidth={2.5} />
+                <Text style={styles.tagChipText}>Web & Frontend</Text>
+              </View>
+              <View style={styles.tagChip}>
+                <Smartphone color="#18181B" size={13} strokeWidth={2.5} />
+                <Text style={styles.tagChipText}>Mobile (React Native)</Text>
+              </View>
+              <View style={styles.tagChip}>
+                <Server color="#18181B" size={13} strokeWidth={2.5} />
+                <Text style={styles.tagChipText}>Full-Stack Node</Text>
+              </View>
+              <View style={styles.tagChip}>
+                <Gamepad2 color="#18181B" size={13} strokeWidth={2.5} />
+                <Text style={styles.tagChipText}>Game Dev</Text>
+              </View>
+            </View>
+
+            {/* Pagination Dots (• • from screenshot) */}
+            <View style={styles.paginationDotsContainer}>
+              <View style={[styles.dotPill, styles.dotPillActive]} />
+              <View style={styles.dotCircle} />
+            </View>
+
+            {/* Bottom Rounded Black Button */}
             <TouchableOpacity
-              style={[
-                styles.selectBtn,
-                {
-                  backgroundColor: colors.primary,
-                  borderBottomColor: colors.primaryLip,
-                },
-              ]}
-              onPress={handleSelectJavaScript}
-              activeOpacity={0.85}
+              style={styles.primaryPillButton}
+              onPress={handleChooseJavaScript}
+              activeOpacity={0.88}
             >
-              <Text style={styles.selectBtnText}>
-                {isJsActive ? 'CONTINUE JAVASCRIPT' : 'SELECT JAVASCRIPT'}
+              <Text style={styles.primaryButtonText}>
+                {isJsActive ? 'Continue JavaScript' : 'Start JavaScript Path'}
               </Text>
+              <View style={styles.buttonArrowPill}>
+                <ArrowRight color="#FFFFFF" size={18} strokeWidth={3} />
+              </View>
             </TouchableOpacity>
-          </TouchableOpacity>
+          </ScrollView>
+        </View>
 
-          {/* PYTHON CARD */}
-          <TouchableOpacity
-            style={[
-              styles.card,
+        {/* ================= PAGE 2: PYTHON (PASTEL LILAC) ================= */}
+        <View style={[styles.page, { width: screenWidth, backgroundColor: '#DDD6FE' }]}>
+          <ScrollView
+            contentContainerStyle={[
+              styles.pageScrollContent,
               {
-                backgroundColor: colors.surface,
-                borderColor: colors.surface2,
-                borderBottomColor: colors.surface2,
+                paddingTop: topPadding + 6,
+                paddingBottom: bottomPadding + 16,
               },
             ]}
-            onPress={handleSelectPython}
-            activeOpacity={0.9}
+            showsVerticalScrollIndicator={false}
           >
-            {/* Card Header Row */}
-            <View style={styles.cardHeaderRow}>
-              <View style={styles.langIdentity}>
-                <View style={[styles.iconBox, { backgroundColor: '#3B82F6' }]}>
-                  <Text style={styles.iconBoxText}>PY</Text>
-                </View>
-                <View>
-                  <Text style={[styles.langTitle, { color: colors.text }]}>Python</Text>
-                  <Text style={[styles.langLevel, { color: colors.textMuted }]}>Coming in next update</Text>
+            {/* Top Navigation Row */}
+            <View style={styles.topRow}>
+              <View style={styles.brandBadge}>
+                <Terminal color="#18181B" size={16} strokeWidth={2.6} />
+                <Text style={styles.brandText}>CODECHAMP</Text>
+                <View style={styles.badgePill}>
+                  <Text style={styles.badgePillText}>OFFLINE</Text>
                 </View>
               </View>
 
-              <View style={[styles.statusBadge, { backgroundColor: 'rgba(59, 130, 246, 0.12)' }]}>
-                <Text style={[styles.statusBadgeText, { color: '#3B82F6' }]}>COMING SOON</Text>
-              </View>
+              {hasSelectedLanguage && (
+                <TouchableOpacity
+                  style={styles.closeBtn}
+                  onPress={handleClose}
+                  hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                  activeOpacity={0.7}
+                  accessibilityLabel="Close path picker"
+                >
+                  <X color="#18181B" size={18} strokeWidth={2.8} />
+                </TouchableOpacity>
+              )}
             </View>
 
-            {/* Description */}
-            <Text style={[styles.cardDesc, { color: colors.text }]}>
-              The premier language for artificial intelligence, data science, and backend scripting. Renowned for its clean, beginner-friendly syntax and immense community.
-            </Text>
+            {/* Segmented Tabs inside Page 2 */}
+            <View style={styles.segmentedTabsContainer}>
+              <TouchableOpacity
+                style={styles.tabPill}
+                onPress={() => handleTabPress(0)}
+                activeOpacity={0.7}
+              >
+                <Code2 color="#3F3F46" size={15} strokeWidth={2.6} />
+                <Text style={styles.tabText}>JavaScript</Text>
+                {isJsActive && (
+                  <View style={styles.activeDot}>
+                    <Check color="#FFFFFF" size={10} strokeWidth={3.5} />
+                  </View>
+                )}
+              </TouchableOpacity>
 
-            {/* Career & Real-World Outcomes */}
-            <View style={styles.outcomesSection}>
-              <Text style={[styles.outcomesHeader, { color: colors.textMuted }]}>
-                WHAT YOU CAN BUILD:
+              <TouchableOpacity
+                style={[styles.tabPill, styles.tabPillActive]}
+                activeOpacity={0.9}
+              >
+                <Terminal color="#FFFFFF" size={15} strokeWidth={2.6} />
+                <Text style={[styles.tabText, styles.tabTextActive]}>Python</Text>
+                {isPyActive && (
+                  <View style={styles.activeDot}>
+                    <Check color="#FFFFFF" size={10} strokeWidth={3.5} />
+                  </View>
+                )}
+              </TouchableOpacity>
+            </View>
+
+            {/* Title Section (Matching screenshot's Learn Anytime Easily Anywhere layout) */}
+            <View style={styles.heroTextSection}>
+              <View style={styles.titleRow}>
+                <Text style={styles.bigHeroTitle}>Learn</Text>
+                {/* Languages Pill with Arrow from screenshot */}
+                <View style={styles.langPillBadge}>
+                  <Text style={styles.langPillBadgeText}>Python</Text>
+                  <View style={styles.langPillArrowCircle}>
+                    <ArrowRight color="#FFFFFF" size={12} strokeWidth={3} />
+                  </View>
+                </View>
+              </View>
+              <Text style={styles.bigHeroTitle}>Anytime, Easily</Text>
+              <Text style={styles.bigHeroTitle}>Anywhere</Text>
+
+              <Text style={styles.heroSubtitle}>
+                Build a daily coding habit with clean, human-readable syntax. Loved by beginner programmers and AI researchers alike.
               </Text>
-              <View style={styles.tagsWrap}>
-                <View style={[styles.tagPill, { backgroundColor: colors.surface2 }]}>
-                  <Text style={[styles.tagText, { color: colors.text }]}>🤖 AI & Machine Learning</Text>
-                </View>
-                <View style={[styles.tagPill, { backgroundColor: colors.surface2 }]}>
-                  <Text style={[styles.tagText, { color: colors.text }]}>📊 Data Science & Analytics</Text>
-                </View>
-                <View style={[styles.tagPill, { backgroundColor: colors.surface2 }]}>
-                  <Text style={[styles.tagText, { color: colors.text }]}>⚙️ Automation & Scripting</Text>
-                </View>
-                <View style={[styles.tagPill, { backgroundColor: colors.surface2 }]}>
-                  <Text style={[styles.tagText, { color: colors.text }]}>☁️ Backend APIs & Cloud</Text>
+            </View>
+
+            {/* Prominent Python Logo in the center */}
+            <PythonHeroLogo size={isSmallScreen ? 100 : 124} />
+
+            {/* Language Identity Meta Card */}
+            <View style={styles.infoGlassCard}>
+              <View style={styles.infoLeft}>
+                <PythonLogo size={42} />
+                <View style={styles.infoMeta}>
+                  <View style={styles.langTitleRow}>
+                    <Text style={styles.cardLangName}>Python</Text>
+                    {isPyActive ? (
+                      <View style={styles.activePillBadge}>
+                        <Text style={styles.activePillText}>CURRENT PATH</Text>
+                      </View>
+                    ) : (
+                      <View style={[styles.activePillBadge, { backgroundColor: '#8B5CF6' }]}>
+                        <Text style={styles.activePillText}>AI READY</Text>
+                      </View>
+                    )}
+                  </View>
+                  <Text style={styles.cardLangSubtitle}>Data Science · AI & Automation</Text>
                 </View>
               </View>
             </View>
 
-            {/* Secondary Action Button */}
+            {/* Real-World Outcomes Pills with Actual Vector Icons */}
+            <View style={styles.tagChipsWrap}>
+              <View style={styles.tagChip}>
+                <Bot color="#18181B" size={13} strokeWidth={2.5} />
+                <Text style={styles.tagChipText}>AI & Machine Learning</Text>
+              </View>
+              <View style={styles.tagChip}>
+                <ChartBar color="#18181B" size={13} strokeWidth={2.5} />
+                <Text style={styles.tagChipText}>Data Science & Math</Text>
+              </View>
+              <View style={styles.tagChip}>
+                <Terminal color="#18181B" size={13} strokeWidth={2.5} />
+                <Text style={styles.tagChipText}>Scripting & DevOps</Text>
+              </View>
+              <View style={styles.tagChip}>
+                <Cloud color="#18181B" size={13} strokeWidth={2.5} />
+                <Text style={styles.tagChipText}>Backend APIs</Text>
+              </View>
+            </View>
+
+            {/* Pagination Dots (• • from screenshot) */}
+            <View style={styles.paginationDotsContainer}>
+              <View style={styles.dotCircle} />
+              <View style={[styles.dotPill, styles.dotPillActive]} />
+            </View>
+
+            {/* Bottom Rounded Black Button */}
             <TouchableOpacity
-              style={[
-                styles.previewBtn,
-                {
-                  backgroundColor: colors.surface,
-                  borderColor: colors.surface2,
-                  borderBottomColor: colors.surface2,
-                },
-              ]}
-              onPress={handleSelectPython}
-              activeOpacity={0.8}
+              style={styles.primaryPillButton}
+              onPress={handleChoosePython}
+              activeOpacity={0.88}
             >
-              <Text style={[styles.previewBtnText, { color: colors.textMuted }]}>
-                PREVIEW / NOTIFY ME
+              <Text style={styles.primaryButtonText}>
+                {isPyActive ? 'Continue Python' : 'Choose Python Path'}
               </Text>
+              <View style={styles.buttonArrowPill}>
+                <ArrowRight color="#FFFFFF" size={18} strokeWidth={3} />
+              </View>
             </TouchableOpacity>
-          </TouchableOpacity>
+          </ScrollView>
         </View>
       </ScrollView>
     </View>
@@ -263,176 +441,283 @@ export function PathSelectionScreen({ navigation }: PathSelectionScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FEE75C',
   },
-  header: {
+  carousel: {
+    flex: 1,
+  },
+  page: {
+    flex: 1,
+  },
+  pageScrollContent: {
+    paddingHorizontal: 22,
+    alignItems: 'stretch',
+  },
+  topRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingBottom: 14,
-    borderBottomWidth: 1,
+    marginBottom: 12,
   },
-  headerLeft: {
+  brandBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 7,
   },
   brandText: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '900',
     letterSpacing: -0.5,
+    color: '#18181B',
   },
-  offlinePill: {
-    backgroundColor: 'rgba(45, 184, 76, 0.15)',
-    paddingHorizontal: 8,
+  badgePill: {
+    backgroundColor: 'rgba(24, 24, 27, 0.08)',
+    paddingHorizontal: 7,
     paddingVertical: 3,
     borderRadius: 6,
   },
-  offlinePillText: {
-    color: '#2DB84C',
+  badgePillText: {
     fontSize: 10,
     fontWeight: '800',
-    letterSpacing: 0.5,
+    letterSpacing: 0.8,
+    color: '#18181B',
   },
   closeBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 1.5,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: 'rgba(24, 24, 27, 0.09)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  closeBtnText: {
-    fontSize: 15,
-    fontWeight: '800',
-  },
-  scroll: {
-    padding: 20,
-    paddingBottom: 48,
-    gap: 22,
-  },
-  titleSection: {
-    gap: 6,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '900',
-    letterSpacing: -0.5,
-  },
-  subtitle: {
-    fontSize: 15,
-    lineHeight: 22,
-    fontWeight: '500',
-  },
-  cardsContainer: {
-    gap: 20,
-  },
-  card: {
-    padding: 20,
+  segmentedTabsContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(24, 24, 27, 0.07)',
     borderRadius: 24,
-    borderWidth: 2,
-    borderBottomWidth: 6,
-    gap: 14,
+    padding: 4,
+    gap: 4,
+    marginBottom: 14,
   },
-  cardActive: {
-    borderWidth: 2.5,
-  },
-  cardHeaderRow: {
+  tabPill: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: 20,
+    gap: 6,
   },
-  langIdentity: {
+  tabPillActive: {
+    backgroundColor: '#18181B',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  tabText: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#3F3F46',
+  },
+  tabTextActive: {
+    color: '#FFFFFF',
+  },
+  activeDot: {
+    width: 15,
+    height: 15,
+    borderRadius: 7.5,
+    backgroundColor: '#10B981',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 2,
+  },
+  heroTextSection: {
+    marginBottom: 6,
+  },
+  bigHeroTitle: {
+    fontSize: 38,
+    lineHeight: 44,
+    fontWeight: '900',
+    letterSpacing: -1,
+    color: '#18181B',
+  },
+  titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
   },
-  iconBox: {
-    width: 46,
-    height: 46,
-    borderRadius: 14,
+  waveformPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#18181B',
+    borderRadius: 22,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    gap: 3.5,
+  },
+  waveBar: {
+    width: 3.5,
+    height: 16,
+    borderRadius: 2,
+    backgroundColor: '#71717A',
+  },
+  micCircle: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#FF5733',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 3,
+  },
+  langPillBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#18181B',
+    borderRadius: 20,
+    paddingLeft: 12,
+    paddingRight: 6,
+    paddingVertical: 5,
+    gap: 6,
+  },
+  langPillBadgeText: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+    fontSize: 13,
+  },
+  langPillArrowCircle: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: '#FF5733',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  iconBoxText: {
-    color: '#FFFFFF',
-    fontWeight: '900',
-    fontSize: 18,
-    letterSpacing: -0.5,
-  },
-  langTitle: {
-    fontSize: 20,
-    fontWeight: '900',
-    letterSpacing: -0.3,
-  },
-  langLevel: {
-    fontSize: 12,
+  heroSubtitle: {
+    fontSize: 14.5,
+    lineHeight: 21,
     fontWeight: '600',
+    color: '#27272A',
+    marginTop: 8,
+    opacity: 0.9,
+  },
+  infoGlassCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
+    borderRadius: 20,
+    padding: 14,
+    borderWidth: 1.5,
+    borderColor: 'rgba(24, 24, 27, 0.08)',
+    marginBottom: 12,
+  },
+  infoLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  infoMeta: {
+    flex: 1,
+  },
+  langTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  cardLangName: {
+    fontSize: 19,
+    fontWeight: '900',
+    letterSpacing: -0.4,
+    color: '#18181B',
+  },
+  activePillBadge: {
+    backgroundColor: '#10B981',
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  activePillText: {
+    color: '#FFFFFF',
+    fontSize: 9.5,
+    fontWeight: '900',
+    letterSpacing: 0.6,
+  },
+  cardLangSubtitle: {
+    fontSize: 12.5,
+    fontWeight: '600',
+    color: '#52525B',
     marginTop: 2,
   },
-  statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
-  },
-  statusBadgeText: {
-    fontSize: 11,
-    fontWeight: '900',
-    letterSpacing: 0.5,
-  },
-  cardDesc: {
-    fontSize: 14,
-    lineHeight: 21,
-    fontWeight: '500',
-  },
-  outcomesSection: {
-    gap: 8,
-  },
-  outcomesHeader: {
-    fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 0.8,
-  },
-  tagsWrap: {
+  tagChipsWrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: 7,
+    marginBottom: 14,
   },
-  tagPill: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10,
+  tagChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.65)',
+    paddingHorizontal: 11,
+    paddingVertical: 6,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(24, 24, 27, 0.06)',
+    gap: 6,
   },
-  tagText: {
+  tagChipText: {
     fontSize: 12,
-    fontWeight: '700',
-  },
-  selectBtn: {
-    height: 50,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomWidth: 4,
-    marginTop: 4,
-  },
-  selectBtnText: {
-    color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: '900',
-    letterSpacing: 0.5,
-  },
-  previewBtn: {
-    height: 48,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1.5,
-    borderBottomWidth: 3,
-    marginTop: 4,
-  },
-  previewBtnText: {
-    fontSize: 14,
     fontWeight: '800',
-    letterSpacing: 0.5,
+    color: '#18181B',
+  },
+  paginationDotsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginBottom: 14,
+  },
+  dotCircle: {
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+    backgroundColor: 'rgba(24, 24, 27, 0.25)',
+  },
+  dotPill: {
+    height: 7,
+    borderRadius: 3.5,
+    backgroundColor: 'rgba(24, 24, 27, 0.25)',
+  },
+  dotPillActive: {
+    width: 22,
+    backgroundColor: '#18181B',
+  },
+  primaryPillButton: {
+    backgroundColor: '#18181B',
+    borderRadius: 32,
+    height: 58,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingLeft: 24,
+    paddingRight: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  primaryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '900',
+    letterSpacing: -0.2,
+  },
+  buttonArrowPill: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

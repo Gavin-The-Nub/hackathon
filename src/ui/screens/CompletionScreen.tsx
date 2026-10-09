@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Trophy, Flame, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 import { PROBLEMS } from '../../content/data';
@@ -41,7 +42,9 @@ export function CompletionScreen({ route, navigation }: CompletionScreenProps) {
   return (
     <View style={[styles.container, { backgroundColor: colors.bg }]}>
       <View style={styles.content}>
-        <Text style={styles.trophy}>🎉</Text>
+        <View style={styles.trophyWrapper}>
+          <Trophy color={colors.xp} size={64} strokeWidth={2.4} />
+        </View>
         <Text style={[styles.heading, { color: colors.text }]}>Problem Solved!</Text>
         <Text style={[styles.subheading, { color: colors.textMuted }]}>
           Great work completing {problem.title}.
@@ -50,7 +53,9 @@ export function CompletionScreen({ route, navigation }: CompletionScreenProps) {
         {/* Level Up Banner if applicable */}
         {leveledUp && (
           <View style={[styles.levelUpBanner, { backgroundColor: colors.primary }]}>
-            <Text style={styles.levelUpText}>⭐ LEVEL UP! YOU ARE NOW LEVEL {newLevel} ⭐</Text>
+            <Sparkles color="#FFFFFF" size={16} strokeWidth={2.6} />
+            <Text style={styles.levelUpText}>LEVEL UP! YOU ARE NOW LEVEL {newLevel}</Text>
+            <Sparkles color="#FFFFFF" size={16} strokeWidth={2.6} />
           </View>
         )}
 
@@ -62,7 +67,10 @@ export function CompletionScreen({ route, navigation }: CompletionScreenProps) {
           </View>
 
           <View style={[styles.statBadge, { backgroundColor: colors.surface, borderColor: colors.streak }]}>
-            <Text style={[styles.statVal, { color: colors.streak }]}>🔥 {streak}</Text>
+            <View style={styles.streakRow}>
+              <Flame size={18} color={colors.streak} strokeWidth={2.4} />
+              <Text style={[styles.statVal, { color: colors.streak }]}>{streak}</Text>
+            </View>
             <Text style={[styles.statName, { color: colors.textMuted }]}>Day Streak</Text>
           </View>
 
@@ -91,7 +99,8 @@ export function CompletionScreen({ route, navigation }: CompletionScreenProps) {
             onPress={() => navigation.replace('Problem', { problemId: rec.problem!.id })}
             activeOpacity={0.8}
           >
-            <Text style={styles.primaryBtnText}>Next Problem →</Text>
+            <Text style={styles.primaryBtnText}>Next Problem</Text>
+            <ArrowRight color="#FFFFFF" size={18} strokeWidth={2.6} />
           </TouchableOpacity>
         ) : null}
 
@@ -118,8 +127,10 @@ const styles = StyleSheet.create({
     padding: 24,
     gap: 16,
   },
-  trophy: {
-    fontSize: 56,
+  trophyWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
   },
   heading: {
     fontSize: 26,
@@ -132,6 +143,9 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   levelUpBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 14,
@@ -154,6 +168,11 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 16,
     borderWidth: 1.5,
+    alignItems: 'center',
+    gap: 4,
+  },
+  streakRow: {
+    flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
   },
@@ -191,8 +210,10 @@ const styles = StyleSheet.create({
   primaryBtn: {
     height: 52,
     borderRadius: 16,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 8,
   },
   primaryBtnText: {
     color: '#FFFFFF',

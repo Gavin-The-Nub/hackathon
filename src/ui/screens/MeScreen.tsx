@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Platform, StatusBar as RNStatusBar } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Trophy, Flame, Shield, Sparkles, Award } from 'lucide-react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 import { MODEL_CONFIG } from '../../config/model';
@@ -21,7 +22,7 @@ export function MeScreen() {
     <ScrollView style={[styles.container, { backgroundColor: colors.bg }]} contentContainerStyle={styles.content}>
       <View style={[styles.header, { paddingTop: topPadding }]}>
         <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
-          <Text style={styles.avatarText}>🏆</Text>
+          <Trophy color="#FFFFFF" size={32} strokeWidth={2.4} />
         </View>
         <Text style={[styles.name, { color: colors.text }]}>CodeChamp</Text>
         <Text style={[styles.subtitle, { color: colors.textMuted }]}>Offline Coding Gym</Text>
@@ -30,25 +31,25 @@ export function MeScreen() {
       {/* Stats Grid */}
       <View style={styles.statsGrid}>
         <View style={[styles.statBox, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}>
-          <Text style={styles.statIcon}>🔥</Text>
+          <Flame color={colors.streak} size={22} strokeWidth={2.4} />
           <Text style={[styles.statVal, { color: colors.streak }]}>{streak.currentStreak}</Text>
           <Text style={[styles.statLabel, { color: colors.textMuted }]}>Day Streak</Text>
         </View>
 
         <View style={[styles.statBox, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}>
-          <Text style={styles.statIcon}>🛡️</Text>
+          <Shield color={colors.primary} size={22} strokeWidth={2.4} />
           <Text style={[styles.statVal, { color: colors.primary }]}>{streak.freezesAvailable}</Text>
           <Text style={[styles.statLabel, { color: colors.textMuted }]}>Freezes</Text>
         </View>
 
         <View style={[styles.statBox, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}>
-          <Text style={styles.statIcon}>⭐</Text>
+          <Sparkles color={colors.xp} size={22} strokeWidth={2.4} />
           <Text style={[styles.statVal, { color: colors.xp }]}>{totalXp}</Text>
           <Text style={[styles.statLabel, { color: colors.textMuted }]}>Total XP</Text>
         </View>
 
         <View style={[styles.statBox, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}>
-          <Text style={styles.statIcon}>🎖️</Text>
+          <Award color={colors.primary} size={22} strokeWidth={2.4} />
           <Text style={[styles.statVal, { color: colors.primary }]}>{level}</Text>
           <Text style={[styles.statLabel, { color: colors.textMuted }]}>Level</Text>
         </View>
@@ -58,50 +59,59 @@ export function MeScreen() {
       <View style={[styles.sectionCard, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}>
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>On-Device AI Tutor</Text>
-          <Text style={[styles.onlinePill, { color: colors.success, backgroundColor: colors.surface2 }]}>
-            OFFLINE READY
+          <View style={[styles.badge, { backgroundColor: 'rgba(45, 184, 76, 0.15)' }]}>
+            <Text style={[styles.badgeText, { color: colors.success }]}>ACTIVE</Text>
+          </View>
+        </View>
+
+        <Text style={[styles.sectionDesc, { color: colors.textMuted }]}>
+          Running locally via llama.rn. 100% offline, zero data leaves this device.
+        </Text>
+
+        <View style={[styles.metaRow, { backgroundColor: colors.surface2 }]}>
+          <Text style={[styles.metaLabel, { color: colors.textMuted }]}>Model</Text>
+          <Text style={[styles.metaVal, { color: colors.text }]}>{MODEL_CONFIG.name}</Text>
+        </View>
+        <View style={[styles.metaRow, { backgroundColor: colors.surface2 }]}>
+          <Text style={[styles.metaLabel, { color: colors.textMuted }]}>Quantization</Text>
+          <Text style={[styles.metaVal, { color: colors.text }]}>{MODEL_CONFIG.quant}</Text>
+        </View>
+        <View style={[styles.metaRow, { backgroundColor: colors.surface2 }]}>
+          <Text style={[styles.metaLabel, { color: colors.textMuted }]}>Size</Text>
+          <Text style={[styles.metaVal, { color: colors.text }]}>
+            {(MODEL_CONFIG.sizeBytes / 1000000).toFixed(0)} MB
           </Text>
         </View>
-        <Text style={[styles.modelInfo, { color: colors.textMuted }]}>
-          Model: {MODEL_CONFIG.name} ({MODEL_CONFIG.quant})
-        </Text>
-        <Text style={[styles.modelDesc, { color: colors.text }]}>
-          Zero internet calls after install. Hints are generated locally on your phone CPU with llama.cpp.
-        </Text>
       </View>
 
-      {/* Theme Setting */}
+      {/* Theme Picker */}
       <View style={[styles.sectionCard, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>App Theme</Text>
-        <View style={styles.themeSelector}>
-          {(['light', 'dark', 'system'] as const).map((t) => {
-            const isSelected = themeMode === t;
-            return (
-              <TouchableOpacity
-                key={t}
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Appearance</Text>
+
+        <View style={styles.themeRow}>
+          {(['system', 'light', 'dark'] as const).map((t) => (
+            <TouchableOpacity
+              key={t}
+              style={[
+                styles.themeBtn,
+                {
+                  backgroundColor: themeMode === t ? colors.primary : colors.surface2,
+                  borderColor: themeMode === t ? colors.primaryLip : 'transparent',
+                },
+              ]}
+              onPress={() => setTheme(t)}
+              activeOpacity={0.8}
+            >
+              <Text
                 style={[
-                  styles.themeBtn,
-                  {
-                    backgroundColor: isSelected ? colors.primary : colors.surface2,
-                  },
+                  styles.themeBtnText,
+                  { color: themeMode === t ? '#FFFFFF' : colors.text },
                 ]}
-                onPress={() => setTheme(t)}
-                activeOpacity={0.7}
               >
-                <Text
-                  style={[
-                    styles.themeBtnText,
-                    {
-                      color: isSelected ? '#FFFFFF' : colors.text,
-                      fontWeight: isSelected ? '800' : '600',
-                    },
-                  ]}
-                >
-                  {t.toUpperCase()}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
+                {t.charAt(0).toUpperCase() + t.slice(1)}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
     </ScrollView>
@@ -113,52 +123,47 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: 16,
+    padding: 20,
     paddingBottom: 40,
     gap: 16,
   },
   header: {
     alignItems: 'center',
-    gap: 8,
-    marginVertical: 12,
+    gap: 6,
+    paddingBottom: 8,
   },
   avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 68,
+    height: 68,
+    borderRadius: 34,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  avatarText: {
-    fontSize: 32,
+    marginBottom: 4,
   },
   name: {
     fontSize: 22,
-    fontWeight: '800',
+    fontWeight: '900',
   },
   subtitle: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: 12,
   },
   statBox: {
     flex: 1,
     minWidth: '45%',
-    padding: 14,
+    padding: 16,
     borderRadius: 16,
     borderWidth: 1.5,
     alignItems: 'center',
     gap: 4,
   },
-  statIcon: {
-    fontSize: 22,
-  },
   statVal: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '900',
   },
   statLabel: {
@@ -167,49 +172,64 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   sectionCard: {
-    padding: 16,
-    borderRadius: 18,
+    padding: 18,
+    borderRadius: 20,
     borderWidth: 1.5,
-    gap: 10,
+    gap: 12,
   },
   sectionHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '800',
   },
-  onlinePill: {
-    fontSize: 11,
-    fontWeight: '800',
+  sectionDesc: {
+    fontSize: 13,
+    lineHeight: 19,
+    fontWeight: '500',
+  },
+  badge: {
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 6,
+    borderRadius: 8,
   },
-  modelInfo: {
+  badgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  metaLabel: {
     fontSize: 13,
     fontWeight: '600',
   },
-  modelDesc: {
+  metaVal: {
     fontSize: 13,
-    lineHeight: 18,
+    fontWeight: '700',
   },
-  themeSelector: {
+  themeRow: {
     flexDirection: 'row',
     gap: 8,
-    marginTop: 4,
   },
   themeBtn: {
     flex: 1,
-    height: 40,
-    borderRadius: 10,
+    height: 44,
+    borderRadius: 12,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   themeBtnText: {
-    fontSize: 13,
-    letterSpacing: 0.5,
+    fontSize: 14,
+    fontWeight: '700',
   },
 });

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
-import { AlertTriangle, CheckCircle2, HelpCircle, Sparkles } from 'lucide-react-native';
+import { AlertTriangle, CheckCircle2, HelpCircle, Sparkles, Lightbulb } from 'lucide-react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 import { GenuineResult, Problem, RunResult } from '../../core/types';
@@ -139,9 +139,12 @@ export function ResultsSheet({
               {rawErrorMessage}
             </Text>
             {errorExplanation ? (
-              <Text style={[styles.errorExplText, { color: colors.text }]}>
-                💡 {errorExplanation}
-              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginTop: 4 }}>
+                <Lightbulb size={15} color={colors.warn} style={{ marginTop: 2 }} />
+                <Text style={[styles.errorExplText, { color: colors.text, flex: 1 }]}>
+                  {errorExplanation}
+                </Text>
+              </View>
             ) : null}
           </View>
         )}
