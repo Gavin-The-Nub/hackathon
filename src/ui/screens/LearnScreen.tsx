@@ -184,6 +184,27 @@ export function LearnScreen({ navigation }: LearnScreenProps) {
                       ]}
                     />
                   </View>
+
+                  {/* Interactive Lesson Button on Banner */}
+                  <TouchableOpacity
+                    style={[
+                      styles.unitLessonBtn,
+                      {
+                        backgroundColor: isUnitUnlocked ? 'rgba(255, 255, 255, 0.2)' : colors.surface,
+                        borderColor: isUnitUnlocked ? 'rgba(255, 255, 255, 0.4)' : colors.surface2,
+                      },
+                    ]}
+                    onPress={() => navigation.navigate('Lesson', { conceptId: unit.concept })}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.unitLessonBtnIcon}>📖</Text>
+                    <Text style={[styles.unitLessonBtnText, { color: isUnitUnlocked ? '#FFFFFF' : colors.text }]}>
+                      Read Lesson & Ask AI
+                    </Text>
+                    <Text style={[styles.unitLessonBtnArrow, { color: isUnitUnlocked ? '#FFFFFF' : colors.textMuted }]}>
+                      →
+                    </Text>
+                  </TouchableOpacity>
                 </View>
 
                 {/* Stepping Stones Serpentine Path */}
@@ -488,6 +509,29 @@ const styles = StyleSheet.create({
   masteryBarFill: {
     height: '100%',
     borderRadius: 4,
+  },
+  unitLessonBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    marginTop: 8,
+    gap: 8,
+  },
+  unitLessonBtnIcon: {
+    fontSize: 16,
+  },
+  unitLessonBtnText: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: '800',
+    letterSpacing: 0.2,
+  },
+  unitLessonBtnArrow: {
+    fontSize: 16,
+    fontWeight: '800',
   },
 
   /* Stepping Stones Serpentine Path */

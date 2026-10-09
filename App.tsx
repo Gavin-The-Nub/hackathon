@@ -17,6 +17,7 @@ import { MeScreen } from './src/ui/screens/MeScreen';
 import { ProblemScreen } from './src/ui/screens/ProblemScreen';
 import { CompletionScreen } from './src/ui/screens/CompletionScreen';
 import { PathSelectionScreen } from './src/ui/screens/PathSelectionScreen';
+import { LessonScreen } from './src/ui/screens/LessonScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -120,6 +121,7 @@ export default function App() {
         >
           <Stack.Screen name="PathSelection" component={PathSelectionScreen} />
           <Stack.Screen name="MainTabs" component={MainTabs} />
+          <Stack.Screen name="Lesson" component={LessonScreen} />
           <Stack.Screen name="Problem" component={ProblemScreen} />
           <Stack.Screen name="Completion" component={CompletionScreen} />
         </Stack.Navigator>

@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ArrowLeft, Lightbulb, ChevronDown, ChevronUp, Play } from 'lucide-react-native';
+import { ArrowLeft, Lightbulb, ChevronDown, ChevronUp, Play, BookOpen } from 'lucide-react-native';
 import { WebView } from 'react-native-webview';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
@@ -315,29 +315,54 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
             </View>
           </View>
 
-          {/* Quick Hint Button in Header */}
-          <TouchableOpacity
-            style={[
-              styles.hintBtn,
-              {
-                backgroundColor: colors.surface2,
-                borderColor: colors.primary,
-              },
-            ]}
-            onPress={() => handleRequestHint(currentHintLevel)}
-            disabled={isHintLoading}
-            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-            activeOpacity={0.7}
-          >
-            {isHintLoading ? (
-              <ActivityIndicator size="small" color={colors.primary} />
-            ) : (
-              <Lightbulb size={18} color={colors.primary} />
-            )}
-            <Text style={[styles.hintBtnText, { color: colors.primary }]}>
-              {isHintLoading ? '...' : 'Hint'}
-            </Text>
-          </TouchableOpacity>
+          {/* Header Right Action Group */}
+          <View style={styles.headerRightGroup}>
+            {/* Lesson Button */}
+            <TouchableOpacity
+              style={[
+                styles.lessonHeaderBtn,
+                {
+                  backgroundColor: colors.surface2,
+                  borderColor: colors.surface2,
+                },
+              ]}
+              onPress={() =>
+                navigation.navigate('Lesson', {
+                  conceptId: problem.primaryConcept,
+                  problemId: problem.id,
+                })
+              }
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+              activeOpacity={0.7}
+            >
+              <BookOpen size={16} color={colors.primary} />
+              <Text style={[styles.lessonHeaderBtnText, { color: colors.primary }]}>Lesson</Text>
+            </TouchableOpacity>
+
+            {/* Quick Hint Button in Header */}
+            <TouchableOpacity
+              style={[
+                styles.hintBtn,
+                {
+                  backgroundColor: colors.surface2,
+                  borderColor: colors.primary,
+                },
+              ]}
+              onPress={() => handleRequestHint(currentHintLevel)}
+              disabled={isHintLoading}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+              activeOpacity={0.7}
+            >
+              {isHintLoading ? (
+                <ActivityIndicator size="small" color={colors.primary} />
+              ) : (
+                <Lightbulb size={16} color={colors.primary} />
+              )}
+              <Text style={[styles.hintBtnText, { color: colors.primary }]}>
+                {isHintLoading ? '...' : 'Hint'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Collapsible Statement Card (DESIGN.md §5.3) */}
@@ -398,6 +423,21 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
                   </Text>
                 </View>
               )}
+
+              <TouchableOpacity
+                style={[styles.openLessonLink, { backgroundColor: colors.surface2 }]}
+                onPress={() =>
+                  navigation.navigate('Lesson', {
+                    conceptId: problem.primaryConcept,
+                    problemId: problem.id,
+                  })
+                }
+                activeOpacity={0.8}
+              >
+                <Text style={[styles.openLessonLinkText, { color: colors.primary }]}>
+                  📖 Read Full Lesson & Ask AI Tutor →
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
         </TouchableOpacity>
@@ -568,16 +608,44 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 0.5,
   },
+  headerRightGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  lessonHeaderBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    height: 40,
+    paddingHorizontal: 11,
+    borderRadius: 12,
+    borderWidth: 1.5,
+  },
+  lessonHeaderBtnText: {
+    fontSize: 12,
+    fontWeight: '800',
+  },
   hintBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    height: 42,
-    paddingHorizontal: 14,
-    borderRadius: 14,
+    gap: 5,
+    height: 40,
+    paddingHorizontal: 11,
+    borderRadius: 12,
     borderWidth: 1.5,
   },
   hintBtnText: {
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  openLessonLink: {
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  openLessonLinkText: {
     fontSize: 13,
     fontWeight: '800',
   },
