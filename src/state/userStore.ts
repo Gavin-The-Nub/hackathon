@@ -15,6 +15,10 @@ interface UserState {
   mastery: Record<ConceptId, ConceptMasteryRecord>;
   completedProblems: Set<string>;
   drafts: Record<string, string>;
+  selectedLanguage: 'javascript' | 'python';
+  hasSelectedLanguage: boolean;
+  isLoaded: boolean;
+  setSelectedLanguage: (lang: 'javascript' | 'python') => void;
   loadFromDb: () => void;
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
   saveDraft: (problemId: string, code: string) => void;
@@ -51,6 +55,16 @@ export const useUserStore = create<UserState>((set, get) => ({
   }, {} as Record<ConceptId, ConceptMasteryRecord>),
   completedProblems: new Set<string>(),
   drafts: {},
+  selectedLanguage: 'javascript',
+  hasSelectedLanguage: false,
+  isLoaded: false,
+
+  setSelectedLanguage: (lang) => {
+    set({ selectedLanguage: lang, hasSelectedLanguage: true });
+    try {
+      getDb().runSync('UPDATE profile SET roadmap = ?, has_selected_language = 1 WHERE id = 1', [lang]);
+    } catch (e) {}
+  },
 
   loadFromDb: () => {
     try {
@@ -88,10 +102,13 @@ export const useUserStore = create<UserState>((set, get) => ({
 
       const xp = profile?.xp_total ?? 0;
       set({
+        isLoaded: true,
         theme: profile?.theme ?? 'system',
         totalXp: xp,
         level: levelFromXp(xp).level,
         consecutiveStruggles: profile?.consecutive_struggles ?? 0,
+        selectedLanguage: profile?.roadmap === 'python' ? 'python' : 'javascript',
+        hasSelectedLanguage: Boolean(profile?.has_selected_language),
         streak: {
           currentStreak: streakRow?.current ?? 0,
           longestStreak: streakRow?.best ?? 0,
@@ -104,6 +121,7 @@ export const useUserStore = create<UserState>((set, get) => ({
       });
     } catch (err) {
       console.warn('Failed to load DB state, using defaults', err);
+      set({ isLoaded: true });
     }
   },
 

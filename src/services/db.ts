@@ -26,8 +26,16 @@ export function initSchema(db: SQLite.SQLiteDatabase) {
       wifi_only INTEGER NOT NULL DEFAULT 1,
       xp_total INTEGER NOT NULL DEFAULT 0,
       consecutive_struggles INTEGER NOT NULL DEFAULT 0,
+      has_selected_language INTEGER NOT NULL DEFAULT 0,
       created_at INTEGER NOT NULL
     );
+  `);
+
+  try {
+    db.execSync('ALTER TABLE profile ADD COLUMN has_selected_language INTEGER NOT NULL DEFAULT 0');
+  } catch (_) {}
+
+  db.execSync(`
 
     CREATE TABLE IF NOT EXISTS concept_mastery (
       concept_id TEXT PRIMARY KEY,
