@@ -1,0 +1,104 @@
+{
+  "id": "js-vars-02",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "variables_types",
+  "secondaryConcepts": [],
+  "title": "Discounted Price",
+  "statement": "Write a function `discountedPrice(originalPrice, discount)` that returns the price after subtracting the discount.",
+  "example": "discountedPrice(100, 20) returns 80.",
+  "starterCode": "function discountedPrice(originalPrice, discount) {\n  // your code here\n}\n",
+  "functionName": "discountedPrice",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        100,
+        20
+      ],
+      "expected": 80
+    },
+    {
+      "id": "t2",
+      "args": [
+        50,
+        50
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t3",
+      "args": [
+        45,
+        10
+      ],
+      "expected": 35
+    },
+    {
+      "id": "t4",
+      "args": [
+        80,
+        0
+      ],
+      "expected": 80
+    },
+    {
+      "id": "t5",
+      "args": [
+        200,
+        75
+      ],
+      "expected": 125
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 50,
+        "max": 200
+      },
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 50
+      }
+    ],
+    "edgeCases": [
+      [
+        100,
+        0
+      ],
+      [
+        50,
+        50
+      ],
+      [
+        0,
+        0
+      ]
+    ]
+  },
+  "referenceSolution": "function discountedPrice(originalPrice, discount) {\n  return originalPrice - discount;\n}\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "A discount reduces the price. Which operator takes away one number from another?",
+    "Take the discount away from the first price parameter.",
+    "Return the starting price minus the discount amount."
+  ],
+  "conceptNote": "Subtractive operations use the minus operator. Be sure the first value is the starting price.",
+  "commonMistakes": [
+    {
+      "tag": "wrong_operator",
+      "variantCode": "function discountedPrice(originalPrice, discount) {\n  return originalPrice + discount;\n}\n"
+    },
+    {
+      "tag": "missing_return",
+      "variantCode": "function discountedPrice(originalPrice, discount) {\n  const res = originalPrice - discount;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 2,
+  "variantOf": "js-vars-01"
+}

@@ -1,0 +1,100 @@
+{
+  "id": "js-func-04",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "functions",
+  "secondaryConcepts": [],
+  "title": "Absolute Difference",
+  "statement": "Write a function `absDiff(a, b)` that returns the positive difference between two numbers (distance between them).",
+  "example": "absDiff(10, 4) returns 6; absDiff(3, 9) returns 6.",
+  "starterCode": "function absDiff(a, b) {\n  // your code here\n}\n",
+  "functionName": "absDiff",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        10,
+        4
+      ],
+      "expected": 6
+    },
+    {
+      "id": "t2",
+      "args": [
+        3,
+        9
+      ],
+      "expected": 6
+    },
+    {
+      "id": "t3",
+      "args": [
+        5,
+        5
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t4",
+      "args": [
+        -2,
+        5
+      ],
+      "expected": 7
+    },
+    {
+      "id": "t5",
+      "args": [
+        0,
+        8
+      ],
+      "expected": 8
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": -50,
+        "max": 50
+      },
+      {
+        "gen": "intInRange",
+        "min": -50,
+        "max": 50
+      }
+    ],
+    "edgeCases": [
+      [
+        0,
+        0
+      ],
+      [
+        10,
+        10
+      ],
+      [
+        -5,
+        5
+      ]
+    ]
+  },
+  "referenceSolution": "function absDiff(a, b) {\n  if (a >= b) return a - b;\n  return b - a;\n}\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Subtract the smaller value from the larger one.",
+    "Take away the lower number from the higher number so the result is positive.",
+    "Ensure the resulting distance is never negative."
+  ],
+  "conceptNote": "Absolute difference represents the non-negative distance between two values.",
+  "commonMistakes": [
+    {
+      "tag": "wrong_operator",
+      "variantCode": "function absDiff(a, b) {\n  return a - b;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 4,
+  "variantOf": "js-func-01"
+}

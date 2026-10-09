@@ -1,0 +1,117 @@
+{
+  "id": "js-func-01",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "functions",
+  "secondaryConcepts": [],
+  "title": "Maximum of Three",
+  "statement": "Write a function `maxOfThree(a, b, c)` that takes three numbers and returns the largest one.",
+  "example": "maxOfThree(5, 12, 9) returns 12.",
+  "starterCode": "function maxOfThree(a, b, c) {\n  // your code here\n}\n",
+  "functionName": "maxOfThree",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        5,
+        12,
+        9
+      ],
+      "expected": 12
+    },
+    {
+      "id": "t2",
+      "args": [
+        20,
+        10,
+        5
+      ],
+      "expected": 20
+    },
+    {
+      "id": "t3",
+      "args": [
+        1,
+        2,
+        8
+      ],
+      "expected": 8
+    },
+    {
+      "id": "t4",
+      "args": [
+        7,
+        7,
+        7
+      ],
+      "expected": 7
+    },
+    {
+      "id": "t5",
+      "args": [
+        -5,
+        -2,
+        -10
+      ],
+      "expected": -2
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": -50,
+        "max": 50
+      },
+      {
+        "gen": "intInRange",
+        "min": -50,
+        "max": 50
+      },
+      {
+        "gen": "intInRange",
+        "min": -50,
+        "max": 50
+      }
+    ],
+    "edgeCases": [
+      [
+        1,
+        2,
+        3
+      ],
+      [
+        3,
+        2,
+        1
+      ],
+      [
+        2,
+        3,
+        1
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "referenceSolution": "function maxOfThree(a, b, c) {\n  let m = a;\n  if (b > m) m = b;\n  if (c > m) m = c;\n  return m;\n}\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Keep track of the highest value seen so far.",
+    "Compare the other arguments against your current highest.",
+    "Yield the overall highest number."
+  ],
+  "conceptNote": "Functions receive arguments in parameters. You can inspect all arguments and return one result.",
+  "commonMistakes": [
+    {
+      "tag": "compares_only_two",
+      "variantCode": "function maxOfThree(a, b, c) {\n  return a > b ? a : b;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 1
+}

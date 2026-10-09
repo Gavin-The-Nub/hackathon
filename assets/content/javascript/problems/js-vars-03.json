@@ -1,0 +1,104 @@
+{
+  "id": "js-vars-03",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "variables_types",
+  "secondaryConcepts": [],
+  "title": "Rectangle Area",
+  "statement": "Write a function `rectArea(width, height)` that calculates and returns the area of a rectangle.",
+  "example": "rectArea(5, 4) returns 20.",
+  "starterCode": "function rectArea(width, height) {\n  // your code here\n}\n",
+  "functionName": "rectArea",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        5,
+        4
+      ],
+      "expected": 20
+    },
+    {
+      "id": "t2",
+      "args": [
+        10,
+        10
+      ],
+      "expected": 100
+    },
+    {
+      "id": "t3",
+      "args": [
+        3,
+        7
+      ],
+      "expected": 21
+    },
+    {
+      "id": "t4",
+      "args": [
+        0,
+        8
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t5",
+      "args": [
+        12,
+        5
+      ],
+      "expected": 60
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 100
+      },
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 100
+      }
+    ],
+    "edgeCases": [
+      [
+        0,
+        10
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        50,
+        50
+      ]
+    ]
+  },
+  "referenceSolution": "function rectArea(width, height) {\n  return width * height;\n}\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "The area of a rectangle is found by multiplying its two dimensions.",
+    "Multiply the width by the height.",
+    "Return the calculated product from your function."
+  ],
+  "conceptNote": "Multiplication uses the asterisk (*) operator.",
+  "commonMistakes": [
+    {
+      "tag": "wrong_operator",
+      "variantCode": "function rectArea(width, height) {\n  return (width + height) * 2;\n}\n"
+    },
+    {
+      "tag": "missing_return",
+      "variantCode": "function rectArea(width, height) {\n  const area = width * height;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 3,
+  "variantOf": "js-vars-01"
+}

@@ -1,0 +1,100 @@
+{
+  "id": "js-vars-04",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "variables_types",
+  "secondaryConcepts": [],
+  "title": "Change Due",
+  "statement": "Write a function `changeDue(bill, paid)` that returns the amount of change to return to a customer after paying.",
+  "example": "changeDue(35, 50) returns 15.",
+  "starterCode": "function changeDue(bill, paid) {\n  // your code here\n}\n",
+  "functionName": "changeDue",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        35,
+        50
+      ],
+      "expected": 15
+    },
+    {
+      "id": "t2",
+      "args": [
+        20,
+        20
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t3",
+      "args": [
+        15,
+        100
+      ],
+      "expected": 85
+    },
+    {
+      "id": "t4",
+      "args": [
+        8,
+        10
+      ],
+      "expected": 2
+    },
+    {
+      "id": "t5",
+      "args": [
+        64,
+        100
+      ],
+      "expected": 36
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 1,
+        "max": 50
+      },
+      {
+        "gen": "intInRange",
+        "min": 50,
+        "max": 200
+      }
+    ],
+    "edgeCases": [
+      [
+        50,
+        50
+      ],
+      [
+        1,
+        100
+      ]
+    ]
+  },
+  "referenceSolution": "function changeDue(bill, paid) {\n  return paid - bill;\n}\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Change is what remains when you subtract the bill from the money provided.",
+    "Take away the bill amount from the paid amount.",
+    "Return the difference after subtracting."
+  ],
+  "conceptNote": "Order matters in subtraction: paid minus bill.",
+  "commonMistakes": [
+    {
+      "tag": "wrong_operator",
+      "variantCode": "function changeDue(bill, paid) {\n  return bill - paid;\n}\n"
+    },
+    {
+      "tag": "missing_return",
+      "variantCode": "function changeDue(bill, paid) {\n  const diff = paid - bill;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 4,
+  "variantOf": "js-vars-01"
+}

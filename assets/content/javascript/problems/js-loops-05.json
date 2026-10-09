@@ -1,0 +1,92 @@
+{
+  "id": "js-loops-05",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "loops",
+  "secondaryConcepts": [],
+  "title": "Sum of Squares",
+  "statement": "Write a function `sumSquares(n)` that returns the sum of the squares of whole numbers from 1 to n (1*1 + 2*2 + ... + n*n). Use a `for` loop.",
+  "example": "sumSquares(3) returns 14 (1 + 4 + 9).",
+  "starterCode": "function sumSquares(n) {\n  // your code here\n}\n",
+  "functionName": "sumSquares",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        3
+      ],
+      "expected": 14
+    },
+    {
+      "id": "t2",
+      "args": [
+        1
+      ],
+      "expected": 1
+    },
+    {
+      "id": "t3",
+      "args": [
+        4
+      ],
+      "expected": 30
+    },
+    {
+      "id": "t4",
+      "args": [
+        0
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t5",
+      "args": [
+        5
+      ],
+      "expected": 55
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 30
+      }
+    ],
+    "edgeCases": [
+      [
+        0
+      ],
+      [
+        1
+      ],
+      [
+        2
+      ],
+      [
+        10
+      ]
+    ]
+  },
+  "referenceSolution": "function sumSquares(n) {\n  let total = 0;\n  for (let i = 1; i <= n; i++) {\n    total += i * i;\n  }\n  return total;\n}\n",
+  "requiredConstructs": [
+    "for_loop"
+  ],
+  "prewrittenHints": [
+    "The square of a number is found by multiplying it by itself.",
+    "Add the squared value of the current number to your running total.",
+    "Count through each number and yield the accumulated sum."
+  ],
+  "conceptNote": "You can perform calculations on the counter variable before adding it.",
+  "commonMistakes": [
+    {
+      "tag": "loop_stops_early",
+      "variantCode": "function sumSquares(n) {\n  let total = 0;\n  for (let i = 1; i < n; i++) {\n    total += i * i;\n  }\n  return total;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 5,
+  "variantOf": "js-loops-01"
+}

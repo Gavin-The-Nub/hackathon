@@ -1,0 +1,93 @@
+{
+  "id": "js-cond-03",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "conditionals",
+  "secondaryConcepts": [],
+  "title": "Pass or Fail",
+  "statement": "Write a function `passOrFail(score)` that returns \"pass\" if score is 75 or above, and \"fail\" otherwise.",
+  "example": "passOrFail(80) returns \"pass\"; passOrFail(70) returns \"fail\".",
+  "starterCode": "function passOrFail(score) {\n  // your code here\n}\n",
+  "functionName": "passOrFail",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        75
+      ],
+      "expected": "pass"
+    },
+    {
+      "id": "t2",
+      "args": [
+        80
+      ],
+      "expected": "pass"
+    },
+    {
+      "id": "t3",
+      "args": [
+        74
+      ],
+      "expected": "fail"
+    },
+    {
+      "id": "t4",
+      "args": [
+        100
+      ],
+      "expected": "pass"
+    },
+    {
+      "id": "t5",
+      "args": [
+        50
+      ],
+      "expected": "fail"
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 100
+      }
+    ],
+    "edgeCases": [
+      [
+        0
+      ],
+      [
+        74
+      ],
+      [
+        75
+      ],
+      [
+        76
+      ],
+      [
+        100
+      ]
+    ]
+  },
+  "referenceSolution": "function passOrFail(score) {\n  if (score >= 75) return \"pass\";\n  return \"fail\";\n}\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Compare the numerical grade with seventy-five.",
+    "Use a conditional check to see if passing threshold is met.",
+    "Output the passing or failing string accordingly."
+  ],
+  "conceptNote": "Strings must be enclosed in quotes.",
+  "commonMistakes": [
+    {
+      "tag": "boundary_off_by_one",
+      "variantCode": "function passOrFail(score) {\n  if (score > 75) return \"pass\";\n  return \"fail\";\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 3,
+  "variantOf": "js-cond-01"
+}

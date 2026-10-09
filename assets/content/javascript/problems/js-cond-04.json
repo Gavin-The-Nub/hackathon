@@ -1,0 +1,90 @@
+{
+  "id": "js-cond-04",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "conditionals",
+  "secondaryConcepts": [],
+  "title": "Speed Warning",
+  "statement": "Write a function `speedWarning(speed)` that returns \"slow down\" if speed is greater than 60, and \"ok\" otherwise.",
+  "example": "speedWarning(70) returns \"slow down\"; speedWarning(55) returns \"ok\".",
+  "starterCode": "function speedWarning(speed) {\n  // your code here\n}\n",
+  "functionName": "speedWarning",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        70
+      ],
+      "expected": "slow down"
+    },
+    {
+      "id": "t2",
+      "args": [
+        60
+      ],
+      "expected": "ok"
+    },
+    {
+      "id": "t3",
+      "args": [
+        50
+      ],
+      "expected": "ok"
+    },
+    {
+      "id": "t4",
+      "args": [
+        61
+      ],
+      "expected": "slow down"
+    },
+    {
+      "id": "t5",
+      "args": [
+        90
+      ],
+      "expected": "slow down"
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 20,
+        "max": 120
+      }
+    ],
+    "edgeCases": [
+      [
+        59
+      ],
+      [
+        60
+      ],
+      [
+        61
+      ],
+      [
+        100
+      ]
+    ]
+  },
+  "referenceSolution": "function speedWarning(speed) {\n  if (speed > 60) return \"slow down\";\n  return \"ok\";\n}\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Test if the vehicle velocity exceeds sixty.",
+    "Use a comparison check against sixty.",
+    "Output the warning text when going too fast, otherwise okay."
+  ],
+  "conceptNote": "Notice strictly greater than (>) vs greater than or equal (>=).",
+  "commonMistakes": [
+    {
+      "tag": "boundary_off_by_one",
+      "variantCode": "function speedWarning(speed) {\n  if (speed >= 60) return \"slow down\";\n  return \"ok\";\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 4,
+  "variantOf": "js-cond-01"
+}

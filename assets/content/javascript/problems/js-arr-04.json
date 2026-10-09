@@ -1,0 +1,112 @@
+{
+  "id": "js-arr-04",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "arrays_lists",
+  "secondaryConcepts": [],
+  "title": "Sum All Array Elements",
+  "statement": "Write a function `sumArray(numbers)` that returns the sum of all numbers in the array. Return 0 if the array is empty. Use a loop.",
+  "example": "sumArray([2, 4, 6]) returns 12.",
+  "starterCode": "function sumArray(numbers) {\n  // your code here\n}\n",
+  "functionName": "sumArray",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        [
+          2,
+          4,
+          6
+        ]
+      ],
+      "expected": 12
+    },
+    {
+      "id": "t2",
+      "args": [
+        []
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t3",
+      "args": [
+        [
+          10
+        ]
+      ],
+      "expected": 10
+    },
+    {
+      "id": "t4",
+      "args": [
+        [
+          -3,
+          3
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t5",
+      "args": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      ],
+      "expected": 15
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intArray",
+        "minLen": 0,
+        "maxLen": 12,
+        "min": -20,
+        "max": 20
+      }
+    ],
+    "edgeCases": [
+      [
+        []
+      ],
+      [
+        [
+          0
+        ]
+      ],
+      [
+        [
+          10,
+          20,
+          30
+        ]
+      ]
+    ]
+  },
+  "referenceSolution": "function sumArray(numbers) {\n  let total = 0;\n  for (let i = 0; i < numbers.length; i++) {\n    total += numbers[i];\n  }\n  return total;\n}\n",
+  "requiredConstructs": [
+    "any_loop"
+  ],
+  "prewrittenHints": [
+    "Start an accumulator variable at zero.",
+    "Loop across the array and add each item to your total.",
+    "Output the final sum once all items are visited."
+  ],
+  "conceptNote": "Accumulate array elements into a sum variable.",
+  "commonMistakes": [
+    {
+      "tag": "counts_instead_of_sums",
+      "variantCode": "function sumArray(numbers) {\n  let total = 0;\n  for (let i = 0; i < numbers.length; i++) {\n    total++;\n  }\n  return total;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 4,
+  "variantOf": "js-arr-01"
+}

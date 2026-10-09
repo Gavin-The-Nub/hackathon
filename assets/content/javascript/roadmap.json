@@ -1,0 +1,56 @@
+{
+  "language": "javascript",
+  "title": "JavaScript Basics",
+  "stages": [
+    {
+      "concept": "variables_types",
+      "problemIds": [
+        "js-vars-01",
+        "js-vars-02",
+        "js-vars-03",
+        "js-vars-04",
+        "js-vars-05"
+      ]
+    },
+    {
+      "concept": "conditionals",
+      "problemIds": [
+        "js-cond-01",
+        "js-cond-02",
+        "js-cond-03",
+        "js-cond-04",
+        "js-cond-05"
+      ]
+    },
+    {
+      "concept": "loops",
+      "problemIds": [
+        "js-loops-01",
+        "js-loops-02",
+        "js-loops-03",
+        "js-loops-04",
+        "js-loops-05"
+      ]
+    },
+    {
+      "concept": "functions",
+      "problemIds": [
+        "js-func-01",
+        "js-func-02",
+        "js-func-03",
+        "js-func-04",
+        "js-func-05"
+      ]
+    },
+    {
+      "concept": "arrays_lists",
+      "problemIds": [
+        "js-arr-01",
+        "js-arr-02",
+        "js-arr-03",
+        "js-arr-04",
+        "js-arr-05"
+      ]
+    }
+  ]
+}

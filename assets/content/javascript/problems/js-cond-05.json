@@ -1,0 +1,96 @@
+{
+  "id": "js-cond-05",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "conditionals",
+  "secondaryConcepts": [],
+  "title": "Water State",
+  "statement": "Write a function `waterState(temp)` that returns \"ice\" if temperature is 0 or below, \"steam\" if 100 or above, and \"liquid\" otherwise.",
+  "example": "waterState(-5) returns \"ice\"; waterState(100) returns \"steam\"; waterState(25) returns \"liquid\".",
+  "starterCode": "function waterState(temp) {\n  // your code here\n}\n",
+  "functionName": "waterState",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        -5
+      ],
+      "expected": "ice"
+    },
+    {
+      "id": "t2",
+      "args": [
+        0
+      ],
+      "expected": "ice"
+    },
+    {
+      "id": "t3",
+      "args": [
+        25
+      ],
+      "expected": "liquid"
+    },
+    {
+      "id": "t4",
+      "args": [
+        100
+      ],
+      "expected": "steam"
+    },
+    {
+      "id": "t5",
+      "args": [
+        110
+      ],
+      "expected": "steam"
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": -20,
+        "max": 150
+      }
+    ],
+    "edgeCases": [
+      [
+        -10
+      ],
+      [
+        0
+      ],
+      [
+        1
+      ],
+      [
+        99
+      ],
+      [
+        100
+      ],
+      [
+        101
+      ]
+    ]
+  },
+  "referenceSolution": "function waterState(temp) {\n  if (temp <= 0) return \"ice\";\n  if (temp >= 100) return \"steam\";\n  return \"liquid\";\n}\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Compare against the freezing point and boiling point.",
+    "Check if cold enough for ice or hot enough for vapor.",
+    "Output ice, steam, or liquid depending on which range holds."
+  ],
+  "conceptNote": "Branch on freezing and boiling thresholds.",
+  "commonMistakes": [
+    {
+      "tag": "boundary_off_by_one",
+      "variantCode": "function waterState(temp) {\n  if (temp < 0) return \"ice\";\n  if (temp > 100) return \"steam\";\n  return \"liquid\";\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 5,
+  "variantOf": "js-cond-01"
+}

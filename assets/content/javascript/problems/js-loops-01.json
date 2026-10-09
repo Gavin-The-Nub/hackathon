@@ -1,0 +1,98 @@
+{
+  "id": "js-loops-01",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "loops",
+  "secondaryConcepts": [],
+  "title": "Add up to n",
+  "statement": "Write a function `sumUpTo(n)` that returns the sum of all whole numbers from 1 up to n. Use a `for` loop. If n is 0, return 0.",
+  "example": "sumUpTo(4) returns 10, because 1 + 2 + 3 + 4 = 10.",
+  "starterCode": "function sumUpTo(n) {\n  // your code here\n}\n",
+  "functionName": "sumUpTo",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        1
+      ],
+      "expected": 1
+    },
+    {
+      "id": "t2",
+      "args": [
+        5
+      ],
+      "expected": 15
+    },
+    {
+      "id": "t3",
+      "args": [
+        10
+      ],
+      "expected": 55
+    },
+    {
+      "id": "t4",
+      "args": [
+        0
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t5",
+      "args": [
+        100
+      ],
+      "expected": 5050
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 200
+      }
+    ],
+    "edgeCases": [
+      [
+        0
+      ],
+      [
+        1
+      ],
+      [
+        2
+      ],
+      [
+        199
+      ],
+      [
+        200
+      ]
+    ]
+  },
+  "referenceSolution": "function sumUpTo(n) {\n  let total = 0;\n  for (let i = 1; i <= n; i++) {\n    total += i;\n  }\n  return total;\n}\n",
+  "requiredConstructs": [
+    "for_loop"
+  ],
+  "prewrittenHints": [
+    "Look at the first test that did not pass. Is your answer too small or too big?",
+    "A loop repeats steps. Start a running total variable before the loop.",
+    "Add each consecutive number into your accumulator variable as you count up."
+  ],
+  "conceptNote": "A for loop repeats a block of code with a counter variable. Declare the accumulator outside the loop.",
+  "commonMistakes": [
+    {
+      "tag": "loop_stops_early",
+      "variantCode": "function sumUpTo(n) {\n  let total = 0;\n  for (let i = 1; i < n; i++) {\n    total += i;\n  }\n  return total;\n}\n"
+    },
+    {
+      "tag": "assign_instead_of_add",
+      "variantCode": "function sumUpTo(n) {\n  let total = 0;\n  for (let i = 1; i <= n; i++) {\n    total = i;\n  }\n  return total;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 1
+}

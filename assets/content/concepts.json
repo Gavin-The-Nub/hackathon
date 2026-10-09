@@ -1,0 +1,10 @@
+[
+  { "id": "variables_types", "name": "Variables", "order": 1, "active": true },
+  { "id": "operators", "name": "Operators", "order": 2, "active": false },
+  { "id": "conditionals", "name": "Conditionals", "order": 3, "active": true },
+  { "id": "loops", "name": "Loops", "order": 4, "active": true },
+  { "id": "functions", "name": "Functions", "order": 5, "active": true },
+  { "id": "arrays_lists", "name": "Arrays & Lists", "order": 6, "active": true },
+  { "id": "strings", "name": "Strings", "order": 7, "active": false },
+  { "id": "reading_fixing_code", "name": "Reading & Fixing", "order": 8, "active": false }
+]

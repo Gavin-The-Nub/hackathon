@@ -1,0 +1,107 @@
+{
+  "id": "js-vars-01",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "variables_types",
+  "secondaryConcepts": [],
+  "title": "Calculate Total Cost",
+  "statement": "Write a function `totalCost(price, quantity)` that calculates and returns the total cost by multiplying the price by the quantity.",
+  "example": "totalCost(10, 3) returns 30.",
+  "starterCode": "function totalCost(price, quantity) {\n  // your code here\n}\n",
+  "functionName": "totalCost",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        10,
+        3
+      ],
+      "expected": 30
+    },
+    {
+      "id": "t2",
+      "args": [
+        5,
+        0
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t3",
+      "args": [
+        7,
+        4
+      ],
+      "expected": 28
+    },
+    {
+      "id": "t4",
+      "args": [
+        12,
+        1
+      ],
+      "expected": 12
+    },
+    {
+      "id": "t5",
+      "args": [
+        25,
+        4
+      ],
+      "expected": 100
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 100
+      },
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 100
+      }
+    ],
+    "edgeCases": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        50
+      ],
+      [
+        99,
+        100
+      ]
+    ]
+  },
+  "referenceSolution": "function totalCost(price, quantity) {\n  return price * quantity;\n}\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Think about what math operation combines price and item quantity.",
+    "In JavaScript, use the asterisk symbol to multiply two numbers together.",
+    "Multiply price by quantity and use the return keyword to return the result."
+  ],
+  "conceptNote": "Variables store values such as numbers or text. You can perform basic arithmetic with operators like + (add), - (subtract), and * (multiply). A function must return its final answer.",
+  "commonMistakes": [
+    {
+      "tag": "wrong_operator",
+      "variantCode": "function totalCost(price, quantity) {\n  return price + quantity;\n}\n"
+    },
+    {
+      "tag": "missing_return",
+      "variantCode": "function totalCost(price, quantity) {\n  const total = price * quantity;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 1
+}

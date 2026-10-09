@@ -1,0 +1,99 @@
+{
+  "id": "js-cond-01",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "conditionals",
+  "secondaryConcepts": [],
+  "title": "Movie Ticket Price",
+  "statement": "Write a function `ticketPrice(age)` that returns the ticket price: age 12 or under pays 5, age 60 or over pays 6, and everyone else pays 10.",
+  "example": "ticketPrice(8) returns 5; ticketPrice(65) returns 6; ticketPrice(25) returns 10.",
+  "starterCode": "function ticketPrice(age) {\n  // your code here\n}\n",
+  "functionName": "ticketPrice",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        10
+      ],
+      "expected": 5
+    },
+    {
+      "id": "t2",
+      "args": [
+        12
+      ],
+      "expected": 5
+    },
+    {
+      "id": "t3",
+      "args": [
+        60
+      ],
+      "expected": 6
+    },
+    {
+      "id": "t4",
+      "args": [
+        65
+      ],
+      "expected": 6
+    },
+    {
+      "id": "t5",
+      "args": [
+        25
+      ],
+      "expected": 10
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 100
+      }
+    ],
+    "edgeCases": [
+      [
+        0
+      ],
+      [
+        12
+      ],
+      [
+        13
+      ],
+      [
+        59
+      ],
+      [
+        60
+      ],
+      [
+        100
+      ]
+    ]
+  },
+  "referenceSolution": "function ticketPrice(age) {\n  if (age <= 12) return 5;\n  if (age >= 60) return 6;\n  return 10;\n}\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Check the different age brackets using conditional branches.",
+    "Compare age to twelve for children and sixty for seniors.",
+    "Output five for kids, six for seniors, or ten for adults."
+  ],
+  "conceptNote": "Conditionals let code branch and choose different actions. Check boundary numbers carefully with <= or >=.",
+  "commonMistakes": [
+    {
+      "tag": "boundary_off_by_one",
+      "variantCode": "function ticketPrice(age) {\n  if (age < 12) return 5;\n  if (age > 60) return 6;\n  return 10;\n}\n"
+    },
+    {
+      "tag": "missing_return",
+      "variantCode": "function ticketPrice(age) {\n  if (age <= 12) { 5; } else if (age >= 60) { 6; } else { 10; }\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 1
+}

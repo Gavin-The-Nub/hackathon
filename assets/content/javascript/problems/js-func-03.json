@@ -1,0 +1,113 @@
+{
+  "id": "js-func-03",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "functions",
+  "secondaryConcepts": [],
+  "title": "Clamp a Value",
+  "statement": "Write a function `clamp(val, min, max)` that returns `min` if `val < min`, `max` if `val > max`, otherwise returns `val`.",
+  "example": "clamp(15, 0, 10) returns 10; clamp(-5, 0, 10) returns 0; clamp(7, 0, 10) returns 7.",
+  "starterCode": "function clamp(val, min, max) {\n  // your code here\n}\n",
+  "functionName": "clamp",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        15,
+        0,
+        10
+      ],
+      "expected": 10
+    },
+    {
+      "id": "t2",
+      "args": [
+        -5,
+        0,
+        10
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t3",
+      "args": [
+        7,
+        0,
+        10
+      ],
+      "expected": 7
+    },
+    {
+      "id": "t4",
+      "args": [
+        0,
+        0,
+        10
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t5",
+      "args": [
+        10,
+        0,
+        10
+      ],
+      "expected": 10
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": -50,
+        "max": 50
+      },
+      {
+        "gen": "intInRange",
+        "min": -20,
+        "max": 0
+      },
+      {
+        "gen": "intInRange",
+        "min": 1,
+        "max": 30
+      }
+    ],
+    "edgeCases": [
+      [
+        5,
+        0,
+        10
+      ],
+      [
+        -10,
+        -5,
+        5
+      ],
+      [
+        20,
+        -5,
+        5
+      ]
+    ]
+  },
+  "referenceSolution": "function clamp(val, min, max) {\n  if (val < min) return min;\n  if (val > max) return max;\n  return val;\n}\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Check if the input falls outside the boundaries.",
+    "Output the lower bound if too small, or the upper bound if too large.",
+    "Otherwise preserve the original input value."
+  ],
+  "conceptNote": "Clamping restricts numbers within allowed upper and lower bounds.",
+  "commonMistakes": [
+    {
+      "tag": "missing_bound",
+      "variantCode": "function clamp(val, min, max) {\n  if (val < min) return min;\n  return val;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 3,
+  "variantOf": "js-func-01"
+}

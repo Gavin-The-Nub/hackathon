@@ -1,0 +1,16 @@
+{
+  "loop_stops_early": { "learnerText": "You miss the last step of a loop often." },
+  "assign_instead_of_add": { "learnerText": "You replace the total each time instead of adding to it." },
+  "boundary_off_by_one": { "learnerText": "A comparison is off by one at the edge." },
+  "missing_return": { "learnerText": "Your function forgets to give back an answer." },
+  "wrong_operator": { "learnerText": "Check the math operator you used." },
+  "compares_only_two": { "learnerText": "You compared some inputs but missed comparing all of them." },
+  "counts_instead_of_sums": { "learnerText": "You counted the items instead of adding their values." },
+  "syntax_error": { "learnerText": "A small typing slip stops the code from running." },
+  "undefined_name": { "learnerText": "A name is used before it exists." },
+  "type_error": { "learnerText": "A number and a piece of text got mixed up." },
+  "possible_infinite_loop": { "learnerText": "A loop never ends." },
+  "runtime_error": { "learnerText": "The code stopped with an error." },
+  "missing_bound": { "learnerText": "You forgot to limit values on one side." },
+  "swapped_bounds": { "learnerText": "You mixed up the minimum and maximum limits." }
+}

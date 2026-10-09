@@ -1,0 +1,117 @@
+{
+  "id": "js-arr-02",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "arrays_lists",
+  "secondaryConcepts": [],
+  "title": "Count Positives",
+  "statement": "Write a function `countPositives(numbers)` that returns how many numbers in the array are strictly greater than 0. Use a loop.",
+  "example": "countPositives([-1, 4, 0, 7, -3]) returns 2.",
+  "starterCode": "function countPositives(numbers) {\n  // your code here\n}\n",
+  "functionName": "countPositives",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        [
+          -1,
+          4,
+          0,
+          7,
+          -3
+        ]
+      ],
+      "expected": 2
+    },
+    {
+      "id": "t2",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": 3
+    },
+    {
+      "id": "t3",
+      "args": [
+        [
+          -1,
+          -2
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t4",
+      "args": [
+        []
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t5",
+      "args": [
+        [
+          0,
+          0,
+          5
+        ]
+      ],
+      "expected": 1
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intArray",
+        "minLen": 0,
+        "maxLen": 12,
+        "min": -20,
+        "max": 20
+      }
+    ],
+    "edgeCases": [
+      [
+        []
+      ],
+      [
+        [
+          1
+        ]
+      ],
+      [
+        [
+          -1
+        ]
+      ],
+      [
+        [
+          0
+        ]
+      ]
+    ]
+  },
+  "referenceSolution": "function countPositives(numbers) {\n  let count = 0;\n  for (let i = 0; i < numbers.length; i++) {\n    if (numbers[i] > 0) count++;\n  }\n  return count;\n}\n",
+  "requiredConstructs": [
+    "any_loop"
+  ],
+  "prewrittenHints": [
+    "Initialize a counter variable to zero.",
+    "Inspect each array item and check if it is greater than zero.",
+    "Increment your counter by one for each positive number found."
+  ],
+  "conceptNote": "Zero is neither positive nor negative.",
+  "commonMistakes": [
+    {
+      "tag": "boundary_off_by_one",
+      "variantCode": "function countPositives(numbers) {\n  let count = 0;\n  for (let i = 0; i < numbers.length; i++) {\n    if (numbers[i] >= 0) count++;\n  }\n  return count;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 2,
+  "variantOf": "js-arr-01"
+}

@@ -1,0 +1,96 @@
+{
+  "id": "js-cond-02",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "conditionals",
+  "secondaryConcepts": [],
+  "title": "Shipping Fee",
+  "statement": "Write a function `shippingFee(weight)` that calculates fee: weight up to 2 kg pays 50, weight up to 10 kg pays 100, and over 10 kg pays 200.",
+  "example": "shippingFee(1) returns 50; shippingFee(5) returns 100; shippingFee(15) returns 200.",
+  "starterCode": "function shippingFee(weight) {\n  // your code here\n}\n",
+  "functionName": "shippingFee",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        1
+      ],
+      "expected": 50
+    },
+    {
+      "id": "t2",
+      "args": [
+        2
+      ],
+      "expected": 50
+    },
+    {
+      "id": "t3",
+      "args": [
+        7
+      ],
+      "expected": 100
+    },
+    {
+      "id": "t4",
+      "args": [
+        10
+      ],
+      "expected": 100
+    },
+    {
+      "id": "t5",
+      "args": [
+        15
+      ],
+      "expected": 200
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 1,
+        "max": 30
+      }
+    ],
+    "edgeCases": [
+      [
+        1
+      ],
+      [
+        2
+      ],
+      [
+        3
+      ],
+      [
+        10
+      ],
+      [
+        11
+      ],
+      [
+        25
+      ]
+    ]
+  },
+  "referenceSolution": "function shippingFee(weight) {\n  if (weight <= 2) return 50;\n  if (weight <= 10) return 100;\n  return 200;\n}\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Check the package weight against each tier.",
+    "Use conditional statements to test if weight is at most two or ten.",
+    "Give back fifty for light parcels, one hundred for medium, or two hundred for heavy."
+  ],
+  "conceptNote": "Order conditions from smallest range to largest range.",
+  "commonMistakes": [
+    {
+      "tag": "boundary_off_by_one",
+      "variantCode": "function shippingFee(weight) {\n  if (weight < 2) return 50;\n  if (weight < 10) return 100;\n  return 200;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 2,
+  "variantOf": "js-cond-01"
+}

@@ -1,0 +1,95 @@
+{
+  "id": "js-loops-03",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "loops",
+  "secondaryConcepts": [],
+  "title": "Sum Multiples of Three",
+  "statement": "Write a function `sumMultiplesOfThree(n)` that returns the sum of all numbers between 1 and n that are divisible by 3. Use a `for` loop.",
+  "example": "sumMultiplesOfThree(10) returns 18 (3 + 6 + 9).",
+  "starterCode": "function sumMultiplesOfThree(n) {\n  // your code here\n}\n",
+  "functionName": "sumMultiplesOfThree",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        10
+      ],
+      "expected": 18
+    },
+    {
+      "id": "t2",
+      "args": [
+        3
+      ],
+      "expected": 3
+    },
+    {
+      "id": "t3",
+      "args": [
+        2
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t4",
+      "args": [
+        12
+      ],
+      "expected": 30
+    },
+    {
+      "id": "t5",
+      "args": [
+        0
+      ],
+      "expected": 0
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 50
+      }
+    ],
+    "edgeCases": [
+      [
+        0
+      ],
+      [
+        3
+      ],
+      [
+        6
+      ],
+      [
+        9
+      ],
+      [
+        30
+      ]
+    ]
+  },
+  "referenceSolution": "function sumMultiplesOfThree(n) {\n  let total = 0;\n  for (let i = 1; i <= n; i++) {\n    if (i % 3 === 0) total += i;\n  }\n  return total;\n}\n",
+  "requiredConstructs": [
+    "for_loop"
+  ],
+  "prewrittenHints": [
+    "Use the modulo operator to test if a number is divisible by three.",
+    "Check if the current number has no remainder when divided by three.",
+    "Only add the number to the sum when it is a multiple."
+  ],
+  "conceptNote": "Combine loops with conditional checks inside the loop body.",
+  "commonMistakes": [
+    {
+      "tag": "loop_stops_early",
+      "variantCode": "function sumMultiplesOfThree(n) {\n  let total = 0;\n  for (let i = 1; i < n; i++) {\n    if (i % 3 === 0) total += i;\n  }\n  return total;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 3,
+  "variantOf": "js-loops-01"
+}

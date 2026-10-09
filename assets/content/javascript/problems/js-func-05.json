@@ -1,0 +1,113 @@
+{
+  "id": "js-func-05",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "functions",
+  "secondaryConcepts": [],
+  "title": "Average of Three",
+  "statement": "Write a function `averageOfThree(a, b, c)` that calculates and returns the arithmetic mean of three numbers.",
+  "example": "averageOfThree(3, 6, 9) returns 6.",
+  "starterCode": "function averageOfThree(a, b, c) {\n  // your code here\n}\n",
+  "functionName": "averageOfThree",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        3,
+        6,
+        9
+      ],
+      "expected": 6
+    },
+    {
+      "id": "t2",
+      "args": [
+        10,
+        20,
+        30
+      ],
+      "expected": 20
+    },
+    {
+      "id": "t3",
+      "args": [
+        0,
+        0,
+        0
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t4",
+      "args": [
+        4,
+        4,
+        4
+      ],
+      "expected": 4
+    },
+    {
+      "id": "t5",
+      "args": [
+        1,
+        2,
+        3
+      ],
+      "expected": 2
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 90
+      },
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 90
+      },
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 90
+      }
+    ],
+    "edgeCases": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        3,
+        3
+      ],
+      [
+        10,
+        20,
+        30
+      ]
+    ]
+  },
+  "referenceSolution": "function averageOfThree(a, b, c) {\n  return (a + b + c) / 3;\n}\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Add all three numbers together first inside parentheses.",
+    "Divide the combined total by three.",
+    "Calculate the arithmetic mean by dividing the sum by the count of items."
+  ],
+  "conceptNote": "Use parentheses to ensure addition occurs before division.",
+  "commonMistakes": [
+    {
+      "tag": "wrong_operator",
+      "variantCode": "function averageOfThree(a, b, c) {\n  return a + b + c / 3;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 5,
+  "variantOf": "js-func-01"
+}

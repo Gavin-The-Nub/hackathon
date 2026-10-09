@@ -1,0 +1,92 @@
+{
+  "id": "js-loops-02",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "loops",
+  "secondaryConcepts": [],
+  "title": "Factorial of n",
+  "statement": "Write a function `factorial(n)` that calculates the product of numbers from 1 to n using a `for` loop. If n is 0 or 1, return 1.",
+  "example": "factorial(4) returns 24, because 1 * 2 * 3 * 4 = 24.",
+  "starterCode": "function factorial(n) {\n  // your code here\n}\n",
+  "functionName": "factorial",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        1
+      ],
+      "expected": 1
+    },
+    {
+      "id": "t2",
+      "args": [
+        3
+      ],
+      "expected": 6
+    },
+    {
+      "id": "t3",
+      "args": [
+        4
+      ],
+      "expected": 24
+    },
+    {
+      "id": "t4",
+      "args": [
+        5
+      ],
+      "expected": 120
+    },
+    {
+      "id": "t5",
+      "args": [
+        0
+      ],
+      "expected": 1
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 10
+      }
+    ],
+    "edgeCases": [
+      [
+        0
+      ],
+      [
+        1
+      ],
+      [
+        6
+      ],
+      [
+        8
+      ]
+    ]
+  },
+  "referenceSolution": "function factorial(n) {\n  let res = 1;\n  for (let i = 2; i <= n; i++) {\n    res *= i;\n  }\n  return res;\n}\n",
+  "requiredConstructs": [
+    "for_loop"
+  ],
+  "prewrittenHints": [
+    "In a product accumulator, what should the starting value be?",
+    "Start the product at one instead of zero so multiplication works.",
+    "Multiply the accumulated product by each number in sequence."
+  ],
+  "conceptNote": "When accumulating products, initialize to 1 because multiplying by 0 results in 0.",
+  "commonMistakes": [
+    {
+      "tag": "assign_instead_of_add",
+      "variantCode": "function factorial(n) {\n  let res = 1;\n  for (let i = 1; i <= n; i++) {\n    res = i;\n  }\n  return res;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 2,
+  "variantOf": "js-loops-01"
+}

@@ -1,0 +1,121 @@
+{
+  "id": "js-arr-03",
+  "language": "javascript",
+  "type": "write_function",
+  "primaryConcept": "arrays_lists",
+  "secondaryConcepts": [],
+  "title": "Find Maximum in Array",
+  "statement": "Write a function `findMax(numbers)` that returns the largest number in a non-empty array. Use a loop.",
+  "example": "findMax([3, 9, 2, 5]) returns 9.",
+  "starterCode": "function findMax(numbers) {\n  // your code here\n}\n",
+  "functionName": "findMax",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        [
+          3,
+          9,
+          2,
+          5
+        ]
+      ],
+      "expected": 9
+    },
+    {
+      "id": "t2",
+      "args": [
+        [
+          7
+        ]
+      ],
+      "expected": 7
+    },
+    {
+      "id": "t3",
+      "args": [
+        [
+          -5,
+          -1,
+          -10
+        ]
+      ],
+      "expected": -1
+    },
+    {
+      "id": "t4",
+      "args": [
+        [
+          10,
+          20,
+          30
+        ]
+      ],
+      "expected": 30
+    },
+    {
+      "id": "t5",
+      "args": [
+        [
+          100,
+          50,
+          20
+        ]
+      ],
+      "expected": 100
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intArray",
+        "minLen": 1,
+        "maxLen": 10,
+        "min": -50,
+        "max": 50
+      }
+    ],
+    "edgeCases": [
+      [
+        [
+          5
+        ]
+      ],
+      [
+        [
+          -10,
+          -5,
+          -20
+        ]
+      ],
+      [
+        [
+          1,
+          2,
+          3,
+          4
+        ]
+      ]
+    ]
+  },
+  "referenceSolution": "function findMax(numbers) {\n  let m = numbers[0];\n  for (let i = 1; i < numbers.length; i++) {\n    if (numbers[i] > m) m = numbers[i];\n  }\n  return m;\n}\n",
+  "requiredConstructs": [
+    "any_loop"
+  ],
+  "prewrittenHints": [
+    "Initialize your max variable with the very first item of the array.",
+    "Compare each subsequent element against that running maximum.",
+    "Update your maximum whenever a larger number is seen."
+  ],
+  "conceptNote": "Starting with numbers[0] ensures negative numbers are handled correctly.",
+  "commonMistakes": [
+    {
+      "tag": "loop_stops_early",
+      "variantCode": "function findMax(numbers) {\n  let m = numbers[0];\n  for (let i = 1; i < numbers.length - 1; i++) {\n    if (numbers[i] > m) m = numbers[i];\n  }\n  return m;\n}\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 3,
+  "variantOf": "js-arr-01"
+}
