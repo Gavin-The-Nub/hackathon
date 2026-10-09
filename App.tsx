@@ -4,6 +4,7 @@ import { useColorScheme } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { BookOpen, Dumbbell, Award, User } from 'lucide-react-native';
 
 import { useUserStore } from './src/state/userStore';
@@ -32,9 +33,9 @@ function MainTabs() {
         tabBarStyle: {
           backgroundColor: colors.surface,
           borderTopColor: colors.surface2,
-          height: 64,
-          paddingBottom: 8,
-          paddingTop: 6,
+          height: 68,
+          paddingBottom: 10,
+          paddingTop: 8,
         },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
@@ -92,13 +93,15 @@ export default function App() {
   const isDark = themeMode === 'dark' || (themeMode === 'system' && systemScheme === 'dark');
 
   return (
-    <NavigationContainer>
-      <StatusBar style={isDark ? 'light' : 'dark'} />
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="MainTabs" component={MainTabs} />
-        <Stack.Screen name="Problem" component={ProblemScreen} />
-        <Stack.Screen name="Completion" component={CompletionScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <NavigationContainer>
+        <StatusBar style={isDark ? 'light' : 'dark'} />
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="MainTabs" component={MainTabs} />
+          <Stack.Screen name="Problem" component={ProblemScreen} />
+          <Stack.Screen name="Completion" component={CompletionScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }

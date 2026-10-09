@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform, StatusBar as RNStatusBar } from 'react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,6 +12,9 @@ export function TopBar() {
   const streak = useUserStore((s) => s.streak.currentStreak);
 
   const colors = themeMode === 'dark' ? DARK_THEME : LIGHT_THEME;
+  const androidBarHeight = Platform.OS === 'android' ? (RNStatusBar.currentHeight ?? 36) : 0;
+  const safeTop = Math.max(insets.top, androidBarHeight, 44);
+  const topPadding = safeTop + 8;
 
   return (
     <View
@@ -19,8 +22,8 @@ export function TopBar() {
         styles.container,
         {
           backgroundColor: colors.surface,
-          borderColor: colors.surface2,
-          paddingTop: Math.max(insets.top, 12),
+          borderBottomColor: colors.surface2,
+          paddingTop: topPadding,
         },
       ]}
     >

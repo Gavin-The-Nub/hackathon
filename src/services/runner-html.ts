@@ -12,6 +12,14 @@ export const RUNNER_HTML = `
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-eval' 'unsafe-inline' blob:; style-src 'unsafe-inline';" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --text-color: #1F1B2E;
+      --placeholder-color: #6B6785;
+    }
+    body.dark {
+      --text-color: #F3F2FA;
+      --placeholder-color: #A6A2C0;
+    }
     html, body { width: 100%; height: 100%; overflow: hidden; background: transparent; font-family: -apple-system, sans-serif; }
     #editor-container { width: 100%; height: 100%; display: flex; flex-direction: column; }
     textarea {
@@ -20,16 +28,19 @@ export const RUNNER_HTML = `
       height: 100%;
       border: none;
       outline: none;
-      padding: 12px;
-      font-family: 'JetBrains Mono', monospace, monospace;
+      padding: 14px;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
       font-size: 15px;
-      line-height: 1.5;
+      line-height: 1.6;
       background: transparent;
-      color: inherit;
+      color: var(--text-color);
       resize: none;
       white-space: pre;
       overflow-wrap: normal;
       overflow-x: auto;
+    }
+    textarea::placeholder {
+      color: var(--placeholder-color);
     }
   </style>
 </head>
@@ -133,6 +144,13 @@ export const RUNNER_HTML = `
     function handleRNMessage(msg) {
       if (msg.type === 'set_code') {
         textarea.value = msg.code || '';
+      } else if (msg.type === 'set_theme') {
+        if (msg.isDark) {
+          document.body.className = 'dark';
+        } else {
+          document.body.className = '';
+        }
+        if (msg.textColor) textarea.style.color = msg.textColor;
       } else if (msg.type === 'insert_symbol') {
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;

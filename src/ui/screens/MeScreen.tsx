@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Platform, StatusBar as RNStatusBar } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 import { MODEL_CONFIG } from '../../config/model';
 
 export function MeScreen() {
+  const insets = useSafeAreaInsets();
   const themeMode = useUserStore((s) => s.theme);
   const setTheme = useUserStore((s) => s.setTheme);
   const totalXp = useUserStore((s) => s.totalXp);
@@ -12,10 +14,12 @@ export function MeScreen() {
   const streak = useUserStore((s) => s.streak);
 
   const colors = themeMode === 'dark' ? DARK_THEME : LIGHT_THEME;
+  const androidBarHeight = Platform.OS === 'android' ? (RNStatusBar.currentHeight ?? 36) : 0;
+  const topPadding = Math.max(insets.top, androidBarHeight, 44) + 16;
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.bg }]} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: topPadding }]}>
         <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
           <Text style={styles.avatarText}>🏆</Text>
         </View>
