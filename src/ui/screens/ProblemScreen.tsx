@@ -210,34 +210,6 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
     }
   };
 
-  const handleExplainError = async () => {
-    setShowResultsSheet(false);
-    setTutorRequestsCount((prev) => prev + 1);
-
-    const fallbackHint =
-      problem.prewrittenHints[0] || 'Check the first failing test case and compare the outputs.';
-    setTutorSource('prewritten');
-    setTutorText(fallbackHint);
-    setTutorCardVisible(true);
-
-    try {
-      const res = await requestTutorHelp({
-        problem,
-        action: 'explain',
-        learnerCode: code,
-        failingTest: runResult?.firstFailing,
-        error: runResult?.error,
-      });
-
-      if (res && res.text) {
-        setTutorSource(res.source);
-        setTutorText(res.text);
-      }
-    } catch (err) {
-      // Fallback already displayed
-    }
-  };
-
   const handleCompleteSuccess = () => {
     setShowResultsSheet(false);
     const completionInfo = recordCompletion({
@@ -548,7 +520,6 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
             problem={problem}
             runResult={runResult}
             genuineResult={genuineResult}
-            onExplainError={handleExplainError}
             onTryAgain={() => setShowResultsSheet(false)}
             onContinueAnyway={handleContinueAnyway}
             onContinuePassed={handleCompleteSuccess}

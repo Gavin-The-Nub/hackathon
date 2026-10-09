@@ -43,6 +43,8 @@ export function PracticeScreen({ navigation }: PracticeScreenProps) {
           </Text>
         </View>
 
+
+
         {/* Recommended Card */}
         {rec.problem && (
           <View style={[styles.heroCard, { backgroundColor: colors.surface, borderColor: colors.primary }]}>

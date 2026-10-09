@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Platform, StatusBar as RNStatusBar, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Flame, ChevronDown } from 'lucide-react-native';
+import { Flame, ChevronDown, Code2 } from 'lucide-react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -61,6 +61,17 @@ export function TopBar() {
         <View style={[styles.levelPill, { backgroundColor: colors.primary }]}>
           <Text style={styles.levelText}>LVL {level}</Text>
         </View>
+
+        {/* Sandbox Quick Launcher */}
+        <TouchableOpacity
+          style={[styles.sandboxIconBtn, { backgroundColor: colors.surface2 }]}
+          onPress={() => navigation.navigate('Sandbox')}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          activeOpacity={0.7}
+          accessibilityLabel="Open Sandbox Playground"
+        >
+          <Code2 size={16} color={colors.primary} strokeWidth={2.4} />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -117,6 +128,13 @@ const styles = StyleSheet.create({
   rightGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
+  },
+  sandboxIconBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, Keyboard, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider, initialWindowMetrics, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BookOpen, Dumbbell, Award, User } from 'lucide-react-native';
+import { BookOpen, Dumbbell, Award, User, Code2 } from 'lucide-react-native';
 
 import { useUserStore } from './src/state/userStore';
 import { LIGHT_THEME, DARK_THEME } from './src/ui/theme/tokens';
@@ -18,6 +18,7 @@ import { ProblemScreen } from './src/ui/screens/ProblemScreen';
 import { CompletionScreen } from './src/ui/screens/CompletionScreen';
 import { PathSelectionScreen } from './src/ui/screens/PathSelectionScreen';
 import { LessonScreen } from './src/ui/screens/LessonScreen';
+import { SandboxScreen } from './src/ui/screens/SandboxScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -29,6 +30,19 @@ function MainTabs() {
   const isDark = themeMode === 'dark' || (themeMode === 'system' && systemScheme === 'dark');
   const colors = isDark ? DARK_THEME : LIGHT_THEME;
 
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const showSub = Keyboard.addListener(showEvent, () => setIsKeyboardVisible(true));
+    const hideSub = Keyboard.addListener(hideEvent, () => setIsKeyboardVisible(false));
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
   const bottomInset = Math.max(insets.bottom, 12);
   const tabHeight = 56 + bottomInset;
 
@@ -36,19 +50,22 @@ function MainTabs() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: colors.surface,
-          borderTopColor: colors.surface2,
-          borderTopWidth: 1.5,
-          height: tabHeight,
-          paddingBottom: bottomInset,
-          paddingTop: 8,
-          elevation: 8,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.05,
-          shadowRadius: 4,
-        },
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: isKeyboardVisible
+          ? { display: 'none', height: 0 }
+          : {
+              backgroundColor: colors.surface,
+              borderTopColor: colors.surface2,
+              borderTopWidth: 1.5,
+              height: tabHeight,
+              paddingBottom: bottomInset,
+              paddingTop: 8,
+              elevation: 8,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: -2 },
+              shadowOpacity: 0.05,
+              shadowRadius: 4,
+            },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarLabelStyle: {
@@ -72,6 +89,14 @@ function MainTabs() {
         options={{
           tabBarLabel: 'Practice',
           tabBarIcon: ({ color, size }) => <Dumbbell color={color} size={size} strokeWidth={2.4} />,
+        }}
+      />
+      <Tab.Screen
+        name="Sandbox"
+        component={SandboxScreen}
+        options={{
+          tabBarLabel: 'Sandbox',
+          tabBarIcon: ({ color, size }) => <Code2 color={color} size={size} strokeWidth={2.4} />,
         }}
       />
       <Tab.Screen

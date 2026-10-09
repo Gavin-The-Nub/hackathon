@@ -9,7 +9,6 @@ interface ResultsSheetProps {
   problem: Problem;
   runResult: RunResult | null;
   genuineResult: GenuineResult | null;
-  onExplainError: () => void;
   onTryAgain: () => void;
   onContinueAnyway: () => void;
   onContinuePassed: () => void;
@@ -19,7 +18,6 @@ export function ResultsSheet({
   problem,
   runResult,
   genuineResult,
-  onExplainError,
   onTryAgain,
   onContinueAnyway,
   onContinuePassed,
@@ -27,7 +25,6 @@ export function ResultsSheet({
   const themeMode = useUserStore((s) => s.theme);
   const colors = themeMode === 'dark' ? DARK_THEME : LIGHT_THEME;
   const [showImproveTip, setShowImproveTip] = useState(false);
-  const [isExplaining, setIsExplaining] = useState(false);
 
   if (!runResult) return null;
 
@@ -69,10 +66,6 @@ export function ResultsSheet({
     }
   }
 
-  const handleExplainPress = () => {
-    setIsExplaining(true);
-    onExplainError();
-  };
 
   return (
     <View style={[styles.sheet, { backgroundColor: colors.surface, borderTopColor: colors.surface2 }]}>
@@ -241,32 +234,6 @@ export function ResultsSheet({
 
           {!isAllTestsPassed && (
             <View style={styles.failActionsRow}>
-              <TouchableOpacity
-                style={[
-                  styles.secondaryBtn,
-                  { borderColor: colors.primary, flex: 1, flexDirection: 'row', gap: 6 },
-                ]}
-                onPress={handleExplainPress}
-                disabled={isExplaining}
-                activeOpacity={0.8}
-              >
-                {isExplaining ? (
-                  <>
-                    <ActivityIndicator size="small" color={colors.primary} />
-                    <Text style={[styles.secondaryBtnText, { color: colors.primary }]}>
-                      Consulting AI...
-                    </Text>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles size={16} color={colors.primary} />
-                    <Text style={[styles.secondaryBtnText, { color: colors.primary }]}>
-                      Explain my error
-                    </Text>
-                  </>
-                )}
-              </TouchableOpacity>
-
               <TouchableOpacity
                 style={[styles.primaryBtn, { backgroundColor: colors.primary, flex: 1 }]}
                 onPress={onTryAgain}
