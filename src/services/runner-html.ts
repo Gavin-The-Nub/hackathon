@@ -1,7 +1,8 @@
 /**
  * Self-contained HTML bundle for react-native-webview runner.
  * Completely offline with zero external network requests.
- * Runs user code inside an isolated Web Worker with timeout and CSP protection.
+ * Features IDE syntax highlighting, line numbers gutter, error underlines,
+ * and runs user code inside an isolated Web Worker with timeout and CSP protection.
  */
 export const RUNNER_HTML = `
 <!DOCTYPE html>
@@ -14,48 +15,287 @@ export const RUNNER_HTML = `
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --text-color: #1F1B2E;
-      --placeholder-color: #6B6785;
+      --gutter-bg: #F8F7FC;
+      --gutter-color: #A3A0B5;
+      --caret-color: #6366F1;
+      --comment: #6B7280;
+      --keyword: #7C3AED;
+      --string: #059669;
+      --number: #D97706;
+      --function: #2563EB;
+      --operator: #E11D48;
+      --boolean: #D97706;
+      --error-line-bg: rgba(239, 68, 68, 0.12);
+      --error-border: #EF4444;
+      --error-squiggle: #EF4444;
     }
     body.dark {
       --text-color: #F3F2FA;
-      --placeholder-color: #A6A2C0;
+      --gutter-bg: #151322;
+      --gutter-color: #6B6785;
+      --caret-color: #818CF8;
+      --comment: #9CA3AF;
+      --keyword: #A78BFA;
+      --string: #34D399;
+      --number: #FBBF24;
+      --function: #60A5FA;
+      --operator: #FB7185;
+      --boolean: #FBBF24;
+      --error-line-bg: rgba(239, 68, 68, 0.22);
+      --error-border: #F87171;
+      --error-squiggle: #F87171;
     }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: transparent; font-family: -apple-system, sans-serif; }
-    #editor-container { width: 100%; height: 100%; display: flex; flex-direction: column; }
-    textarea {
-      flex: 1;
+    html, body {
       width: 100%;
       height: 100%;
-      border: none;
-      outline: none;
-      padding: 14px;
-      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-      font-size: 15px;
-      line-height: 1.6;
+      overflow: hidden;
       background: transparent;
-      color: var(--text-color);
-      resize: none;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    }
+    #editor-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      position: relative;
+    }
+    #gutter {
+      width: 38px;
+      min-width: 38px;
+      height: 100%;
+      padding: 14px 4px 14px 2px;
+      box-sizing: border-box;
+      background: var(--gutter-bg);
+      color: var(--gutter-color);
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 24px;
+      text-align: right;
+      user-select: none;
+      -webkit-user-select: none;
+      overflow: hidden;
+      border-right: 1px solid rgba(0, 0, 0, 0.06);
+    }
+    body.dark #gutter {
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .gutter-line {
+      height: 24px;
+      line-height: 24px;
+      padding-right: 6px;
+    }
+    .gutter-line.error-gutter {
+      color: #EF4444 !important;
+      font-weight: 800;
+    }
+    #code-area {
+      position: relative;
+      flex: 1;
+      height: 100%;
+      overflow: hidden;
+    }
+    #highlighting, #code-input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 14px 16px;
+      border: none;
+      font-family: inherit;
+      font-size: 15px;
+      line-height: 24px;
+      tab-size: 2;
+      -moz-tab-size: 2;
       white-space: pre;
+      word-wrap: normal;
       overflow-wrap: normal;
-      overflow-x: auto;
+      box-sizing: border-box;
+      -webkit-text-size-adjust: none;
     }
-    textarea::placeholder {
-      color: var(--placeholder-color);
+    #code-input {
+      z-index: 2;
+      color: transparent;
+      background: transparent;
+      caret-color: var(--caret-color);
+      resize: none;
+      outline: none;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
     }
+    #code-input::selection {
+      background: rgba(99, 102, 241, 0.28);
+      color: transparent;
+    }
+    #highlighting {
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+      color: var(--text-color);
+    }
+    .code-line {
+      height: 24px;
+      line-height: 24px;
+      display: block;
+      white-space: pre;
+    }
+    .code-line.error-line {
+      background-color: var(--error-line-bg);
+      border-left: 3px solid var(--error-border);
+      margin-left: -3px;
+      border-radius: 2px;
+    }
+    .error-squiggle {
+      color: #EF4444 !important;
+      font-weight: 700;
+      text-decoration: underline wavy var(--error-squiggle) 2.5px;
+      -webkit-text-decoration: underline wavy var(--error-squiggle) 2.5px;
+      text-underline-offset: 3.5px;
+      background-color: rgba(239, 68, 68, 0.22);
+      border-bottom: 2px dashed var(--error-squiggle);
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+    .code-line.error-line.error-line-general {
+      text-decoration: underline wavy var(--error-squiggle) 2px;
+      -webkit-text-decoration: underline wavy var(--error-squiggle) 2px;
+      text-underline-offset: 3px;
+    }
+    /* Syntax Highlighting Tokens */
+    .token-comment { color: var(--comment); font-style: italic; }
+    .token-keyword { color: var(--keyword); font-weight: 700; }
+    .token-string { color: var(--string); }
+    .token-number { color: var(--number); font-weight: 600; }
+    .token-boolean { color: var(--boolean); font-weight: 700; }
+    .token-function { color: var(--function); font-weight: 600; }
+    .token-operator { color: var(--operator); }
+    .token-punct { color: var(--text-color); opacity: 0.7; }
   </style>
 </head>
 <body>
   <div id="editor-container">
-    <textarea id="code-input" spellcheck="false" placeholder="// Write your solution here"></textarea>
+    <div id="gutter"></div>
+    <div id="code-area">
+      <pre id="highlighting" aria-hidden="true"><code id="highlighting-content"></code></pre>
+      <textarea id="code-input" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
+    </div>
   </div>
 
   <script>
     const textarea = document.getElementById('code-input');
+    const highlighting = document.getElementById('highlighting');
+    const highlightingContent = document.getElementById('highlighting-content');
+    const gutter = document.getElementById('gutter');
+
     let currentWorker = null;
     let runTimeoutTimer = null;
+    let currentErrorInfo = null;
 
-    // Send change events to React Native
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function formatPlain(str, isErrorLine, errorToken) {
+      if (isErrorLine && errorToken && str.includes(errorToken)) {
+        const parts = str.split(errorToken);
+        return parts.map(p => escapeHtml(p)).join('<span class="error-squiggle">' + escapeHtml(errorToken) + '</span>');
+      }
+      return escapeHtml(str);
+    }
+
+    function highlightCodeSegment(text, isErrorLine, errorToken) {
+      if (!text) return '';
+      const tokenRegex = /("(?:\\\\.|[^"\\\\\\n])*"|'(?:\\\\.|[^'\\\\\\n])*'|\`(?:\`|[^\\\`])*?\`|\\b(?:function|return|let|const|var|if|else|for|while|do|switch|case|break|continue|new|this|typeof|instanceof|try|catch|finally|throw|class|extends|async|await|yield|in|of)\\b|\\b(?:true|false|null|undefined|NaN|Infinity)\\b|\\b\\d+(?:\\.\\d+)?\\b|\\b[a-zA-Z_$][a-zA-Z0-9_$]*(?=\\s*\\()|=>|===|!==|==|!=|<=|>=|[+\\-*\\/%&|^!~?:=<>]+|[{}()[\],;.])/g;
+      
+      let result = '';
+      let lastIndex = 0;
+      let match;
+
+      while ((match = tokenRegex.exec(text)) !== null) {
+        if (match.index > lastIndex) {
+          result += formatPlain(text.substring(lastIndex, match.index), isErrorLine, errorToken);
+        }
+
+        const token = match[0];
+        let cls = '';
+        if (token.startsWith('"') || token.startsWith("'") || token.startsWith('\`')) {
+          cls = 'token-string';
+        } else if (/^(function|return|let|const|var|if|else|for|while|do|switch|case|break|continue|new|this|typeof|instanceof|try|catch|finally|throw|class|extends|async|await|yield|in|of)$/.test(token)) {
+          cls = 'token-keyword';
+        } else if (/^(true|false|null|undefined|NaN|Infinity)$/.test(token)) {
+          cls = 'token-boolean';
+        } else if (/^\\d/.test(token)) {
+          cls = 'token-number';
+        } else if (text[match.index + token.length] === '(' || (/^[a-zA-Z_$]/.test(token) && match.index + token.length < text.length && text.slice(match.index + token.length).trim().startsWith('('))) {
+          cls = 'token-function';
+        } else if (/^[+\\-*\\/%&|^!~?:=<>]+$/.test(token) || token === '=>') {
+          cls = 'token-operator';
+        } else if (/^[{}()[\],;.]/.test(token)) {
+          cls = 'token-punct';
+        }
+
+        const isSquiggle = isErrorLine && errorToken && token === errorToken;
+        const extraClass = isSquiggle ? ' error-squiggle' : '';
+        result += '<span class="' + cls + extraClass + '">' + escapeHtml(token) + '</span>';
+        lastIndex = tokenRegex.lastIndex;
+      }
+
+      if (lastIndex < text.length) {
+        result += formatPlain(text.substring(lastIndex), isErrorLine, errorToken);
+      }
+      return result;
+    }
+
+    function highlightLine(line, isErrorLine, errorToken) {
+      if (!line) return '&nbsp;';
+      const commentIdx = line.indexOf('//');
+      if (commentIdx !== -1) {
+        const before = line.substring(0, commentIdx);
+        const comment = line.substring(commentIdx);
+        return highlightCodeSegment(before, isErrorLine, errorToken) + '<span class="token-comment">' + escapeHtml(comment) + '</span>';
+      }
+      return highlightCodeSegment(line, isErrorLine, errorToken);
+    }
+
+    function renderEditor() {
+      const code = textarea.value || '';
+      const lines = code.split(String.fromCharCode(10)).map(function(l) { return l.replace(String.fromCharCode(13), ''); });
+      
+      let gutterHtml = '';
+      let codeHtml = '';
+
+      for (let i = 0; i < lines.length; i++) {
+        const lineNum = i + 1;
+        const isErrorLine = currentErrorInfo && currentErrorInfo.line === lineNum;
+        const errorToken = isErrorLine ? currentErrorInfo.token : null;
+
+        gutterHtml += '<div class="gutter-line' + (isErrorLine ? ' error-gutter' : '') + '">' + 
+          (isErrorLine ? '✕ ' : '') + lineNum + '</div>';
+
+        const lineContent = highlightLine(lines[i], isErrorLine, errorToken);
+        const generalClass = (isErrorLine && !errorToken) ? ' error-line-general' : '';
+        codeHtml += '<div class="code-line' + (isErrorLine ? ' error-line' : '') + generalClass + '">' + lineContent + '</div>';
+      }
+
+      gutter.innerHTML = gutterHtml;
+      highlightingContent.innerHTML = codeHtml;
+
+      // Keep scroll positions aligned
+      highlighting.scrollTop = textarea.scrollTop;
+      highlighting.scrollLeft = textarea.scrollLeft;
+      gutter.scrollTop = textarea.scrollTop;
+    }
+
+    textarea.addEventListener('scroll', () => {
+      highlighting.scrollTop = textarea.scrollTop;
+      highlighting.scrollLeft = textarea.scrollLeft;
+      gutter.scrollTop = textarea.scrollTop;
+    });
+
     textarea.addEventListener('input', () => {
+      currentErrorInfo = null; // Clear error highlight on edits
+      renderEditor();
       postToRN({ type: 'code_change', code: textarea.value });
     });
 
@@ -65,7 +305,7 @@ export const RUNNER_HTML = `
       }
     }
 
-    // Worker code string
+    // Isolated execution worker
     const workerScript = \`
       self.onmessage = function(e) {
         const data = e.data;
@@ -78,7 +318,6 @@ export const RUNNER_HTML = `
           };
 
           try {
-            // Evaluate code in worker
             const evalFn = new Function(data.code + '; return ' + data.functionName + ';')();
             const results = [];
             let firstFailing = null;
@@ -87,6 +326,8 @@ export const RUNNER_HTML = `
               let actual = null;
               let status = 'pass';
               let errMsg = null;
+              let errorDetail = null;
+
               try {
                 actual = evalFn(...t.args);
                 if (JSON.stringify(actual) !== JSON.stringify(t.expected)) {
@@ -95,8 +336,40 @@ export const RUNNER_HTML = `
               } catch(err) {
                 status = 'error';
                 errMsg = err && err.message ? err.message : String(err);
+                
+                let line = null;
+                let token = null;
+                const tokMatch = errMsg.match(/([a-zA-Z0-9_$]+) is not defined/);
+                const cLines = (data.code || '').split(String.fromCharCode(10)).map(function(l) { return l.replace(String.fromCharCode(13), ''); });
+                if (tokMatch) {
+                  token = tokMatch[1];
+                  for (let idx = 0; idx < cLines.length; idx++) {
+                    const words = cLines[idx].match(/[a-zA-Z0-9_$]+/g) || [];
+                    if (words.indexOf(token) !== -1) {
+                      line = idx + 1;
+                      break;
+                    }
+                  }
+                }
+                if (!line && err && err.stack) {
+                  const m = err.stack.match(/anonymous>:([0-9]+)/) || err.stack.match(/:([0-9]+):([0-9]+)/);
+                  if (m) {
+                    const rawLine = parseInt(m[1], 10);
+                    const calcLine = rawLine > 2 ? rawLine - 2 : rawLine;
+                    if (calcLine >= 1 && calcLine <= cLines.length) {
+                      line = calcLine;
+                    }
+                  }
+                }
+                errorDetail = {
+                  name: err.name || 'RuntimeError',
+                  message: errMsg,
+                  line: line || undefined,
+                  token: token || undefined
+                };
               }
-              const testRes = { id: t.id, hidden: false, status, args: t.args, expected: t.expected, actual, errorMessage: errMsg };
+
+              const testRes = { id: t.id, hidden: false, status, args: t.args, expected: t.expected, actual, errorMessage: errMsg, errorDetail };
               results.push(testRes);
               if (status !== 'pass' && !firstFailing) {
                 firstFailing = testRes;
@@ -114,10 +387,41 @@ export const RUNNER_HTML = `
             });
           } catch(err) {
             console.log = originalLog;
+            const errMsg = err ? err.message : String(err);
+            let line = null;
+            let token = null;
+            const tokMatch = errMsg.match(/([a-zA-Z0-9_$]+) is not defined/);
+            const cLines = (data.code || '').split(String.fromCharCode(10)).map(function(l) { return l.replace(String.fromCharCode(13), ''); });
+            if (tokMatch) {
+              token = tokMatch[1];
+              for (let idx = 0; idx < cLines.length; idx++) {
+                const words = cLines[idx].match(/[a-zA-Z0-9_$]+/g) || [];
+                if (words.indexOf(token) !== -1) {
+                  line = idx + 1;
+                  break;
+                }
+              }
+            }
+            if (!line && err && err.stack) {
+              const m = err.stack.match(/anonymous>:([0-9]+)/) || err.stack.match(/:([0-9]+):([0-9]+)/);
+              if (m) {
+                const rawLine = parseInt(m[1], 10);
+                const calcLine = rawLine > 2 ? rawLine - 2 : rawLine;
+                if (calcLine >= 1 && calcLine <= cLines.length) {
+                  line = calcLine;
+                }
+              }
+            }
             self.postMessage({
               type: 'run_error',
               runId: data.runId,
-              error: { kind: 'runtime', message: err ? err.message : String(err) }
+              error: {
+                kind: 'runtime',
+                name: err.name || 'Error',
+                message: errMsg,
+                line: line || undefined,
+                token: token || undefined
+              }
             });
           }
         }
@@ -144,13 +448,21 @@ export const RUNNER_HTML = `
     function handleRNMessage(msg) {
       if (msg.type === 'set_code') {
         textarea.value = msg.code || '';
+        currentErrorInfo = null;
+        renderEditor();
       } else if (msg.type === 'set_theme') {
         if (msg.isDark) {
           document.body.className = 'dark';
         } else {
           document.body.className = '';
         }
-        if (msg.textColor) textarea.style.color = msg.textColor;
+        renderEditor();
+      } else if (msg.type === 'highlight_error') {
+        currentErrorInfo = msg.error;
+        renderEditor();
+      } else if (msg.type === 'clear_error') {
+        currentErrorInfo = null;
+        renderEditor();
       } else if (msg.type === 'insert_symbol') {
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
@@ -178,6 +490,8 @@ export const RUNNER_HTML = `
           textarea.value = val.substring(0, start) + sym + val.substring(end);
           textarea.selectionStart = textarea.selectionEnd = start + sym.length;
         }
+        currentErrorInfo = null;
+        renderEditor();
         postToRN({ type: 'code_change', code: textarea.value });
       } else if (msg.type === 'run_tests') {
         runCode(msg);
@@ -208,6 +522,15 @@ export const RUNNER_HTML = `
         clearTimeout(runTimeoutTimer);
         currentWorker.terminate();
         currentWorker = null;
+        
+        // If error occurred, highlight line in editor immediately
+        if (e.data.status === 'tests_passed') {
+          currentErrorInfo = null;
+        } else if (e.data.firstFailing && e.data.firstFailing.errorDetail) {
+          currentErrorInfo = e.data.firstFailing.errorDetail;
+        }
+        renderEditor();
+
         postToRN(e.data);
       };
 
@@ -215,6 +538,8 @@ export const RUNNER_HTML = `
         clearTimeout(runTimeoutTimer);
         currentWorker.terminate();
         currentWorker = null;
+        currentErrorInfo = { message: err.message || 'Execution error' };
+        renderEditor();
         postToRN({
           type: 'run_error',
           runId: msg.runId,
@@ -232,6 +557,7 @@ export const RUNNER_HTML = `
     }
 
     // Ready signal
+    renderEditor();
     postToRN({ type: 'runner_ready' });
   </script>
 </body>

@@ -8,6 +8,7 @@ import {
   Platform,
   Keyboard,
   StatusBar as RNStatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ArrowLeft, Lightbulb, ChevronDown, ChevronUp, Play } from 'lucide-react-native';
@@ -57,6 +58,8 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
   const [tutorCardVisible, setTutorCardVisible] = useState(false);
   const [tutorSource, setTutorSource] = useState<'ai' | 'prewritten'>('prewritten');
   const [tutorText, setTutorText] = useState('');
+  const [isHintLoading, setIsHintLoading] = useState(false);
+  const [isTutorNextLoading, setIsTutorNextLoading] = useState(false);
 
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [isStatementExpanded, setStatementExpanded] = useState(false);
@@ -129,6 +132,26 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
           genRes = checkConstructs(code, problem.functionName, problem.requiredConstructs);
         }
 
+        let parsedError: RunResult['error'] = undefined;
+        if (msg.error) {
+          parsedError = {
+            kind: 'runtime',
+            message: msg.error.message || 'Execution error',
+            line: msg.error.line,
+          };
+        } else if (msg.firstFailing?.errorDetail) {
+          parsedError = {
+            kind: 'runtime',
+            message: msg.firstFailing.errorDetail.message || msg.firstFailing.errorMessage || 'Runtime error',
+            line: msg.firstFailing.errorDetail.line,
+          };
+        } else if (msg.firstFailing?.errorMessage) {
+          parsedError = {
+            kind: 'runtime',
+            message: msg.firstFailing.errorMessage,
+          };
+        }
+
         const formattedRunResult: RunResult = {
           runId: msg.runId,
           seed: 42,
@@ -139,7 +162,7 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
           firstFailing: msg.firstFailing || null,
           printed: msg.printed || '',
           durationMs: 12,
-          error: msg.error ? { kind: 'runtime', message: msg.error.message } : undefined,
+          error: parsedError,
         };
 
         setRunResult(formattedRunResult);
@@ -154,6 +177,7 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
   const handleRequestHint = async (level: 1 | 2 | 3) => {
     setTutorRequestsCount((prev) => prev + 1);
     setCurrentHintLevel(level);
+    setIsHintLoading(true);
 
     // Immediate prewritten fallback for instant response (<1s per DESIGN.md §1)
     const hintText =
@@ -180,6 +204,9 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
       }
     } catch (err) {
       // Keep prewritten fallback gracefully
+    } finally {
+      setIsHintLoading(false);
+      setIsTutorNextLoading(false);
     }
   };
 
@@ -298,11 +325,18 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
               },
             ]}
             onPress={() => handleRequestHint(currentHintLevel)}
+            disabled={isHintLoading}
             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
             activeOpacity={0.7}
           >
-            <Lightbulb size={18} color={colors.primary} />
-            <Text style={[styles.hintBtnText, { color: colors.primary }]}>Hint</Text>
+            {isHintLoading ? (
+              <ActivityIndicator size="small" color={colors.primary} />
+            ) : (
+              <Lightbulb size={18} color={colors.primary} />
+            )}
+            <Text style={[styles.hintBtnText, { color: colors.primary }]}>
+              {isHintLoading ? '...' : 'Hint'}
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -374,8 +408,12 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
             source={tutorSource}
             text={tutorText}
             hintLevel={currentHintLevel}
+            isLoading={isTutorNextLoading}
             onDismiss={() => setTutorCardVisible(false)}
-            onRequestNextLevel={() => handleRequestHint(((currentHintLevel % 3) + 1) as 1 | 2 | 3)}
+            onRequestNextLevel={() => {
+              setIsTutorNextLoading(true);
+              handleRequestHint(((currentHintLevel % 3) + 1) as 1 | 2 | 3);
+            }}
             canRequestMore={currentHintLevel < 3}
           />
         )}
@@ -387,6 +425,12 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
             source={{ html: RUNNER_HTML }}
             originWhitelist={['*']}
             onMessage={handleWebViewMessage}
+            onLoadEnd={() => {
+              webViewRef.current?.postMessage(JSON.stringify({ type: 'set_code', code }));
+              webViewRef.current?.postMessage(
+                JSON.stringify({ type: 'set_theme', textColor: colors.text, isDark: themeMode === 'dark' })
+              );
+            }}
             style={{ backgroundColor: 'transparent' }}
             javaScriptEnabled
             domStorageEnabled={false}
@@ -407,26 +451,43 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
                 },
               ]}
               onPress={() => handleRequestHint(currentHintLevel)}
+              disabled={isHintLoading}
               activeOpacity={0.8}
             >
-              <Lightbulb size={20} color={colors.primary} />
-              <Text style={[styles.actionHintText, { color: colors.primary }]}>Hint</Text>
+              {isHintLoading ? (
+                <ActivityIndicator size="small" color={colors.primary} />
+              ) : (
+                <Lightbulb size={20} color={colors.primary} />
+              )}
+              <Text style={[styles.actionHintText, { color: colors.primary }]}>
+                {isHintLoading ? 'Loading...' : 'Hint'}
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[
                 styles.actionRunBtn,
                 {
-                  backgroundColor: isRunning ? colors.textMuted : colors.primary,
-                  borderBottomColor: isRunning ? colors.textMuted : colors.primaryLip,
+                  backgroundColor: colors.primary,
+                  borderBottomColor: colors.primaryLip,
+                  opacity: isRunning ? 0.85 : 1,
                 },
               ]}
               onPress={handleRunTests}
               disabled={isRunning}
               activeOpacity={0.8}
             >
-              <Play size={20} color="#FFFFFF" fill="#FFFFFF" />
-              <Text style={styles.actionRunText}>{isRunning ? 'Running tests...' : 'Run Tests'}</Text>
+              {isRunning ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                  <Text style={styles.actionRunText}>Running tests...</Text>
+                </View>
+              ) : (
+                <>
+                  <Play size={20} color="#FFFFFF" fill="#FFFFFF" />
+                  <Text style={styles.actionRunText}>Run Tests</Text>
+                </>
+              )}
             </TouchableOpacity>
           </View>
         )}

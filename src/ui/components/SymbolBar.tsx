@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { Play } from 'lucide-react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
@@ -91,7 +91,11 @@ export function SymbolBar({
           disabled={isRunning}
           activeOpacity={0.8}
         >
-          <Play size={14} color="#FFFFFF" fill="#FFFFFF" />
+          {isRunning ? (
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          ) : (
+            <Play size={14} color="#FFFFFF" fill="#FFFFFF" />
+          )}
           <Text style={styles.compactRunText}>{isRunning ? '...' : 'Run'}</Text>
         </TouchableOpacity>
       )}

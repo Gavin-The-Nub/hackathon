@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { AlertTriangle, CheckCircle2, HelpCircle, Sparkles } from 'lucide-react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 import { GenuineResult, Problem, RunResult } from '../../core/types';
@@ -26,6 +27,7 @@ export function ResultsSheet({
   const themeMode = useUserStore((s) => s.theme);
   const colors = themeMode === 'dark' ? DARK_THEME : LIGHT_THEME;
   const [showImproveTip, setShowImproveTip] = useState(false);
+  const [isExplaining, setIsExplaining] = useState(false);
 
   if (!runResult) return null;
 
@@ -35,14 +37,51 @@ export function ResultsSheet({
   const visiblePassedCount = runResult.visible.filter((t) => t.status === 'pass').length;
   const totalVisibleCount = runResult.visible.length;
 
+  const firstFailing = runResult.firstFailing;
+  const isRuntimeError = firstFailing?.status === 'error' || !!runResult.error;
+  const rawErrorMessage = runResult.error?.message || firstFailing?.errorMessage || '';
+  const errorLine = runResult.error?.line;
+
+  // Diagnostic deduction
+  let errorTitle = 'Execution Error';
+  let errorExplanation = '';
+  if (rawErrorMessage.includes('is not defined')) {
+    errorTitle = 'ReferenceError: Undefined Variable';
+    const varName = rawErrorMessage.match(/([a-zA-Z0-9_$]+) is not defined/)?.[1] || '';
+    if (varName && problem.starterCode.includes(varName.slice(0, 3))) {
+      errorExplanation = `Variable '${varName}' was referenced but not defined. Check if it was misspelled or intended to be one of the function arguments.`;
+    } else {
+      errorExplanation = `Variable '${varName}' was referenced before being declared. Declare it with 'let' or verify your parameter names.`;
+    }
+  } else if (rawErrorMessage.includes('Cannot read properties') || rawErrorMessage.includes('is not a function')) {
+    errorTitle = 'TypeError';
+    errorExplanation = 'Attempted an operation or property lookup on an undefined value. Check your object/array access or loop bounds.';
+  } else if (rawErrorMessage.includes('Unexpected') || rawErrorMessage.includes('SyntaxError')) {
+    errorTitle = 'SyntaxError';
+    errorExplanation = 'Could not parse code. Check for unclosed brackets, missing quotes, or misplaced symbols.';
+  } else if (!isRuntimeError && firstFailing) {
+    if (firstFailing.actual === undefined || firstFailing.actual === null) {
+      errorExplanation = `Your function returned ${String(firstFailing.actual)}. Did you forget to 'return' the calculated result?`;
+    } else if (typeof firstFailing.actual !== typeof firstFailing.expected) {
+      errorExplanation = `Type mismatch: expected ${typeof firstFailing.expected} but returned ${typeof firstFailing.actual}.`;
+    } else {
+      errorExplanation = `Calculated ${JSON.stringify(firstFailing.actual)} instead of expected ${JSON.stringify(firstFailing.expected)}. Check your arithmetic or boundary conditions.`;
+    }
+  }
+
+  const handleExplainPress = () => {
+    setIsExplaining(true);
+    onExplainError();
+  };
+
   return (
     <View style={[styles.sheet, { backgroundColor: colors.surface, borderTopColor: colors.surface2 }]}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Header Status */}
         {isAllTestsPassed && !isNotGenuine && (
           <View style={styles.headerRow}>
-            <Text style={styles.iconBig}>🎉</Text>
-            <View>
+            <CheckCircle2 size={32} color={colors.success} />
+            <View style={{ flex: 1 }}>
               <Text style={[styles.title, { color: colors.success }]}>All tests passed!</Text>
               <Text style={[styles.subtitle, { color: colors.textMuted }]}>
                 Your solution is correct and verified.
@@ -53,7 +92,7 @@ export function ResultsSheet({
 
         {isAllTestsPassed && isNotGenuine && (
           <View style={styles.headerRow}>
-            <Text style={styles.iconBig}>💡</Text>
+            <HelpCircle size={32} color={colors.warn} />
             <View style={{ flex: 1 }}>
               <Text style={[styles.title, { color: colors.warn }]}>Almost there!</Text>
               <Text style={[styles.subtitle, { color: colors.text }]}>
@@ -69,38 +108,77 @@ export function ResultsSheet({
 
         {!isAllTestsPassed && (
           <View style={styles.headerRow}>
-            <Text style={styles.iconBig}>⚠️</Text>
-            <View>
+            <AlertTriangle size={32} color={colors.error} />
+            <View style={{ flex: 1 }}>
               <Text style={[styles.title, { color: colors.error }]}>
-                {visiblePassedCount} of {totalVisibleCount} passed
+                {visiblePassedCount} of {totalVisibleCount} tests passed
               </Text>
               <Text style={[styles.subtitle, { color: colors.textMuted }]}>
-                Keep going! Let's check where it differed.
+                {isRuntimeError
+                  ? 'A runtime error occurred during test execution.'
+                  : 'Output did not match expected result.'}
               </Text>
             </View>
           </View>
         )}
 
-        {/* First Failing Test Box */}
-        {!isAllTestsPassed && runResult.firstFailing && (
+        {/* Detailed Error Diagnostic Card */}
+        {!isAllTestsPassed && (isRuntimeError || rawErrorMessage) && (
+          <View style={[styles.errorDiagnosticCard, { backgroundColor: 'rgba(239, 68, 68, 0.08)', borderColor: colors.error }]}>
+            <View style={styles.errorHeaderRow}>
+              <View style={[styles.errorBadge, { backgroundColor: colors.error }]}>
+                <Text style={styles.errorBadgeText}>{errorTitle}</Text>
+              </View>
+              {errorLine ? (
+                <View style={[styles.lineBadge, { backgroundColor: colors.surface2 }]}>
+                  <Text style={[styles.lineBadgeText, { color: colors.text }]}>Line {errorLine}</Text>
+                </View>
+              ) : null}
+            </View>
+            <Text style={[styles.errorMsgText, { color: colors.error }]}>
+              {rawErrorMessage}
+            </Text>
+            {errorExplanation ? (
+              <Text style={[styles.errorExplText, { color: colors.text }]}>
+                💡 {errorExplanation}
+              </Text>
+            ) : null}
+          </View>
+        )}
+
+        {/* First Failing Test Specification Box */}
+        {!isAllTestsPassed && firstFailing && (
           <View style={[styles.box, { backgroundColor: colors.surface2 }]}>
             <Text style={[styles.boxLabel, { color: colors.textMuted }]}>
-              {runResult.firstFailing.hidden ? 'A case we didn’t show:' : 'First failing test:'}
+              {firstFailing.hidden ? 'Hidden Test Case:' : 'Failing Test Case:'}
             </Text>
-            <Text style={[styles.codeRow, { color: colors.text }]}>
-              <Text style={{ fontWeight: '700' }}>Input: </Text>
-              {JSON.stringify(runResult.firstFailing.args)}
-            </Text>
-            <Text style={[styles.codeRow, { color: colors.text }]}>
-              <Text style={{ fontWeight: '700' }}>Expected: </Text>
-              {JSON.stringify(runResult.firstFailing.expected)}
-            </Text>
-            <Text style={[styles.codeRow, { color: colors.error }]}>
-              <Text style={{ fontWeight: '700' }}>You got: </Text>
-              {runResult.firstFailing.actual !== null
-                ? JSON.stringify(runResult.firstFailing.actual)
-                : 'Error'}
-            </Text>
+            <View style={styles.specRow}>
+              <Text style={[styles.specKey, { color: colors.textMuted }]}>Call:</Text>
+              <Text style={[styles.specValue, { color: colors.text }]}>
+                {problem.functionName}({firstFailing.args.map((a) => JSON.stringify(a)).join(', ')})
+              </Text>
+            </View>
+            <View style={styles.specRow}>
+              <Text style={[styles.specKey, { color: colors.textMuted }]}>Expected:</Text>
+              <Text style={[styles.specValue, { color: colors.success, fontWeight: '700' }]}>
+                {JSON.stringify(firstFailing.expected)}
+              </Text>
+            </View>
+            <View style={styles.specRow}>
+              <Text style={[styles.specKey, { color: colors.textMuted }]}>Your Output:</Text>
+              <Text style={[styles.specValue, { color: colors.error, fontWeight: '700' }]}>
+                {firstFailing.actual !== null
+                  ? JSON.stringify(firstFailing.actual)
+                  : isRuntimeError
+                  ? 'Threw error (see above)'
+                  : 'null'}
+              </Text>
+            </View>
+            {!isRuntimeError && errorExplanation ? (
+              <Text style={[styles.diffNote, { color: colors.text }]}>
+                {errorExplanation}
+              </Text>
+            ) : null}
           </View>
         )}
 
@@ -161,13 +239,29 @@ export function ResultsSheet({
           {!isAllTestsPassed && (
             <View style={styles.failActionsRow}>
               <TouchableOpacity
-                style={[styles.secondaryBtn, { borderColor: colors.primary, flex: 1 }]}
-                onPress={onExplainError}
+                style={[
+                  styles.secondaryBtn,
+                  { borderColor: colors.primary, flex: 1, flexDirection: 'row', gap: 6 },
+                ]}
+                onPress={handleExplainPress}
+                disabled={isExplaining}
                 activeOpacity={0.8}
               >
-                <Text style={[styles.secondaryBtnText, { color: colors.primary }]}>
-                  Explain my error
-                </Text>
+                {isExplaining ? (
+                  <>
+                    <ActivityIndicator size="small" color={colors.primary} />
+                    <Text style={[styles.secondaryBtnText, { color: colors.primary }]}>
+                      Consulting AI...
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={16} color={colors.primary} />
+                    <Text style={[styles.secondaryBtnText, { color: colors.primary }]}>
+                      Explain my error
+                    </Text>
+                  </>
+                )}
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -190,7 +284,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    maxHeight: '60%',
+    maxHeight: '65%',
     paddingBottom: 24,
   },
   content: {
@@ -202,9 +296,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  iconBig: {
-    fontSize: 32,
-  },
   title: {
     fontSize: 18,
     fontWeight: '800',
@@ -214,28 +305,83 @@ const styles = StyleSheet.create({
     marginTop: 2,
     lineHeight: 20,
   },
+  errorDiagnosticCard: {
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    gap: 6,
+  },
+  errorHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  errorBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  errorBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+  },
+  lineBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  lineBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  errorMsgText: {
+    fontFamily: 'monospace',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  errorExplText: {
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: '500',
+  },
   box: {
     padding: 12,
     borderRadius: 12,
-    gap: 4,
+    gap: 6,
   },
   boxLabel: {
     fontSize: 12,
     fontWeight: '700',
-    marginBottom: 4,
     textTransform: 'uppercase',
   },
-  codeRow: {
+  specRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  specKey: {
+    fontSize: 13,
+    fontWeight: '600',
+    width: 90,
+  },
+  specValue: {
+    flex: 1,
     fontFamily: 'monospace',
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13,
+  },
+  diffNote: {
+    fontSize: 13,
+    marginTop: 4,
+    fontStyle: 'italic',
   },
   tipText: {
     fontSize: 14,
     lineHeight: 20,
   },
   actions: {
-    marginTop: 8,
+    marginTop: 6,
   },
   primaryBtn: {
     height: 50,
@@ -257,7 +403,7 @@ const styles = StyleSheet.create({
   },
   secondaryBtnText: {
     fontWeight: '800',
-    fontSize: 15,
+    fontSize: 14,
   },
   textBtn: {
     alignItems: 'center',

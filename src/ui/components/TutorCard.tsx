@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 
@@ -7,6 +7,7 @@ interface TutorCardProps {
   source: 'ai' | 'prewritten';
   text: string;
   hintLevel?: number;
+  isLoading?: boolean;
   onDismiss: () => void;
   onRequestNextLevel?: () => void;
   canRequestMore?: boolean;
@@ -16,6 +17,7 @@ export function TutorCard({
   source,
   text,
   hintLevel,
+  isLoading = false,
   onDismiss,
   onRequestNextLevel,
   canRequestMore,
@@ -53,11 +55,19 @@ export function TutorCard({
         <TouchableOpacity
           style={[styles.moreBtn, { backgroundColor: colors.surface2 }]}
           onPress={onRequestNextLevel}
+          disabled={isLoading}
           activeOpacity={0.7}
         >
-          <Text style={[styles.moreBtnText, { color: colors.primary }]}>
-            Need more help? (Level {hintLevel! + 1})
-          </Text>
+          {isLoading ? (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <ActivityIndicator size="small" color={colors.primary} />
+              <Text style={[styles.moreBtnText, { color: colors.primary }]}>Thinking...</Text>
+            </View>
+          ) : (
+            <Text style={[styles.moreBtnText, { color: colors.primary }]}>
+              Need more help? (Level {hintLevel! + 1})
+            </Text>
+          )}
         </TouchableOpacity>
       )}
     </View>

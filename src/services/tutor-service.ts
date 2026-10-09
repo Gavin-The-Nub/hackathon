@@ -120,8 +120,7 @@ export async function requestTutorHelp(params: TutorRequestParams): Promise<Tuto
         prompt: fullPrompt,
         temperature: AI.temperature,
         n_predict: AI.nPredict,
-        stop: ['<|im_end|>', '<|endoftext|>'],
-        grammar: HINT_EXPLAIN_GRAMMAR,
+        stop: ['<|im_end|>', '<|endoftext|>', '<|im_start|>'],
       },
       (data: { token: string }) => {
         firstTokenReceived = true;
@@ -132,8 +131,33 @@ export async function requestTutorHelp(params: TutorRequestParams): Promise<Tuto
 
     await Promise.race([completionPromise, timeoutPromise]);
 
+    let cleanedText = generatedText.trim();
+    // For hints and explanations, sanitize by trimming to the final guiding question mark
+    if (action === 'hint' || action === 'explain') {
+      const lastQ = cleanedText.lastIndexOf('?');
+      if (lastQ > 20) {
+        cleanedText = cleanedText.substring(0, lastQ + 1).trim();
+      } else if (!cleanedText.endsWith('?')) {
+        const sentences = cleanedText.match(/[^.!?]+[.!?]+(\s|$)/g) || [];
+        if (sentences.length <= 2 && (cleanedText.endsWith('.') || cleanedText.endsWith('!'))) {
+          cleanedText = `${cleanedText} What do you think you should check next?`;
+        }
+      }
+
+      // If the model produced more than 3 sentences, distill to at most 3 sentences:
+      // keep the opening context (up to 2 sentences) and the closing guiding question
+      const sentences = cleanedText.match(/[^.!?]+[.!?]+(\s|$)/g);
+      if (sentences && sentences.length > 3) {
+        const firstTwo = sentences.slice(0, 2).map((s) => s.trim()).join(' ');
+        const lastQuestion = sentences[sentences.length - 1].trim();
+        cleanedText = `${firstTwo} ${lastQuestion}`.trim();
+      }
+    }
+
+    console.log(`[AI Tutor] Processed generation (${cleanedText.length} chars):`, JSON.stringify(cleanedText));
+
     // 3. Post-generation guard validation
-    const validation = validateTutorOutput(generatedText, problem.referenceSolution, action);
+    const validation = validateTutorOutput(cleanedText, problem.referenceSolution, action);
     if (!validation.valid) {
       console.warn(`AI tutor output failed guard ${validation.failedGuardId}: ${validation.reason}`);
       return {
@@ -145,7 +169,7 @@ export async function requestTutorHelp(params: TutorRequestParams): Promise<Tuto
 
     return {
       source: 'ai',
-      text: generatedText.trim(),
+      text: cleanedText,
       quickText,
     };
   } catch (err) {

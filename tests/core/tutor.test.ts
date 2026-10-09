@@ -34,6 +34,21 @@ describe('AI Tutor Pipeline', () => {
       expect(res.failedGuardId).toBe('G4');
     });
 
+    it('rejects text exceeding 3 sentences (G2)', () => {
+      const fourSentences =
+        'This is sentence one. This is sentence two. This is sentence three. Does this sentence exceed the limit?';
+      const res = validateTutorOutput(fourSentences, refSolution, 'hint');
+      expect(res.valid).toBe(false);
+      expect(res.failedGuardId).toBe('G2');
+    });
+
+    it('rejects hint that is too short under 25 chars (G3)', () => {
+      const tooShort = 'Too short?';
+      const res = validateTutorOutput(tooShort, refSolution, 'hint');
+      expect(res.valid).toBe(false);
+      expect(res.failedGuardId).toBe('G3');
+    });
+
     it('rejects text that leaks reference solution substring (G5)', () => {
       // 12+ chars of ref solution: "function sumUpTo" -> "functionsumupto"
       const leak = 'Make sure you use functionsumupto in your code?';

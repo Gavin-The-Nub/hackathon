@@ -17,27 +17,27 @@ export function buildSystemPrompt(language: string): string {
 
 Rules:
 - Use plain English with short, simple words.
-- Write at most 3 sentences.
-- Talk about the failing test the learner can see.
+- Write at most 2 brief sentences, then 1 guiding question (at most 3 sentences total).
+- Talk about the failing test or error the learner sees.
 - Never write code. Never give the full answer.
-- End with one guiding question that helps the learner decide their next step.`;
+- Always end with one guiding question that helps the learner decide their next step.`;
 }
 
 export function getTaskInstruction(action: TutorAction, hintLevel?: 1 | 2 | 3): string {
   if (action === 'explain') {
-    return 'Explain in plain words what the failing test or error shows: what was expected, what the code gave, and what that suggests. Do not fix it.';
+    return 'Explain in plain words what the failing test or error shows: what was expected, what the code gave, and what that suggests. Do not fix it. Write at most 2 brief sentences, and end with one guiding question.';
   }
   if (action === 'coach') {
     return 'Give a brief, encouraging one-sentence coach message.';
   }
   switch (hintLevel) {
     case 1:
-      return 'Say what kind of mistake this looks like and which part of the code to check. Do not explain the fix.';
+      return 'Say what kind of mistake this looks like and which part of the code to check. Do not explain the fix. Write 1 or 2 brief sentences, and end with one guiding question.';
     case 2:
-      return 'Explain the idea behind this concept in words, using the concept note. Do not list the steps.';
+      return 'Explain the idea behind this concept in words, using the concept note. Do not list the steps. Write 1 or 2 brief sentences, and end with one guiding question.';
     case 3:
     default:
-      return 'Describe the next step in words. Do not write code. Do not give the final answer.';
+      return 'Describe the next step in words. Do not write code. Do not give the final answer. Write 1 or 2 brief sentences, and end with one guiding question.';
   }
 }
 
