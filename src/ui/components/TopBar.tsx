@@ -33,12 +33,6 @@ export function TopBar() {
         <Text style={[styles.value, { color: colors.streak }]}>{streak}</Text>
       </View>
 
-      {/* XP */}
-      <View style={styles.item}>
-        <Text style={styles.icon}>⚡</Text>
-        <Text style={[styles.value, { color: colors.xp }]}>{totalXp}</Text>
-      </View>
-
       {/* Level */}
       <View style={[styles.levelPill, { backgroundColor: colors.primary }]}>
         <Text style={styles.levelText}>LVL {level}</Text>

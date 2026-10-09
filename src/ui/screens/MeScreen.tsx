@@ -42,7 +42,7 @@ export function MeScreen() {
         </View>
 
         <View style={[styles.statBox, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}>
-          <Text style={styles.statIcon}>⚡</Text>
+          <Text style={styles.statIcon}>⭐</Text>
           <Text style={[styles.statVal, { color: colors.xp }]}>{totalXp}</Text>
           <Text style={[styles.statLabel, { color: colors.textMuted }]}>Total XP</Text>
         </View>

@@ -31,7 +31,7 @@ export function TutorCard({
     <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.primary }]}>
       <View style={styles.header}>
         <View style={styles.badgeRow}>
-          <Text style={styles.sparkle}>{isAi ? '⚡' : '💡'}</Text>
+          <Text style={styles.sparkle}>{isAi ? '✨' : '💡'}</Text>
           <View style={[styles.badge, { backgroundColor: isAi ? colors.primary : colors.surface2 }]}>
             <Text style={[styles.badgeText, { color: isAi ? '#FFFFFF' : colors.text }]}>
               {isAi ? 'On-Device AI Tutor' : 'Quick hint'}
