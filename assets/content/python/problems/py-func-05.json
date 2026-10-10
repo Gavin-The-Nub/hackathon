@@ -1,0 +1,100 @@
+{
+  "id": "py-func-05",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "functions",
+  "secondaryConcepts": [],
+  "title": "Is Divisible",
+  "statement": "Write a function `is_divisible(num, divisor)` that returns True if num is evenly divisible by divisor, else False.",
+  "example": "is_divisible(15, 5) returns True.",
+  "starterCode": "def is_divisible(num, divisor):\n    # your code here\n    pass\n",
+  "functionName": "is_divisible",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        15,
+        5
+      ],
+      "expected": true
+    },
+    {
+      "id": "t2",
+      "args": [
+        14,
+        5
+      ],
+      "expected": false
+    },
+    {
+      "id": "t3",
+      "args": [
+        100,
+        10
+      ],
+      "expected": true
+    },
+    {
+      "id": "t4",
+      "args": [
+        7,
+        3
+      ],
+      "expected": false
+    },
+    {
+      "id": "t5",
+      "args": [
+        24,
+        6
+      ],
+      "expected": true
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 1,
+        "max": 100
+      },
+      {
+        "gen": "intInRange",
+        "min": 1,
+        "max": 20
+      }
+    ],
+    "edgeCases": [
+      [
+        10,
+        1
+      ],
+      [
+        10,
+        10
+      ],
+      [
+        1,
+        2
+      ]
+    ]
+  },
+  "referenceSolution": "def is_divisible(num, divisor):\n    return num % divisor == 0\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Check if the remainder of num divided by divisor is 0.",
+    "Use the modulo % operator and equality == 0.",
+    "A number divides evenly when the remainder is zero, so test the remainder."
+  ],
+  "conceptNote": "Functions with boolean returns often evaluate equality checks directly.",
+  "commonMistakes": [
+    {
+      "tag": "wrong_order",
+      "variantCode": "def is_divisible(num, divisor):\n    return divisor % num == 0\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 5,
+  "variantOf": "py-func-01"
+}

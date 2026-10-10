@@ -1,0 +1,90 @@
+{
+  "id": "py-func-02",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "functions",
+  "secondaryConcepts": [],
+  "title": "Celsius to Fahrenheit",
+  "statement": "Write a function `celsius_to_fahrenheit(c)` that converts degrees Celsius to Fahrenheit using the formula (c * 9 / 5) + 32.",
+  "example": "celsius_to_fahrenheit(0) returns 32.0.",
+  "starterCode": "def celsius_to_fahrenheit(c):\n    # your code here\n    pass\n",
+  "functionName": "celsius_to_fahrenheit",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        0
+      ],
+      "expected": 32
+    },
+    {
+      "id": "t2",
+      "args": [
+        100
+      ],
+      "expected": 212
+    },
+    {
+      "id": "t3",
+      "args": [
+        25
+      ],
+      "expected": 77
+    },
+    {
+      "id": "t4",
+      "args": [
+        -40
+      ],
+      "expected": -40
+    },
+    {
+      "id": "t5",
+      "args": [
+        10
+      ],
+      "expected": 50
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": -50,
+        "max": 150
+      }
+    ],
+    "edgeCases": [
+      [
+        0
+      ],
+      [
+        100
+      ],
+      [
+        -40
+      ],
+      [
+        37
+      ]
+    ]
+  },
+  "referenceSolution": "def celsius_to_fahrenheit(c):\n    return (c * 9 / 5) + 32\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Multiply Celsius by 9, divide by 5, then add 32.",
+    "Use parentheses to maintain order of operations.",
+    "Scale Celsius by nine fifths, then shift by the freezing-point offset."
+  ],
+  "conceptNote": "Functions encapsulate math conversions so you can reuse them anywhere in your program.",
+  "commonMistakes": [
+    {
+      "tag": "wrong_addition",
+      "variantCode": "def celsius_to_fahrenheit(c):\n    return (c * 9 / 5) - 32\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 2,
+  "variantOf": "py-func-01"
+}

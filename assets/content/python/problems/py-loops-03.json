@@ -1,0 +1,91 @@
+{
+  "id": "py-loops-03",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "loops",
+  "secondaryConcepts": [],
+  "title": "Factorial",
+  "statement": "Write a function `factorial(n)` that uses a for loop to compute n! (the product of numbers from 1 to n).",
+  "example": "factorial(4) returns 24 (1 * 2 * 3 * 4).",
+  "starterCode": "def factorial(n):\n    # your code here\n    pass\n",
+  "functionName": "factorial",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        4
+      ],
+      "expected": 24
+    },
+    {
+      "id": "t2",
+      "args": [
+        1
+      ],
+      "expected": 1
+    },
+    {
+      "id": "t3",
+      "args": [
+        0
+      ],
+      "expected": 1
+    },
+    {
+      "id": "t4",
+      "args": [
+        3
+      ],
+      "expected": 6
+    },
+    {
+      "id": "t5",
+      "args": [
+        5
+      ],
+      "expected": 120
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 8
+      }
+    ],
+    "edgeCases": [
+      [
+        0
+      ],
+      [
+        1
+      ],
+      [
+        6
+      ],
+      [
+        7
+      ]
+    ]
+  },
+  "referenceSolution": "def factorial(n):\n    total = 1\n    for i in range(1, n + 1):\n        total *= i\n    return total\n",
+  "requiredConstructs": [
+    "for_loop"
+  ],
+  "prewrittenHints": [
+    "Initialize the product variable to 1, not 0.",
+    "Multiply total by each integer from 1 to n.",
+    "Loop over 1 through n and multiply a running product by each number."
+  ],
+  "conceptNote": "When accumulating products in a loop, start with 1 so you do not multiply by zero.",
+  "commonMistakes": [
+    {
+      "tag": "initializes_to_zero",
+      "variantCode": "def factorial(n):\n    total = 0\n    for i in range(1, n + 1):\n        total *= i\n    return total\n"
+    }
+  ],
+  "difficulty": 2,
+  "order": 3
+}

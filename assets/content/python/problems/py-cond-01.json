@@ -1,0 +1,92 @@
+{
+  "id": "py-cond-01",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "conditionals",
+  "secondaryConcepts": [],
+  "title": "Check Even Number",
+  "statement": "Write a function `is_even(n)` that returns True if the number is even, and False otherwise.",
+  "example": "is_even(4) returns True.",
+  "starterCode": "def is_even(n):\n    # your code here\n    pass\n",
+  "functionName": "is_even",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        4
+      ],
+      "expected": true
+    },
+    {
+      "id": "t2",
+      "args": [
+        7
+      ],
+      "expected": false
+    },
+    {
+      "id": "t3",
+      "args": [
+        0
+      ],
+      "expected": true
+    },
+    {
+      "id": "t4",
+      "args": [
+        -2
+      ],
+      "expected": true
+    },
+    {
+      "id": "t5",
+      "args": [
+        15
+      ],
+      "expected": false
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": -50,
+        "max": 50
+      }
+    ],
+    "edgeCases": [
+      [
+        0
+      ],
+      [
+        1
+      ],
+      [
+        2
+      ],
+      [
+        -1
+      ],
+      [
+        -2
+      ]
+    ]
+  },
+  "referenceSolution": "def is_even(n):\n    return n % 2 == 0\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "The modulo operator % returns the remainder when dividing by 2.",
+    "An even number has a remainder of 0 when divided by 2.",
+    "Return the boolean result of n % 2 == 0."
+  ],
+  "conceptNote": "In Python, modulo operator % checks divisibility. Booleans are True and False (capitalized).",
+  "commonMistakes": [
+    {
+      "tag": "inverted_condition",
+      "variantCode": "def is_even(n):\n    return n % 2 == 1\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 1
+}

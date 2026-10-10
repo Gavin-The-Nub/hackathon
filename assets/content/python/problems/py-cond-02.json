@@ -1,0 +1,90 @@
+{
+  "id": "py-cond-02",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "conditionals",
+  "secondaryConcepts": [],
+  "title": "Can Drive",
+  "statement": "Write a function `can_drive(age)` that returns True if age is 16 or older, and False otherwise.",
+  "example": "can_drive(18) returns True.",
+  "starterCode": "def can_drive(age):\n    # your code here\n    pass\n",
+  "functionName": "can_drive",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        16
+      ],
+      "expected": true
+    },
+    {
+      "id": "t2",
+      "args": [
+        15
+      ],
+      "expected": false
+    },
+    {
+      "id": "t3",
+      "args": [
+        21
+      ],
+      "expected": true
+    },
+    {
+      "id": "t4",
+      "args": [
+        12
+      ],
+      "expected": false
+    },
+    {
+      "id": "t5",
+      "args": [
+        70
+      ],
+      "expected": true
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 100
+      }
+    ],
+    "edgeCases": [
+      [
+        15
+      ],
+      [
+        16
+      ],
+      [
+        17
+      ],
+      [
+        0
+      ]
+    ]
+  },
+  "referenceSolution": "def can_drive(age):\n    return age >= 16\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Compare the age with the legal threshold of 16.",
+    "Check if age is greater than or equal to 16.",
+    "A comparison already produces True or False, so hand that result straight back."
+  ],
+  "conceptNote": "Comparison operators include >= (greater than or equal) and <= (less than or equal).",
+  "commonMistakes": [
+    {
+      "tag": "strictly_greater",
+      "variantCode": "def can_drive(age):\n    return age > 16\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 2,
+  "variantOf": "py-cond-01"
+}

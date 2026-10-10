@@ -190,8 +190,8 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "requiredConstructs": [],
     "prewrittenHints": [
       "A discount reduces the starting cost. Which operator subtracts values?",
-      "Take away the discount amount from original_price.",
-      "Return original_price minus discount."
+      "Take away the discount amount from the starting price.",
+      "Return the starting price minus the discount."
     ],
     "conceptNote": "Subtraction in Python uses the minus operator. Be sure to subtract discount from original_price.",
     "commonMistakes": [
@@ -278,7 +278,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "prewrittenHints": [
       "How many seconds are in a single minute?",
       "Multiply the minutes argument by 60.",
-      "Return minutes times 60."
+      "Convert by multiplying the minutes by the number of seconds in one minute."
     ],
     "conceptNote": "Unit conversion involves multiplying or dividing by constant conversion factors like 60.",
     "commonMistakes": [
@@ -377,7 +377,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "prewrittenHints": [
       "The area of a rectangle is width multiplied by height.",
       "Use the asterisk multiplication operator between width and height.",
-      "Return width * height."
+      "Multiply the two side lengths together and give back the result."
     ],
     "conceptNote": "Geometry formulas in Python are calculated using arithmetic operators.",
     "commonMistakes": [
@@ -648,7 +648,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "prewrittenHints": [
       "Compare the age with the legal threshold of 16.",
       "Check if age is greater than or equal to 16.",
-      "Return age >= 16."
+      "A comparison already produces True or False, so hand that result straight back."
     ],
     "conceptNote": "Comparison operators include >= (greater than or equal) and <= (less than or equal).",
     "commonMistakes": [
@@ -748,7 +748,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "prewrittenHints": [
       "Compare a with b using an if statement.",
       "If a is greater than b, return a; otherwise return b.",
-      "Use if a > b: return a else return b."
+      "Compare the two values, then give back whichever one is larger."
     ],
     "conceptNote": "Use if statements in Python to branch decision paths based on conditions.",
     "commonMistakes": [
@@ -840,7 +840,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "prewrittenHints": [
       "Check whether score meets or exceeds 60.",
       "Use >= to include the score 60 itself as passing.",
-      "Return score >= 60."
+      "Compare the score with the passing mark and give back that True/False answer."
     ],
     "conceptNote": "Threshold checks evaluate if a numerical value is at or above a benchmark.",
     "commonMistakes": [
@@ -1019,9 +1019,9 @@ export const PYTHON_PROBLEMS: Problem[] = [
       "for_loop"
     ],
     "prewrittenHints": [
-      "In Python, range(1, n + 1) generates numbers from 1 up to n.",
+      "In Python, range stops one before its end value, so extend the end by one to include n.",
       "Accumulate each number into a running total variable initialized to 0.",
-      "Loop with for i in range(1, n + 1) and add i to total."
+      "Loop over the numbers 1 through n and add each one to a running total."
     ],
     "conceptNote": "In Python, for i in range(start, stop) loops up to but not including stop. To include n, use n + 1.",
     "commonMistakes": [
@@ -1129,7 +1129,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     ],
     "prewrittenHints": [
       "Initialize an empty list res = [].",
-      "While start >= 0, append start to the list and decrement start.",
+      "Keep going while the counter is not negative: save it to the list, then reduce it by one.",
       "Remember start -= 1 inside the loop to avoid an infinite loop."
     ],
     "conceptNote": "While loops repeat as long as their condition is true. Ensure the loop counter decreases each step.",
@@ -1222,7 +1222,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "prewrittenHints": [
       "Initialize the product variable to 1, not 0.",
       "Multiply total by each integer from 1 to n.",
-      "Use for i in range(1, n + 1) and total *= i."
+      "Loop over 1 through n and multiply a running product by each number."
     ],
     "conceptNote": "When accumulating products in a loop, start with 1 so you do not multiply by zero.",
     "commonMistakes": [
@@ -1322,7 +1322,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     ],
     "prewrittenHints": [
       "Initialize an empty string res = \"\".",
-      "Loop count times using range(count).",
+      "Repeat the body as many times as the count, building the text as you go.",
       "Add text to res on each iteration."
     ],
     "conceptNote": "Strings can be concatenated repeatedly inside loops using +=.",
@@ -1415,7 +1415,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
       "for_loop"
     ],
     "prewrittenHints": [
-      "Iterate over range(1, limit + 1).",
+      "Walk through every number from 1 up to and including the limit.",
       "Use if i % 2 == 0 to check if each number is even.",
       "Increment your counter whenever an even number is found."
     ],
@@ -1504,7 +1504,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "prewrittenHints": [
       "You can combine strings with the + operator or an f-string.",
       "Include the comma and exclamation mark in the template.",
-      "Return \"Hello, \" + name + \"!\""
+      "Glue a greeting word, a comma and space, the name and an exclamation mark into one string."
     ],
     "conceptNote": "In Python, string formatting is easily done with string concatenation (+) or f-strings.",
     "commonMistakes": [
@@ -1593,7 +1593,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "prewrittenHints": [
       "Multiply Celsius by 9, divide by 5, then add 32.",
       "Use parentheses to maintain order of operations.",
-      "Return (c * 9 / 5) + 32."
+      "Scale Celsius by nine fifths, then shift by the freezing-point offset."
     ],
     "conceptNote": "Functions encapsulate math conversions so you can reuse them anywhere in your program.",
     "commonMistakes": [
@@ -1688,7 +1688,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "requiredConstructs": [],
     "prewrittenHints": [
       "Add a space string between first and last name.",
-      "You can use first + \" \" + last or an f-string.",
+      "Join the two names with a single space between them; string joining or an f-string both work.",
       "Return the joined names with a space."
     ],
     "conceptNote": "String joining in Python can be performed using addition operators with literal space strings.",
@@ -1788,7 +1788,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "prewrittenHints": [
       "Divide weight by the square of height.",
       "Use Python built-in round(val, 1) to round to one decimal place.",
-      "Return round(weight / (height * height), 1)."
+      "Divide weight by height squared, then round to one decimal place."
     ],
     "conceptNote": "The built-in round(number, ndigits) function in Python rounds floating point numbers.",
     "commonMistakes": [
@@ -1887,7 +1887,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "prewrittenHints": [
       "Check if the remainder of num divided by divisor is 0.",
       "Use the modulo % operator and equality == 0.",
-      "Return num % divisor == 0."
+      "A number divides evenly when the remainder is zero, so test the remainder."
     ],
     "conceptNote": "Functions with boolean returns often evaluate equality checks directly.",
     "commonMistakes": [
@@ -2255,7 +2255,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "prewrittenHints": [
       "Initialize an empty list res = [].",
       "Check if each element n > 0 inside your loop.",
-      "Use res.append(n) to append matching numbers and return res."
+      "Collect each matching number into a new list, then give that list back."
     ],
     "conceptNote": "In Python, list.append(x) adds an item x to the end of a list.",
     "commonMistakes": [
@@ -2380,7 +2380,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     "prewrittenHints": [
       "In Python, list slicing with [::-1] returns a reversed copy.",
       "You can slice with items[::-1] or build a reversed list with a loop.",
-      "Return items[::-1]."
+      "Slicing with a step of negative one gives you the reversed list."
     ],
     "conceptNote": "Python slice notation [start:stop:step] with step -1 reverses any sequence.",
     "commonMistakes": [
@@ -2504,7 +2504,7 @@ export const PYTHON_PROBLEMS: Problem[] = [
     ],
     "prewrittenHints": [
       "Initialize a counter to 0.",
-      "Iterate over items and check if item == target.",
+      "Walk through the items and test each one for equality with the target.",
       "Increment counter when matched, and return counter."
     ],
     "conceptNote": "Linear frequency counting iterates over each element and increments a counter for matches.",

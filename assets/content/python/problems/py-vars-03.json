@@ -1,0 +1,86 @@
+{
+  "id": "py-vars-03",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "variables_types",
+  "secondaryConcepts": [],
+  "title": "Minutes to Seconds",
+  "statement": "Write a function `minutes_to_seconds(minutes)` that converts a count of minutes into total seconds.",
+  "example": "minutes_to_seconds(3) returns 180.",
+  "starterCode": "def minutes_to_seconds(minutes):\n    # your code here\n    pass\n",
+  "functionName": "minutes_to_seconds",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        1
+      ],
+      "expected": 60
+    },
+    {
+      "id": "t2",
+      "args": [
+        3
+      ],
+      "expected": 180
+    },
+    {
+      "id": "t3",
+      "args": [
+        0
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t4",
+      "args": [
+        10
+      ],
+      "expected": 600
+    },
+    {
+      "id": "t5",
+      "args": [
+        5
+      ],
+      "expected": 300
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 120
+      }
+    ],
+    "edgeCases": [
+      [
+        0
+      ],
+      [
+        1
+      ],
+      [
+        60
+      ]
+    ]
+  },
+  "referenceSolution": "def minutes_to_seconds(minutes):\n    return minutes * 60\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "How many seconds are in a single minute?",
+    "Multiply the minutes argument by 60.",
+    "Convert by multiplying the minutes by the number of seconds in one minute."
+  ],
+  "conceptNote": "Unit conversion involves multiplying or dividing by constant conversion factors like 60.",
+  "commonMistakes": [
+    {
+      "tag": "wrong_factor",
+      "variantCode": "def minutes_to_seconds(minutes):\n    return minutes * 100\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 3
+}

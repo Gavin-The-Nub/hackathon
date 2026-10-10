@@ -20,11 +20,17 @@ In accordance with Hackathon guidelines and project rule H10, all models, librar
 - **react-native-safe-area-context, react-native-screens**: Mobile layout and screen primitives
 - **react-native-svg, lucide-react-native**: Vector icons
 - **acorn, acorn-walk**: Offline JavaScript AST parser for structural and construct verification
+- **Skulpt**: In-browser Python interpreter (bundled locally) for offline Python execution
+- **expo-font, @expo-google-fonts/geologica**: Font loading
 - **jest, ts-jest**: Unit testing harness for pure TypeScript core logic
 
 ## 3. Fonts
 - **Nunito**: Google Fonts, SIL Open Font License (OFL)
 - **JetBrains Mono**: JetBrains, Apache 2.0 License
+- **Geologica**: Google Fonts, SIL Open Font License (OFL) (path-selection title)
+
+## 3b. Assets
+- JavaScript and Python logos: vector paths from the devicon project (MIT); trademarks belong to their respective owners.
 
 ## 4. AI Development Tools
 - **Antigravity (Google DeepMind)**: AI pair-programming assistant used during hackathon implementation

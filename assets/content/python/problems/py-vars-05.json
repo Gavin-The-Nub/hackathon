@@ -1,0 +1,90 @@
+{
+  "id": "py-vars-05",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "variables_types",
+  "secondaryConcepts": [],
+  "title": "Square Number",
+  "statement": "Write a function `square(n)` that returns the square of the given number n.",
+  "example": "square(6) returns 36.",
+  "starterCode": "def square(n):\n    # your code here\n    pass\n",
+  "functionName": "square",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        6
+      ],
+      "expected": 36
+    },
+    {
+      "id": "t2",
+      "args": [
+        0
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t3",
+      "args": [
+        1
+      ],
+      "expected": 1
+    },
+    {
+      "id": "t4",
+      "args": [
+        9
+      ],
+      "expected": 81
+    },
+    {
+      "id": "t5",
+      "args": [
+        12
+      ],
+      "expected": 144
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 30
+      }
+    ],
+    "edgeCases": [
+      [
+        0
+      ],
+      [
+        1
+      ],
+      [
+        2
+      ],
+      [
+        10
+      ]
+    ]
+  },
+  "referenceSolution": "def square(n):\n    return n * n\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Squaring a number means multiplying it by itself.",
+    "You can do n * n or use n ** 2 in Python.",
+    "Return n multiplied by n."
+  ],
+  "conceptNote": "In Python, exponentiation can be written with n * n or using the power operator **.",
+  "commonMistakes": [
+    {
+      "tag": "doubled_instead",
+      "variantCode": "def square(n):\n    return n * 2\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 5,
+  "variantOf": "py-vars-01"
+}

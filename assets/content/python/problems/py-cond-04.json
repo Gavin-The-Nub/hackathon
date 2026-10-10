@@ -1,0 +1,92 @@
+{
+  "id": "py-cond-04",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "conditionals",
+  "secondaryConcepts": [],
+  "title": "Check Passing Score",
+  "statement": "Write a function `is_passing(score)` that returns True if score is 60 or higher, and False otherwise.",
+  "example": "is_passing(75) returns True.",
+  "starterCode": "def is_passing(score):\n    # your code here\n    pass\n",
+  "functionName": "is_passing",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        75
+      ],
+      "expected": true
+    },
+    {
+      "id": "t2",
+      "args": [
+        60
+      ],
+      "expected": true
+    },
+    {
+      "id": "t3",
+      "args": [
+        59
+      ],
+      "expected": false
+    },
+    {
+      "id": "t4",
+      "args": [
+        100
+      ],
+      "expected": true
+    },
+    {
+      "id": "t5",
+      "args": [
+        0
+      ],
+      "expected": false
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 100
+      }
+    ],
+    "edgeCases": [
+      [
+        59
+      ],
+      [
+        60
+      ],
+      [
+        61
+      ],
+      [
+        0
+      ],
+      [
+        100
+      ]
+    ]
+  },
+  "referenceSolution": "def is_passing(score):\n    return score >= 60\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Check whether score meets or exceeds 60.",
+    "Use >= to include the score 60 itself as passing.",
+    "Compare the score with the passing mark and give back that True/False answer."
+  ],
+  "conceptNote": "Threshold checks evaluate if a numerical value is at or above a benchmark.",
+  "commonMistakes": [
+    {
+      "tag": "strictly_greater",
+      "variantCode": "def is_passing(score):\n    return score > 60\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 4
+}

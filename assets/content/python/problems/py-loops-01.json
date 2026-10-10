@@ -1,0 +1,91 @@
+{
+  "id": "py-loops-01",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "loops",
+  "secondaryConcepts": [],
+  "title": "Sum Up to N",
+  "statement": "Write a function `sum_up_to(n)` that uses a for loop to compute the sum of all integers from 1 up to n.",
+  "example": "sum_up_to(4) returns 10 (1 + 2 + 3 + 4).",
+  "starterCode": "def sum_up_to(n):\n    # your code here\n    pass\n",
+  "functionName": "sum_up_to",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        4
+      ],
+      "expected": 10
+    },
+    {
+      "id": "t2",
+      "args": [
+        1
+      ],
+      "expected": 1
+    },
+    {
+      "id": "t3",
+      "args": [
+        5
+      ],
+      "expected": 15
+    },
+    {
+      "id": "t4",
+      "args": [
+        10
+      ],
+      "expected": 55
+    },
+    {
+      "id": "t5",
+      "args": [
+        0
+      ],
+      "expected": 0
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 50
+      }
+    ],
+    "edgeCases": [
+      [
+        0
+      ],
+      [
+        1
+      ],
+      [
+        2
+      ],
+      [
+        20
+      ]
+    ]
+  },
+  "referenceSolution": "def sum_up_to(n):\n    total = 0\n    for i in range(1, n + 1):\n        total += i\n    return total\n",
+  "requiredConstructs": [
+    "for_loop"
+  ],
+  "prewrittenHints": [
+    "In Python, range stops one before its end value, so extend the end by one to include n.",
+    "Accumulate each number into a running total variable initialized to 0.",
+    "Loop over the numbers 1 through n and add each one to a running total."
+  ],
+  "conceptNote": "In Python, for i in range(start, stop) loops up to but not including stop. To include n, use n + 1.",
+  "commonMistakes": [
+    {
+      "tag": "misses_last_number",
+      "variantCode": "def sum_up_to(n):\n    total = 0\n    for i in range(1, n):\n        total += i\n    return total\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 1
+}

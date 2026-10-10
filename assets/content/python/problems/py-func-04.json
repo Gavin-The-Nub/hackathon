@@ -1,0 +1,99 @@
+{
+  "id": "py-func-04",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "functions",
+  "secondaryConcepts": [],
+  "title": "Calculate BMI",
+  "statement": "Write a function `calculate_bmi(weight, height)` that returns body mass index rounded to 1 decimal place: weight / (height * height).",
+  "example": "calculate_bmi(70, 1.75) returns 22.9.",
+  "starterCode": "def calculate_bmi(weight, height):\n    # your code here\n    pass\n",
+  "functionName": "calculate_bmi",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        70,
+        1.75
+      ],
+      "expected": 22.9
+    },
+    {
+      "id": "t2",
+      "args": [
+        80,
+        1.8
+      ],
+      "expected": 24.7
+    },
+    {
+      "id": "t3",
+      "args": [
+        60,
+        1.65
+      ],
+      "expected": 22
+    },
+    {
+      "id": "t4",
+      "args": [
+        95,
+        1.9
+      ],
+      "expected": 26.3
+    },
+    {
+      "id": "t5",
+      "args": [
+        50,
+        1.6
+      ],
+      "expected": 19.5
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 45,
+        "max": 110
+      },
+      {
+        "gen": "intInRange",
+        "min": 140,
+        "max": 200
+      }
+    ],
+    "edgeCases": [
+      [
+        70,
+        1.75
+      ],
+      [
+        80,
+        1.8
+      ],
+      [
+        55,
+        1.65
+      ]
+    ]
+  },
+  "referenceSolution": "def calculate_bmi(weight, height):\n    return round(weight / (height * height), 1)\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Divide weight by the square of height.",
+    "Use Python built-in round(val, 1) to round to one decimal place.",
+    "Divide weight by height squared, then round to one decimal place."
+  ],
+  "conceptNote": "The built-in round(number, ndigits) function in Python rounds floating point numbers.",
+  "commonMistakes": [
+    {
+      "tag": "forgot_to_square",
+      "variantCode": "def calculate_bmi(weight, height):\n    return round(weight / height, 1)\n"
+    }
+  ],
+  "difficulty": 2,
+  "order": 4
+}

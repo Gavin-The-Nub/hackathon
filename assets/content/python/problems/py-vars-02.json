@@ -1,0 +1,100 @@
+{
+  "id": "py-vars-02",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "variables_types",
+  "secondaryConcepts": [],
+  "title": "Discounted Price",
+  "statement": "Write a function `discounted_price(original_price, discount)` that returns the price after subtracting the discount.",
+  "example": "discounted_price(100, 20) returns 80.",
+  "starterCode": "def discounted_price(original_price, discount):\n    # your code here\n    pass\n",
+  "functionName": "discounted_price",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        100,
+        20
+      ],
+      "expected": 80
+    },
+    {
+      "id": "t2",
+      "args": [
+        50,
+        50
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t3",
+      "args": [
+        45,
+        10
+      ],
+      "expected": 35
+    },
+    {
+      "id": "t4",
+      "args": [
+        80,
+        0
+      ],
+      "expected": 80
+    },
+    {
+      "id": "t5",
+      "args": [
+        200,
+        75
+      ],
+      "expected": 125
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 50,
+        "max": 200
+      },
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 50
+      }
+    ],
+    "edgeCases": [
+      [
+        100,
+        0
+      ],
+      [
+        50,
+        50
+      ],
+      [
+        0,
+        0
+      ]
+    ]
+  },
+  "referenceSolution": "def discounted_price(original_price, discount):\n    return original_price - discount\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "A discount reduces the starting cost. Which operator subtracts values?",
+    "Take away the discount amount from the starting price.",
+    "Return the starting price minus the discount."
+  ],
+  "conceptNote": "Subtraction in Python uses the minus operator. Be sure to subtract discount from original_price.",
+  "commonMistakes": [
+    {
+      "tag": "wrong_operator",
+      "variantCode": "def discounted_price(original_price, discount):\n    return original_price + discount\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 2,
+  "variantOf": "py-vars-01"
+}

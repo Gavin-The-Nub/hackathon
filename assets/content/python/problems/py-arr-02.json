@@ -1,0 +1,111 @@
+{
+  "id": "py-arr-02",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "arrays_lists",
+  "secondaryConcepts": [],
+  "title": "Sum List Numbers",
+  "statement": "Write a function `sum_list(numbers)` using a loop that returns the sum of all numbers in the list.",
+  "example": "sum_list([1, 2, 3, 4]) returns 10.",
+  "starterCode": "def sum_list(numbers):\n    # your code here\n    pass\n",
+  "functionName": "sum_list",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        [
+          1,
+          2,
+          3,
+          4
+        ]
+      ],
+      "expected": 10
+    },
+    {
+      "id": "t2",
+      "args": [
+        []
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t3",
+      "args": [
+        [
+          5
+        ]
+      ],
+      "expected": 5
+    },
+    {
+      "id": "t4",
+      "args": [
+        [
+          -2,
+          2,
+          -3,
+          3
+        ]
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t5",
+      "args": [
+        [
+          10,
+          20,
+          30
+        ]
+      ],
+      "expected": 60
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intArray",
+        "minLen": 0,
+        "maxLen": 10,
+        "min": -20,
+        "max": 20
+      }
+    ],
+    "edgeCases": [
+      [
+        []
+      ],
+      [
+        [
+          0
+        ]
+      ],
+      [
+        [
+          100
+        ]
+      ]
+    ]
+  },
+  "referenceSolution": "def sum_list(numbers):\n    total = 0\n    for n in numbers:\n        total += n\n    return total\n",
+  "requiredConstructs": [
+    "any_loop"
+  ],
+  "prewrittenHints": [
+    "Initialize a total variable to 0.",
+    "Iterate over every item in numbers and add it to total.",
+    "Return total after the loop completes."
+  ],
+  "conceptNote": "Accumulating values across a list is a fundamental algorithmic pattern in Python.",
+  "commonMistakes": [
+    {
+      "tag": "wrong_initial_value",
+      "variantCode": "def sum_list(numbers):\n    total = 1\n    for n in numbers:\n        total += n\n    return total\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 2,
+  "variantOf": "py-arr-01"
+}

@@ -1,0 +1,110 @@
+{
+  "id": "py-loops-02",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "loops",
+  "secondaryConcepts": [],
+  "title": "Countdown List",
+  "statement": "Write a function `count_down(start)` using a while loop that returns a list counting down from start to 0.",
+  "example": "count_down(3) returns [3, 2, 1, 0].",
+  "starterCode": "def count_down(start):\n    # your code here\n    pass\n",
+  "functionName": "count_down",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        3
+      ],
+      "expected": [
+        3,
+        2,
+        1,
+        0
+      ]
+    },
+    {
+      "id": "t2",
+      "args": [
+        0
+      ],
+      "expected": [
+        0
+      ]
+    },
+    {
+      "id": "t3",
+      "args": [
+        1
+      ],
+      "expected": [
+        1,
+        0
+      ]
+    },
+    {
+      "id": "t4",
+      "args": [
+        5
+      ],
+      "expected": [
+        5,
+        4,
+        3,
+        2,
+        1,
+        0
+      ]
+    },
+    {
+      "id": "t5",
+      "args": [
+        2
+      ],
+      "expected": [
+        2,
+        1,
+        0
+      ]
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 20
+      }
+    ],
+    "edgeCases": [
+      [
+        0
+      ],
+      [
+        1
+      ],
+      [
+        10
+      ]
+    ]
+  },
+  "referenceSolution": "def count_down(start):\n    res = []\n    while start >= 0:\n        res.append(start)\n        start -= 1\n    return res\n",
+  "requiredConstructs": [
+    "while_loop"
+  ],
+  "prewrittenHints": [
+    "Initialize an empty list res = [].",
+    "Keep going while the counter is not negative: save it to the list, then reduce it by one.",
+    "Remember start -= 1 inside the loop to avoid an infinite loop."
+  ],
+  "conceptNote": "While loops repeat as long as their condition is true. Ensure the loop counter decreases each step.",
+  "commonMistakes": [
+    {
+      "tag": "misses_zero",
+      "variantCode": "def count_down(start):\n    res = []\n    while start > 0:\n        res.append(start)\n        start -= 1\n    return res\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 2,
+  "variantOf": "py-loops-01"
+}

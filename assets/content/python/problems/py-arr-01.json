@@ -1,0 +1,128 @@
+{
+  "id": "py-arr-01",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "arrays_lists",
+  "secondaryConcepts": [],
+  "title": "Find Maximum",
+  "statement": "Write a function `find_max(numbers)` using a loop that returns the largest number in a non-empty list of numbers.",
+  "example": "find_max([3, 7, 2, 9, 4]) returns 9.",
+  "starterCode": "def find_max(numbers):\n    # your code here\n    pass\n",
+  "functionName": "find_max",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        [
+          3,
+          7,
+          2,
+          9,
+          4
+        ]
+      ],
+      "expected": 9
+    },
+    {
+      "id": "t2",
+      "args": [
+        [
+          -5,
+          -2,
+          -10
+        ]
+      ],
+      "expected": -2
+    },
+    {
+      "id": "t3",
+      "args": [
+        [
+          42
+        ]
+      ],
+      "expected": 42
+    },
+    {
+      "id": "t4",
+      "args": [
+        [
+          10,
+          20,
+          30,
+          5
+        ]
+      ],
+      "expected": 30
+    },
+    {
+      "id": "t5",
+      "args": [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "expected": 0
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intArray",
+        "minLen": 1,
+        "maxLen": 10,
+        "min": -50,
+        "max": 50
+      }
+    ],
+    "edgeCases": [
+      [
+        [
+          1
+        ]
+      ],
+      [
+        [
+          -100
+        ]
+      ],
+      [
+        [
+          5,
+          5,
+          5
+        ]
+      ],
+      [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      ]
+    ]
+  },
+  "referenceSolution": "def find_max(numbers):\n    max_val = numbers[0]\n    for n in numbers:\n        if n > max_val:\n            max_val = n\n    return max_val\n",
+  "requiredConstructs": [
+    "any_loop"
+  ],
+  "prewrittenHints": [
+    "Initialize your max variable to the first element numbers[0].",
+    "Loop through each element and update max if the current number is bigger.",
+    "Return the maximum value found after the loop finishes."
+  ],
+  "conceptNote": "In Python, lists are indexed with [0]. You can iterate through lists directly with for item in list:.",
+  "commonMistakes": [
+    {
+      "tag": "initializes_to_zero",
+      "variantCode": "def find_max(numbers):\n    max_val = 0\n    for n in numbers:\n        if n > max_val:\n            max_val = n\n    return max_val\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 1
+}

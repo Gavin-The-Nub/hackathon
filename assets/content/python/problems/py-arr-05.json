@@ -1,0 +1,126 @@
+{
+  "id": "py-arr-05",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "arrays_lists",
+  "secondaryConcepts": [],
+  "title": "Count Occurrences",
+  "statement": "Write a function `count_occurrences(items, target)` using a loop that counts how many times target appears in items.",
+  "example": "count_occurrences([1, 2, 2, 3, 2], 2) returns 3.",
+  "starterCode": "def count_occurrences(items, target):\n    # your code here\n    pass\n",
+  "functionName": "count_occurrences",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        [
+          1,
+          2,
+          2,
+          3,
+          2
+        ],
+        2
+      ],
+      "expected": 3
+    },
+    {
+      "id": "t2",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ],
+        4
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t3",
+      "args": [
+        [],
+        5
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t4",
+      "args": [
+        [
+          7,
+          7,
+          7
+        ],
+        7
+      ],
+      "expected": 3
+    },
+    {
+      "id": "t5",
+      "args": [
+        [
+          0,
+          1,
+          0
+        ],
+        0
+      ],
+      "expected": 2
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intArray",
+        "minLen": 0,
+        "maxLen": 12,
+        "min": 0,
+        "max": 5
+      },
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 5
+      }
+    ],
+    "edgeCases": [
+      [
+        [],
+        1
+      ],
+      [
+        [
+          1
+        ],
+        1
+      ],
+      [
+        [
+          1
+        ],
+        2
+      ]
+    ]
+  },
+  "referenceSolution": "def count_occurrences(items, target):\n    cnt = 0\n    for item in items:\n        if item == target:\n            cnt += 1\n    return cnt\n",
+  "requiredConstructs": [
+    "any_loop"
+  ],
+  "prewrittenHints": [
+    "Initialize a counter to 0.",
+    "Walk through the items and test each one for equality with the target.",
+    "Increment counter when matched, and return counter."
+  ],
+  "conceptNote": "Linear frequency counting iterates over each element and increments a counter for matches.",
+  "commonMistakes": [
+    {
+      "tag": "stops_early",
+      "variantCode": "def count_occurrences(items, target):\n    cnt = 0\n    for item in items[:-1]:\n        if item == target:\n            cnt += 1\n    return cnt\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 5,
+  "variantOf": "py-arr-01"
+}

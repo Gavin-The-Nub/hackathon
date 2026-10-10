@@ -1,0 +1,86 @@
+{
+  "id": "py-func-01",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "functions",
+  "secondaryConcepts": [],
+  "title": "Personalized Greeting",
+  "statement": "Write a function `greet(name)` that returns a greeting string formatted as `Hello, <name>!`.",
+  "example": "greet(\"Alex\") returns \"Hello, Alex!\".",
+  "starterCode": "def greet(name):\n    # your code here\n    pass\n",
+  "functionName": "greet",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        "Alex"
+      ],
+      "expected": "Hello, Alex!"
+    },
+    {
+      "id": "t2",
+      "args": [
+        "CodeChamp"
+      ],
+      "expected": "Hello, CodeChamp!"
+    },
+    {
+      "id": "t3",
+      "args": [
+        "World"
+      ],
+      "expected": "Hello, World!"
+    },
+    {
+      "id": "t4",
+      "args": [
+        "Python"
+      ],
+      "expected": "Hello, Python!"
+    },
+    {
+      "id": "t5",
+      "args": [
+        "Sam"
+      ],
+      "expected": "Hello, Sam!"
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "asciiWord",
+        "minLen": 2,
+        "maxLen": 8
+      }
+    ],
+    "edgeCases": [
+      [
+        "A"
+      ],
+      [
+        "User"
+      ],
+      [
+        "Champion"
+      ]
+    ]
+  },
+  "referenceSolution": "def greet(name):\n    return \"Hello, \" + name + \"!\"\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "You can combine strings with the + operator or an f-string.",
+    "Include the comma and exclamation mark in the template.",
+    "Glue a greeting word, a comma and space, the name and an exclamation mark into one string."
+  ],
+  "conceptNote": "In Python, string formatting is easily done with string concatenation (+) or f-strings.",
+  "commonMistakes": [
+    {
+      "tag": "missing_exclamation",
+      "variantCode": "def greet(name):\n    return \"Hello, \" + name\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 1
+}

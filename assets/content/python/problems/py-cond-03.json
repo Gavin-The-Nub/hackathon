@@ -1,0 +1,99 @@
+{
+  "id": "py-cond-03",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "conditionals",
+  "secondaryConcepts": [],
+  "title": "Max of Two",
+  "statement": "Write a function `max_of_two(a, b)` that returns the larger of the two given numbers.",
+  "example": "max_of_two(10, 25) returns 25.",
+  "starterCode": "def max_of_two(a, b):\n    # your code here\n    pass\n",
+  "functionName": "max_of_two",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        10,
+        25
+      ],
+      "expected": 25
+    },
+    {
+      "id": "t2",
+      "args": [
+        40,
+        5
+      ],
+      "expected": 40
+    },
+    {
+      "id": "t3",
+      "args": [
+        7,
+        7
+      ],
+      "expected": 7
+    },
+    {
+      "id": "t4",
+      "args": [
+        -5,
+        -2
+      ],
+      "expected": -2
+    },
+    {
+      "id": "t5",
+      "args": [
+        0,
+        -10
+      ],
+      "expected": 0
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": -100,
+        "max": 100
+      },
+      {
+        "gen": "intInRange",
+        "min": -100,
+        "max": 100
+      }
+    ],
+    "edgeCases": [
+      [
+        0,
+        0
+      ],
+      [
+        -5,
+        -5
+      ],
+      [
+        10,
+        -10
+      ]
+    ]
+  },
+  "referenceSolution": "def max_of_two(a, b):\n    if a > b:\n        return a\n    return b\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Compare a with b using an if statement.",
+    "If a is greater than b, return a; otherwise return b.",
+    "Compare the two values, then give back whichever one is larger."
+  ],
+  "conceptNote": "Use if statements in Python to branch decision paths based on conditions.",
+  "commonMistakes": [
+    {
+      "tag": "returns_minimum",
+      "variantCode": "def max_of_two(a, b):\n    if a < b:\n        return a\n    return b\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 3
+}

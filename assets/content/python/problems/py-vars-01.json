@@ -1,0 +1,103 @@
+{
+  "id": "py-vars-01",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "variables_types",
+  "secondaryConcepts": [],
+  "title": "Calculate Total Cost",
+  "statement": "Write a function `total_cost(price, quantity)` that calculates and returns the total cost by multiplying price by quantity.",
+  "example": "total_cost(10, 3) returns 30.",
+  "starterCode": "def total_cost(price, quantity):\n    # your code here\n    pass\n",
+  "functionName": "total_cost",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        10,
+        3
+      ],
+      "expected": 30
+    },
+    {
+      "id": "t2",
+      "args": [
+        5,
+        0
+      ],
+      "expected": 0
+    },
+    {
+      "id": "t3",
+      "args": [
+        7,
+        4
+      ],
+      "expected": 28
+    },
+    {
+      "id": "t4",
+      "args": [
+        12,
+        1
+      ],
+      "expected": 12
+    },
+    {
+      "id": "t5",
+      "args": [
+        25,
+        4
+      ],
+      "expected": 100
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 100
+      },
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 100
+      }
+    ],
+    "edgeCases": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        50
+      ],
+      [
+        99,
+        100
+      ]
+    ]
+  },
+  "referenceSolution": "def total_cost(price, quantity):\n    return price * quantity\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Think about what math operator multiplies two numbers in Python.",
+    "In Python, use the asterisk symbol to multiply two numbers.",
+    "Multiply price by quantity and use return to give back the result."
+  ],
+  "conceptNote": "In Python, variables store values and basic arithmetic uses standard operators (+, -, *, /). Functions return their output using the return keyword.",
+  "commonMistakes": [
+    {
+      "tag": "wrong_operator",
+      "variantCode": "def total_cost(price, quantity):\n    return price + quantity\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 1
+}

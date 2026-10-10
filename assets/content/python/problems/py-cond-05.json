@@ -1,0 +1,90 @@
+{
+  "id": "py-cond-05",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "conditionals",
+  "secondaryConcepts": [],
+  "title": "Ticket Price by Age",
+  "statement": "Write a function `ticket_price(age)` that returns 8 for children under 12, 10 for seniors 65 and up, and 15 for anyone else.",
+  "example": "ticket_price(10) returns 8.",
+  "starterCode": "def ticket_price(age):\n    # your code here\n    pass\n",
+  "functionName": "ticket_price",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        10
+      ],
+      "expected": 8
+    },
+    {
+      "id": "t2",
+      "args": [
+        70
+      ],
+      "expected": 10
+    },
+    {
+      "id": "t3",
+      "args": [
+        30
+      ],
+      "expected": 15
+    },
+    {
+      "id": "t4",
+      "args": [
+        12
+      ],
+      "expected": 15
+    },
+    {
+      "id": "t5",
+      "args": [
+        65
+      ],
+      "expected": 10
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intInRange",
+        "min": 1,
+        "max": 90
+      }
+    ],
+    "edgeCases": [
+      [
+        11
+      ],
+      [
+        12
+      ],
+      [
+        64
+      ],
+      [
+        65
+      ]
+    ]
+  },
+  "referenceSolution": "def ticket_price(age):\n    if age < 12:\n        return 8\n    elif age >= 65:\n        return 10\n    return 15\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Use elif in Python to check multiple conditions in order.",
+    "Check age < 12 first, then age >= 65, and return 15 as fallback.",
+    "Return 8 if age < 12, 10 if age >= 65, else 15."
+  ],
+  "conceptNote": "Python uses elif (short for else if) to chain multiple conditions together.",
+  "commonMistakes": [
+    {
+      "tag": "wrong_boundary",
+      "variantCode": "def ticket_price(age):\n    if age <= 12:\n        return 8\n    elif age > 65:\n        return 10\n    return 15\n"
+    }
+  ],
+  "difficulty": 2,
+  "order": 5,
+  "variantOf": "py-cond-01"
+}

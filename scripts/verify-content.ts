@@ -45,49 +45,56 @@ function verify() {
       }
     }
 
-    // 3. Check reference solution passes all visible tests and 200 hidden samples
-    const evalRef = new Function(`return (${p.referenceSolution})`)();
-    const refRun = runProblemTests(
-      {
-        ...p,
-        hiddenTests: {
-          ...p.hiddenTests,
-          count: 200,
+    if (p.language === 'javascript') {
+      // 3. Check reference solution passes all visible tests and 200 hidden samples
+      const evalRef = new Function(`return (${p.referenceSolution})`)();
+      const refRun = runProblemTests(
+        {
+          ...p,
+          hiddenTests: {
+            ...p.hiddenTests,
+            count: 200,
+          },
         },
-      },
-      evalRef,
-      evalRef,
-      { seed: 12345 }
-    );
+        evalRef,
+        evalRef,
+        { seed: 12345 }
+      );
 
-    if (refRun.status !== 'tests_passed') {
-      throw new Error(`Reference solution for ${p.id} failed tests: ${JSON.stringify(refRun.firstFailing)}`);
-    }
-
-    // 4. Check construct verification on reference solution
-    const constructRes = checkConstructs(p.referenceSolution, p.functionName, p.requiredConstructs);
-    if (constructRes.label !== 'GENUINE') {
-      throw new Error(`Reference solution for ${p.id} did not satisfy constructs: ${constructRes.reason}`);
-    }
-
-    // 5. Check every mistake variant fails at least one test
-    for (const cm of p.commonMistakes) {
-      const evalVariant = new Function(`return (${cm.variantCode})`)();
-      const variantRun = runProblemTests(p, evalVariant, evalRef, { seed: 12345 });
-      if (variantRun.status === 'tests_passed') {
-        throw new Error(
-          `Mistake variant ${cm.tag} for problem ${p.id} unexpectedly passed all tests!`
-        );
+      if (refRun.status !== 'tests_passed') {
+        throw new Error(`Reference solution for ${p.id} failed tests: ${JSON.stringify(refRun.firstFailing)}`);
       }
-    }
 
-    // Save JSON to assets/content/javascript/problems/<id>.json
-    fs.writeFileSync(path.join(assetsDir, `${p.id}.json`), JSON.stringify(p, null, 2), 'utf-8');
+      // 4. Check construct verification on reference solution
+      const constructRes = checkConstructs(p.referenceSolution, p.functionName, p.requiredConstructs);
+      if (constructRes.label !== 'GENUINE') {
+        throw new Error(`Reference solution for ${p.id} did not satisfy constructs: ${constructRes.reason}`);
+      }
 
-    // Add to stage
-    const stage = stages.find((s) => s.concept === p.primaryConcept);
-    if (stage) {
-      stage.problemIds.push(p.id);
+      // 5. Check every mistake variant fails at least one test
+      for (const cm of p.commonMistakes) {
+        const evalVariant = new Function(`return (${cm.variantCode})`)();
+        const variantRun = runProblemTests(p, evalVariant, evalRef, { seed: 12345 });
+        if (variantRun.status === 'tests_passed') {
+          throw new Error(
+            `Mistake variant ${cm.tag} for problem ${p.id} unexpectedly passed all tests!`
+          );
+        }
+      }
+
+      // Save JSON to assets/content/javascript/problems/<id>.json
+      fs.writeFileSync(path.join(assetsDir, `${p.id}.json`), JSON.stringify(p, null, 2), 'utf-8');
+
+      // Add to stage
+      const stage = stages.find((s) => s.concept === p.primaryConcept);
+      if (stage) {
+        stage.problemIds.push(p.id);
+      }
+    } else {
+      // Python problem: save to python assets
+      const pyAssetsDir = path.join(__dirname, '../assets/content/python/problems');
+      fs.mkdirSync(pyAssetsDir, { recursive: true });
+      fs.writeFileSync(path.join(pyAssetsDir, `${p.id}.json`), JSON.stringify(p, null, 2), 'utf-8');
     }
   }
 

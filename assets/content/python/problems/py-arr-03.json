@@ -1,0 +1,128 @@
+{
+  "id": "py-arr-03",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "arrays_lists",
+  "secondaryConcepts": [],
+  "title": "Filter Positive Numbers",
+  "statement": "Write a function `filter_positives(numbers)` that uses a loop to return a new list containing only numbers greater than 0.",
+  "example": "filter_positives([-2, 5, 0, -1, 8]) returns [5, 8].",
+  "starterCode": "def filter_positives(numbers):\n    # your code here\n    pass\n",
+  "functionName": "filter_positives",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        [
+          -2,
+          5,
+          0,
+          -1,
+          8
+        ]
+      ],
+      "expected": [
+        5,
+        8
+      ]
+    },
+    {
+      "id": "t2",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "t3",
+      "args": [
+        [
+          -1,
+          -2,
+          -3
+        ]
+      ],
+      "expected": []
+    },
+    {
+      "id": "t4",
+      "args": [
+        []
+      ],
+      "expected": []
+    },
+    {
+      "id": "t5",
+      "args": [
+        [
+          0,
+          10,
+          -5,
+          20
+        ]
+      ],
+      "expected": [
+        10,
+        20
+      ]
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intArray",
+        "minLen": 0,
+        "maxLen": 10,
+        "min": -30,
+        "max": 30
+      }
+    ],
+    "edgeCases": [
+      [
+        []
+      ],
+      [
+        [
+          0
+        ]
+      ],
+      [
+        [
+          -5
+        ]
+      ],
+      [
+        [
+          5
+        ]
+      ]
+    ]
+  },
+  "referenceSolution": "def filter_positives(numbers):\n    res = []\n    for n in numbers:\n        if n > 0:\n            res.append(n)\n    return res\n",
+  "requiredConstructs": [
+    "any_loop"
+  ],
+  "prewrittenHints": [
+    "Initialize an empty list res = [].",
+    "Check if each element n > 0 inside your loop.",
+    "Collect each matching number into a new list, then give that list back."
+  ],
+  "conceptNote": "In Python, list.append(x) adds an item x to the end of a list.",
+  "commonMistakes": [
+    {
+      "tag": "includes_zero",
+      "variantCode": "def filter_positives(numbers):\n    res = []\n    for n in numbers:\n        if n >= 0:\n            res.append(n)\n    return res\n"
+    }
+  ],
+  "difficulty": 2,
+  "order": 3
+}

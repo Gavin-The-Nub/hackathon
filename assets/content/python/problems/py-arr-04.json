@@ -1,0 +1,125 @@
+{
+  "id": "py-arr-04",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "arrays_lists",
+  "secondaryConcepts": [],
+  "title": "Reverse List",
+  "statement": "Write a function `reverse_list(items)` that returns a new list with elements in reverse order.",
+  "example": "reverse_list([1, 2, 3]) returns [3, 2, 1].",
+  "starterCode": "def reverse_list(items):\n    # your code here\n    pass\n",
+  "functionName": "reverse_list",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "id": "t2",
+      "args": [
+        []
+      ],
+      "expected": []
+    },
+    {
+      "id": "t3",
+      "args": [
+        [
+          42
+        ]
+      ],
+      "expected": [
+        42
+      ]
+    },
+    {
+      "id": "t4",
+      "args": [
+        [
+          5,
+          4,
+          3,
+          2,
+          1
+        ]
+      ],
+      "expected": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "t5",
+      "args": [
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ],
+      "expected": [
+        "c",
+        "b",
+        "a"
+      ]
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "intArray",
+        "minLen": 0,
+        "maxLen": 10,
+        "min": 0,
+        "max": 50
+      }
+    ],
+    "edgeCases": [
+      [
+        []
+      ],
+      [
+        [
+          1
+        ]
+      ],
+      [
+        [
+          1,
+          2
+        ]
+      ]
+    ]
+  },
+  "referenceSolution": "def reverse_list(items):\n    return items[::-1]\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "In Python, list slicing with [::-1] returns a reversed copy.",
+    "You can slice with items[::-1] or build a reversed list with a loop.",
+    "Slicing with a step of negative one gives you the reversed list."
+  ],
+  "conceptNote": "Python slice notation [start:stop:step] with step -1 reverses any sequence.",
+  "commonMistakes": [
+    {
+      "tag": "returns_same_list",
+      "variantCode": "def reverse_list(items):\n    return items\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 4
+}

@@ -1,0 +1,101 @@
+{
+  "id": "py-loops-04",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "loops",
+  "secondaryConcepts": [],
+  "title": "Repeat String",
+  "statement": "Write a function `repeat_text(text, count)` using a loop that concatenates text together count times.",
+  "example": "repeat_text(\"hi\", 3) returns \"hihihi\".",
+  "starterCode": "def repeat_text(text, count):\n    # your code here\n    pass\n",
+  "functionName": "repeat_text",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        "hi",
+        3
+      ],
+      "expected": "hihihi"
+    },
+    {
+      "id": "t2",
+      "args": [
+        "a",
+        1
+      ],
+      "expected": "a"
+    },
+    {
+      "id": "t3",
+      "args": [
+        "py",
+        0
+      ],
+      "expected": ""
+    },
+    {
+      "id": "t4",
+      "args": [
+        "!",
+        4
+      ],
+      "expected": "!!!!"
+    },
+    {
+      "id": "t5",
+      "args": [
+        "ok",
+        2
+      ],
+      "expected": "okok"
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "asciiWord",
+        "minLen": 1,
+        "maxLen": 4
+      },
+      {
+        "gen": "intInRange",
+        "min": 0,
+        "max": 10
+      }
+    ],
+    "edgeCases": [
+      [
+        "",
+        5
+      ],
+      [
+        "abc",
+        0
+      ],
+      [
+        "x",
+        1
+      ]
+    ]
+  },
+  "referenceSolution": "def repeat_text(text, count):\n    res = \"\"\n    for _ in range(count):\n        res += text\n    return res\n",
+  "requiredConstructs": [
+    "any_loop"
+  ],
+  "prewrittenHints": [
+    "Initialize an empty string res = \"\".",
+    "Repeat the body as many times as the count, building the text as you go.",
+    "Add text to res on each iteration."
+  ],
+  "conceptNote": "Strings can be concatenated repeatedly inside loops using +=.",
+  "commonMistakes": [
+    {
+      "tag": "misses_one_repetition",
+      "variantCode": "def repeat_text(text, count):\n    res = \"\"\n    for _ in range(count - 1):\n        res += text\n    return res\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 4
+}

@@ -1,0 +1,95 @@
+{
+  "id": "py-func-03",
+  "language": "python",
+  "type": "write_function",
+  "primaryConcept": "functions",
+  "secondaryConcepts": [],
+  "title": "Full Name Formatter",
+  "statement": "Write a function `full_name(first, last)` that joins first and last names separated by a single space.",
+  "example": "full_name(\"Ada\", \"Lovelace\") returns \"Ada Lovelace\".",
+  "starterCode": "def full_name(first, last):\n    # your code here\n    pass\n",
+  "functionName": "full_name",
+  "visibleTests": [
+    {
+      "id": "t1",
+      "args": [
+        "Ada",
+        "Lovelace"
+      ],
+      "expected": "Ada Lovelace"
+    },
+    {
+      "id": "t2",
+      "args": [
+        "Alan",
+        "Turing"
+      ],
+      "expected": "Alan Turing"
+    },
+    {
+      "id": "t3",
+      "args": [
+        "Guido",
+        "van Rossum"
+      ],
+      "expected": "Guido van Rossum"
+    },
+    {
+      "id": "t4",
+      "args": [
+        "Grace",
+        "Hopper"
+      ],
+      "expected": "Grace Hopper"
+    },
+    {
+      "id": "t5",
+      "args": [
+        "John",
+        "Doe"
+      ],
+      "expected": "John Doe"
+    }
+  ],
+  "hiddenTests": {
+    "count": 20,
+    "args": [
+      {
+        "gen": "asciiWord",
+        "minLen": 2,
+        "maxLen": 8
+      },
+      {
+        "gen": "asciiWord",
+        "minLen": 2,
+        "maxLen": 8
+      }
+    ],
+    "edgeCases": [
+      [
+        "A",
+        "B"
+      ],
+      [
+        "First",
+        "Last"
+      ]
+    ]
+  },
+  "referenceSolution": "def full_name(first, last):\n    return first + \" \" + last\n",
+  "requiredConstructs": [],
+  "prewrittenHints": [
+    "Add a space string between first and last name.",
+    "Join the two names with a single space between them; string joining or an f-string both work.",
+    "Return the joined names with a space."
+  ],
+  "conceptNote": "String joining in Python can be performed using addition operators with literal space strings.",
+  "commonMistakes": [
+    {
+      "tag": "missing_space",
+      "variantCode": "def full_name(first, last):\n    return first + last\n"
+    }
+  ],
+  "difficulty": 1,
+  "order": 3
+}
