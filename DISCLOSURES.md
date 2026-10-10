@@ -32,5 +32,7 @@ In accordance with Hackathon guidelines and project rule H10, all models, librar
 ## 3b. Assets
 - JavaScript and Python logos: vector paths from the devicon project (MIT); trademarks belong to their respective owners.
 
-## 4. AI Development Tools
+## 4. AI Development Tools & Media Creation
 - **Antigravity (Google DeepMind)**: AI pair-programming assistant used during hackathon implementation
+- **Claude (Anthropic)**: AI assistant used for development, planning, and video creation / scripting
+- **Higgsfield AI**: Generative AI video platform used for video creation
