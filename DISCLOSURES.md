@@ -36,3 +36,8 @@ In accordance with Hackathon guidelines and project rule H10, all models, librar
 - **Antigravity (Google DeepMind)**: AI pair-programming assistant used during hackathon implementation
 - **Claude (Anthropic)**: AI assistant used for development, planning, and video creation / scripting
 - **Higgsfield AI**: Generative AI video platform used for video creation
+
+## 5. APIs & Cloud Services
+- *Runtime APIs / Cloud Services*: None. Zero network calls in core flow; all evaluation, test execution, AST checks, SQLite storage, and LLM inference run strictly on-device.
+- *Model Hosting*: Hugging Face Hub (static CDN download of the open-source GGUF weights).
+- *Dev-Time Cloud Services*: None (local builds; no cloud LLM APIs or cloud training services).
