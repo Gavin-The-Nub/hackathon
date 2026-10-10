@@ -33,29 +33,69 @@ export function MeScreen() {
         <Text style={[styles.subtitle, { color: colors.textMuted }]}>Offline Coding Gym</Text>
       </View>
 
-      {/* Stats Grid */}
-      <View style={styles.statsGrid}>
-        <View style={[styles.statBox, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}>
-          <Flame color={colors.streak} size={22} strokeWidth={2.4} />
-          <Text style={[styles.statVal, { color: colors.streak }]}>{streak.currentStreak}</Text>
+      {/* Stats Row - Numbers inside icons, boxes removed */}
+      <View style={styles.statsRow}>
+        <View style={styles.statItem}>
+          <View
+            style={[
+              styles.statIconBadge,
+              {
+                backgroundColor: 'rgba(251, 146, 60, 0.14)',
+                borderColor: 'rgba(251, 146, 60, 0.35)',
+              },
+            ]}
+          >
+            <Flame color={colors.streak} size={42} strokeWidth={1.8} style={styles.watermarkIcon} />
+            <Text style={[styles.statNumberInside, { color: colors.streak }]}>{streak.currentStreak}</Text>
+          </View>
           <Text style={[styles.statLabel, { color: colors.textMuted }]}>Day Streak</Text>
         </View>
 
-        <View style={[styles.statBox, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}>
-          <Shield color={colors.primary} size={22} strokeWidth={2.4} />
-          <Text style={[styles.statVal, { color: colors.primary }]}>{streak.freezesAvailable}</Text>
+        <View style={styles.statItem}>
+          <View
+            style={[
+              styles.statIconBadge,
+              {
+                backgroundColor: 'rgba(123, 115, 232, 0.14)',
+                borderColor: 'rgba(123, 115, 232, 0.35)',
+              },
+            ]}
+          >
+            <Shield color={colors.primary} size={42} strokeWidth={1.8} style={styles.watermarkIcon} />
+            <Text style={[styles.statNumberInside, { color: colors.primary }]}>{streak.freezesAvailable}</Text>
+          </View>
           <Text style={[styles.statLabel, { color: colors.textMuted }]}>Freezes</Text>
         </View>
 
-        <View style={[styles.statBox, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}>
-          <Sparkles color={colors.xp} size={22} strokeWidth={2.4} />
-          <Text style={[styles.statVal, { color: colors.xp }]}>{totalXp}</Text>
+        <View style={styles.statItem}>
+          <View
+            style={[
+              styles.statIconBadge,
+              {
+                backgroundColor: 'rgba(251, 191, 36, 0.14)',
+                borderColor: 'rgba(251, 191, 36, 0.35)',
+              },
+            ]}
+          >
+            <Sparkles color={colors.xp} size={42} strokeWidth={1.8} style={styles.watermarkIcon} />
+            <Text style={[styles.statNumberInside, { color: colors.xp }]}>{totalXp}</Text>
+          </View>
           <Text style={[styles.statLabel, { color: colors.textMuted }]}>Total XP</Text>
         </View>
 
-        <View style={[styles.statBox, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}>
-          <Award color={colors.primary} size={22} strokeWidth={2.4} />
-          <Text style={[styles.statVal, { color: colors.primary }]}>{level}</Text>
+        <View style={styles.statItem}>
+          <View
+            style={[
+              styles.statIconBadge,
+              {
+                backgroundColor: 'rgba(52, 211, 153, 0.14)',
+                borderColor: 'rgba(52, 211, 153, 0.35)',
+              },
+            ]}
+          >
+            <Award color={colors.success} size={42} strokeWidth={1.8} style={styles.watermarkIcon} />
+            <Text style={[styles.statNumberInside, { color: colors.success }]}>{level}</Text>
+          </View>
           <Text style={[styles.statLabel, { color: colors.textMuted }]}>Level</Text>
         </View>
       </View>
@@ -220,28 +260,42 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  statsGrid: {
+  statsRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingVertical: 10,
+    marginVertical: 4,
   },
-  statBox: {
+  statItem: {
+    alignItems: 'center',
+    gap: 8,
     flex: 1,
-    minWidth: '45%',
-    padding: 16,
-    borderRadius: 16,
+  },
+  statIconBadge: {
+    width: 62,
+    height: 62,
+    borderRadius: 31,
     borderWidth: 1.5,
     alignItems: 'center',
-    gap: 4,
+    justifyContent: 'center',
+    position: 'relative',
+    overflow: 'hidden',
   },
-  statVal: {
-    fontSize: 22,
+  watermarkIcon: {
+    position: 'absolute',
+    opacity: 0.2,
+  },
+  statNumberInside: {
+    fontSize: 18,
     fontWeight: '900',
+    letterSpacing: -0.2,
   },
   statLabel: {
-    fontSize: 12,
-    fontWeight: '700',
-    textTransform: 'uppercase',
+    fontSize: 11.5,
+    fontWeight: '800',
+    letterSpacing: 0.2,
+    textAlign: 'center',
   },
   sectionCard: {
     padding: 18,

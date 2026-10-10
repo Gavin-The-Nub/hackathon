@@ -6,10 +6,19 @@ import { TopBar } from '../components/TopBar';
 import { PROBLEMS } from '../../content/data';
 import { recommendNext, getCoachTemplate } from '../../core/mastery/recommend';
 import { CONCEPT_NAMES } from '../../core/mastery/callout';
+import { ConceptId } from '../../core/types';
 
 interface PracticeScreenProps {
   navigation: any;
 }
+
+const ORDERED_CONCEPTS: ConceptId[] = [
+  'variables_types',
+  'conditionals',
+  'loops',
+  'functions',
+  'arrays_lists',
+];
 
 export function PracticeScreen({ navigation }: PracticeScreenProps) {
   const themeMode = useUserStore((s) => s.theme);
@@ -44,11 +53,9 @@ export function PracticeScreen({ navigation }: PracticeScreenProps) {
             Practice Gym ({selectedLanguage === 'python' ? 'Python' : 'JavaScript'})
           </Text>
           <Text style={[styles.subtitle, { color: colors.textMuted }]}>
-            Master your coding foundations with targeted practice.
+            Master your coding foundations with targeted concept practice.
           </Text>
         </View>
-
-
 
         {/* Recommended Card */}
         {rec.problem && (
@@ -71,33 +78,57 @@ export function PracticeScreen({ navigation }: PracticeScreenProps) {
           </View>
         )}
 
-        {/* Quick Practice List */}
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>All Unlocked Problems</Text>
-        <View style={styles.list}>
-          {languageProblems.map((prob) => {
-            const isDone = completedProblems.has(prob.id);
-            return (
-              <TouchableOpacity
-                key={prob.id}
-                style={[styles.itemCard, { backgroundColor: colors.surface, borderColor: colors.surface2 }]}
-                onPress={() => navigation.navigate('Problem', { problemId: prob.id })}
-                activeOpacity={0.7}
-              >
-                <View style={{ flex: 1, gap: 4 }}>
-                  <Text style={[styles.itemConcept, { color: colors.primary }]}>
-                    {CONCEPT_NAMES[prob.primaryConcept]}
-                  </Text>
-                  <Text style={[styles.itemTitle, { color: colors.text }]}>{prob.title}</Text>
-                </View>
-                {isDone ? (
-                  <Text style={[styles.doneBadge, { color: colors.success }]}>✓ Done</Text>
-                ) : (
-                  <Text style={[styles.arrow, { color: colors.textMuted }]}>→</Text>
-                )}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+        {/* Grouped by Concept with clear titles */}
+        {ORDERED_CONCEPTS.map((cid) => {
+          const conceptProblems = languageProblems.filter((p) => p.primaryConcept === cid);
+          if (conceptProblems.length === 0) return null;
+
+          const doneCount = conceptProblems.filter((p) => completedProblems.has(p.id)).length;
+
+          return (
+            <View key={cid} style={styles.conceptSection}>
+              <View style={styles.conceptHeaderRow}>
+                <Text style={[styles.conceptTitle, { color: colors.text }]}>
+                  {CONCEPT_NAMES[cid]}
+                </Text>
+                <Text style={[styles.conceptCount, { color: colors.textMuted }]}>
+                  {doneCount}/{conceptProblems.length} Mastered
+                </Text>
+              </View>
+
+              <View style={styles.list}>
+                {conceptProblems.map((prob) => {
+                  const isDone = completedProblems.has(prob.id);
+                  return (
+                    <TouchableOpacity
+                      key={prob.id}
+                      style={[
+                        styles.itemCard,
+                        {
+                          backgroundColor: colors.surface,
+                          borderColor: colors.surface2,
+                        },
+                      ]}
+                      onPress={() => navigation.navigate('Problem', { problemId: prob.id })}
+                      activeOpacity={0.7}
+                    >
+                      <View style={{ flex: 1, justifyContent: 'center' }}>
+                        <Text style={[styles.itemTitle, { color: colors.text }]}>
+                          {prob.title}
+                        </Text>
+                      </View>
+                      {isDone ? (
+                        <Text style={[styles.doneBadge, { color: colors.success }]}>✓ Done</Text>
+                      ) : (
+                        <Text style={[styles.arrow, { color: colors.textMuted }]}>→</Text>
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+          );
+        })}
       </ScrollView>
     </View>
   );
@@ -110,7 +141,7 @@ const styles = StyleSheet.create({
   scroll: {
     padding: 16,
     paddingBottom: 40,
-    gap: 16,
+    gap: 18,
   },
   header: {
     gap: 4,
@@ -160,10 +191,24 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     fontSize: 16,
   },
-  sectionTitle: {
+  conceptSection: {
+    gap: 10,
+    marginTop: 4,
+  },
+  conceptHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 2,
+  },
+  conceptTitle: {
     fontSize: 18,
     fontWeight: '800',
-    marginTop: 8,
+    letterSpacing: -0.3,
+  },
+  conceptCount: {
+    fontSize: 12,
+    fontWeight: '700',
   },
   list: {
     gap: 8,
@@ -175,12 +220,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1.5,
   },
-  itemConcept: {
-    fontSize: 12,
-    fontWeight: '700',
-  },
   itemTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
   },
   doneBadge: {

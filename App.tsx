@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { useColorScheme, Keyboard, Platform } from 'react-native';
+import { useColorScheme, Keyboard, Platform, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -47,75 +47,77 @@ function MainTabs() {
   const tabHeight = 56 + bottomInset;
 
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarHideOnKeyboard: true,
-        tabBarStyle: isKeyboardVisible
-          ? { display: 'none', height: 0 }
-          : {
-              backgroundColor: colors.surface,
-              borderTopColor: colors.surface2,
-              borderTopWidth: 1.5,
-              height: tabHeight,
-              paddingBottom: bottomInset,
-              paddingTop: 8,
-              elevation: 8,
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: -2 },
-              shadowOpacity: 0.05,
-              shadowRadius: 4,
-            },
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '700',
-          marginTop: 2,
-        },
-      }}
-    >
-      <Tab.Screen
-        name="Learn"
-        component={LearnScreen}
-        options={{
-          tabBarLabel: 'Learn',
-          tabBarIcon: ({ color, size }) => <BookOpen color={color} size={size} strokeWidth={2.4} />,
+    <View style={{ flex: 1 }}>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarHideOnKeyboard: true,
+          tabBarStyle: isKeyboardVisible
+            ? { display: 'none', height: 0 }
+            : {
+                backgroundColor: colors.surface,
+                borderTopColor: colors.surface2,
+                borderTopWidth: 1.5,
+                height: tabHeight,
+                paddingBottom: bottomInset,
+                paddingTop: 8,
+                elevation: 8,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: -2 },
+                shadowOpacity: 0.05,
+                shadowRadius: 4,
+              },
+          tabBarActiveTintColor: colors.primary,
+          tabBarInactiveTintColor: colors.textMuted,
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontWeight: '700',
+            marginTop: 2,
+          },
         }}
-      />
-      <Tab.Screen
-        name="Practice"
-        component={PracticeScreen}
-        options={{
-          tabBarLabel: 'Practice',
-          tabBarIcon: ({ color, size }) => <Dumbbell color={color} size={size} strokeWidth={2.4} />,
-        }}
-      />
-      <Tab.Screen
-        name="Sandbox"
-        component={SandboxScreen}
-        options={{
-          tabBarLabel: 'Sandbox',
-          tabBarIcon: ({ color, size }) => <Code2 color={color} size={size} strokeWidth={2.4} />,
-        }}
-      />
-      <Tab.Screen
-        name="Mastery"
-        component={MasteryScreen}
-        options={{
-          tabBarLabel: 'Mastery',
-          tabBarIcon: ({ color, size }) => <Award color={color} size={size} strokeWidth={2.4} />,
-        }}
-      />
-      <Tab.Screen
-        name="Me"
-        component={MeScreen}
-        options={{
-          tabBarLabel: 'Me',
-          tabBarIcon: ({ color, size }) => <User color={color} size={size} strokeWidth={2.4} />,
-        }}
-      />
-    </Tab.Navigator>
+      >
+        <Tab.Screen
+          name="Learn"
+          component={LearnScreen}
+          options={{
+            tabBarLabel: 'Learn',
+            tabBarIcon: ({ color, size }) => <BookOpen color={color} size={size} strokeWidth={2.4} />,
+          }}
+        />
+        <Tab.Screen
+          name="Practice"
+          component={PracticeScreen}
+          options={{
+            tabBarLabel: 'Practice',
+            tabBarIcon: ({ color, size }) => <Dumbbell color={color} size={size} strokeWidth={2.4} />,
+          }}
+        />
+        <Tab.Screen
+          name="Sandbox"
+          component={SandboxScreen}
+          options={{
+            tabBarLabel: 'Sandbox',
+            tabBarIcon: ({ color, size }) => <Code2 color={color} size={size} strokeWidth={2.4} />,
+          }}
+        />
+        <Tab.Screen
+          name="Mastery"
+          component={MasteryScreen}
+          options={{
+            tabBarLabel: 'Mastery',
+            tabBarIcon: ({ color, size }) => <Award color={color} size={size} strokeWidth={2.4} />,
+          }}
+        />
+        <Tab.Screen
+          name="Me"
+          component={MeScreen}
+          options={{
+            tabBarLabel: 'Me',
+            tabBarIcon: ({ color, size }) => <User color={color} size={size} strokeWidth={2.4} />,
+          }}
+        />
+      </Tab.Navigator>
+    </View>
   );
 }
 

@@ -168,10 +168,6 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
             <View style={[styles.unitPill, { backgroundColor: lesson.themeColor }]}>
               <Text style={styles.unitPillText}>{lesson.unitBadge}</Text>
             </View>
-            <View style={[styles.offlineChip, { backgroundColor: colors.surface2 }]}>
-              <Text style={[styles.offlineChipDot, { color: colors.success }]}>●</Text>
-              <Text style={[styles.offlineChipText, { color: colors.primary }]}>OFFLINE</Text>
-            </View>
           </View>
         </View>
       </View>
@@ -193,13 +189,6 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
             ]}
           >
             <View style={styles.analogyHeader}>
-              <View style={[styles.analogyIconBox, { backgroundColor: lesson.themeColor + '18' }]}>
-                {lesson.conceptId === 'variables_types' && <Package size={26} color={lesson.themeColor} strokeWidth={2.4} />}
-                {lesson.conceptId === 'conditionals' && <GitFork size={26} color={lesson.themeColor} strokeWidth={2.4} />}
-                {lesson.conceptId === 'loops' && <Repeat size={26} color={lesson.themeColor} strokeWidth={2.4} />}
-                {lesson.conceptId === 'functions' && <Cpu size={26} color={lesson.themeColor} strokeWidth={2.4} />}
-                {lesson.conceptId === 'arrays_lists' && <Layers size={26} color={lesson.themeColor} strokeWidth={2.4} />}
-              </View>
               <View style={{ flex: 1 }}>
                 <Text style={[styles.analogySub, { color: lesson.themeColor }]}>
                   THE BIG PICTURE ANALOGY
@@ -216,12 +205,9 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
 
           {/* Section: Core Concepts Breakdown */}
           <View style={styles.section}>
-            <View style={styles.sectionHeaderRow}>
-              <Code2 size={20} color={lesson.themeColor} />
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                Core Building Blocks
-              </Text>
-            </View>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              Core Building Blocks
+            </Text>
 
             {lesson.conceptsExplained.map((c, idx) => (
               <View
@@ -249,12 +235,9 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
           {/* Section: Code Examples */}
           {lesson.codeExamples.length > 0 && (
             <View style={styles.section}>
-              <View style={styles.sectionHeaderRow}>
-                <Sparkles size={20} color="#F59E0B" />
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                  Real Code Breakdown
-                </Text>
-              </View>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                Real Code Breakdown
+              </Text>
 
               {lesson.codeExamples.map((ex, idx) => (
                 <View
@@ -284,12 +267,9 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
           {/* Section: Common Pitfalls */}
           {lesson.commonPitfalls.length > 0 && (
             <View style={styles.section}>
-              <View style={styles.sectionHeaderRow}>
-                <AlertTriangle size={20} color="#EF4444" />
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                  Common Beginner Traps
-                </Text>
-              </View>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                Common Beginner Traps
+              </Text>
 
               {lesson.commonPitfalls.map((pit, idx) => (
                 <View
@@ -318,12 +298,9 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
 
           {/* Section: Quick Check Quiz */}
           <View style={styles.section}>
-            <View style={styles.sectionHeaderRow}>
-              <CheckCircle size={20} color={lesson.themeColor} />
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                Quick Mental Check
-              </Text>
-            </View>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              Quick Mental Check
+            </Text>
 
             <View
               style={[
@@ -409,37 +386,37 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
 
           {/* Section: Ask the AI Tutor */}
           <View style={styles.section}>
-            <View style={styles.sectionHeaderRow}>
-              <HelpCircle size={20} color={colors.primary} />
-              <View style={{ flex: 1 }}>
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                  Ask the AI Tutor
-                </Text>
-                <Text style={[styles.sectionSub, { color: colors.textMuted }]}>
-                  Ask anything about this lesson. Works 100% offline on your device!
-                </Text>
-              </View>
-            </View>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              Ask the AI Tutor
+            </Text>
+            <Text style={[styles.sectionSub, { color: colors.textMuted }]}>
+              Ask anything about this lesson. Works 100% offline on your device!
+            </Text>
 
-            {/* Suggested Question Chips */}
+            {/* Suggested Question 3D Buttons (Uniform in Size) */}
             <View style={styles.suggestedWrap}>
               <Text style={[styles.suggestedLabel, { color: colors.textMuted }]}>
                 SUGGESTED QUESTIONS:
               </Text>
-              <View style={styles.pillsContainer}>
+              <View style={styles.suggestedButtonsColumn}>
                 {lesson.suggestedQuestions.map((q, idx) => (
                   <TouchableOpacity
                     key={idx}
                     style={[
-                      styles.pillBtn,
-                      { backgroundColor: colors.surface, borderColor: colors.surface2 },
+                      styles.suggested3DBtn,
+                      {
+                        backgroundColor: colors.surface,
+                        borderColor: colors.surface2,
+                        borderBottomColor: themeMode === 'dark' ? '#1E1B2E' : '#D0CEE0',
+                      },
                     ]}
                     onPress={() => handleSendQuestion(q)}
                     disabled={isAsking}
-                    activeOpacity={0.7}
+                    activeOpacity={0.8}
                   >
-                    <Lightbulb size={14} color={colors.primary} />
-                    <Text style={[styles.pillText, { color: colors.text }]}>{q}</Text>
+                    <Text numberOfLines={2} style={[styles.suggested3DBtnText, { color: colors.text }]}>
+                      {q}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -467,9 +444,6 @@ export function LessonScreen({ route, navigation }: LessonScreenProps) {
                     <View style={styles.tutorHeaderRow}>
                       <Bot size={18} color={colors.primary} />
                       <Text style={[styles.tutorName, { color: colors.text }]}>AI Tutor</Text>
-                      <View style={styles.offlinePill}>
-                        <Text style={styles.offlinePillText}>OFFLINE</Text>
-                      </View>
                     </View>
                   )}
                   <Text
@@ -651,20 +625,19 @@ const styles = StyleSheet.create({
 
   /* Section */
   section: {
-    gap: 12,
-  },
-  sectionHeaderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    marginBottom: 28,
+    gap: 14,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 22,
+    lineHeight: 28,
     fontWeight: '900',
+    letterSpacing: -0.4,
   },
   sectionSub: {
-    fontSize: 12,
+    fontSize: 13,
     marginTop: 2,
+    lineHeight: 18,
   },
 
   /* Concept Cards */
@@ -788,27 +761,30 @@ const styles = StyleSheet.create({
 
   /* AI Tutor Q&A */
   suggestedWrap: {
-    gap: 8,
+    gap: 10,
+    marginBottom: 8,
   },
   suggestedLabel: {
     fontSize: 11,
     fontWeight: '800',
     letterSpacing: 0.6,
   },
-  pillsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
+  suggestedButtonsColumn: {
+    gap: 10,
   },
-  pillBtn: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 14,
+  suggested3DBtn: {
+    height: 52,
+    width: '100%',
+    borderRadius: 16,
     borderWidth: 1.5,
+    borderBottomWidth: 4.5,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
   },
-  pillText: {
-    fontSize: 12,
+  suggested3DBtnText: {
+    fontSize: 13.5,
     fontWeight: '700',
+    lineHeight: 18,
   },
   chatContainer: {
     borderRadius: 18,

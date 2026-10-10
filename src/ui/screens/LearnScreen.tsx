@@ -11,10 +11,11 @@ import {
 import { useUserStore } from '../../state/userStore';
 import { LIGHT_THEME, DARK_THEME } from '../theme/tokens';
 import { TopBar } from '../components/TopBar';
+import { FixedStreakBadge } from '../components/FixedStreakBadge';
 import { PROBLEMS } from '../../content/data';
 import { recommendNext } from '../../core/mastery/recommend';
 import { ConceptId } from '../../core/types';
-import { BookOpen, Lock, Trophy, Gift, Sparkles } from 'lucide-react-native';
+import { BookOpen, Lock, Trophy, Star } from 'lucide-react-native';
 
 interface LearnScreenProps {
   navigation: any;
@@ -36,8 +37,8 @@ const UNITS: UnitConfig[] = [
     unitNumber: 1,
     title: 'Variables & Math',
     subtitle: 'Store values, compute math & return answers',
-    themeColor: '#10B981', // Emerald
-    lipColor: '#059669',
+    themeColor: '#34D399', // Pastel Mint
+    lipColor: '#10B981',
     badge: 'UNIT 1',
   },
   {
@@ -45,8 +46,8 @@ const UNITS: UnitConfig[] = [
     unitNumber: 2,
     title: 'Conditionals',
     subtitle: 'Branch decisions with if, else & boolean logic',
-    themeColor: '#6366F1', // Indigo
-    lipColor: '#4F46E5',
+    themeColor: '#818CF8', // Pastel Periwinkle
+    lipColor: '#6366F1',
     badge: 'UNIT 2',
   },
   {
@@ -54,8 +55,8 @@ const UNITS: UnitConfig[] = [
     unitNumber: 3,
     title: 'Loops & Iteration',
     subtitle: 'Repeat operations with while & for loops',
-    themeColor: '#F59E0B', // Amber
-    lipColor: '#D97706',
+    themeColor: '#FBBF24', // Pastel Warm Amber
+    lipColor: '#F59E0B',
     badge: 'UNIT 3',
   },
   {
@@ -63,7 +64,7 @@ const UNITS: UnitConfig[] = [
     unitNumber: 4,
     title: 'Functions & Scope',
     subtitle: 'Encapsulate reusable logic and arguments',
-    themeColor: '#0EA5E9', // Sky Blue
+    themeColor: '#38BDF8', // Pastel Sky
     lipColor: '#0284C7',
     badge: 'UNIT 4',
   },
@@ -72,7 +73,7 @@ const UNITS: UnitConfig[] = [
     unitNumber: 5,
     title: 'Arrays & Lists',
     subtitle: 'Collect, inspect and transform lists of data',
-    themeColor: '#EC4899', // Pink
+    themeColor: '#F472B6', // Pastel Rose
     lipColor: '#DB2777',
     badge: 'UNIT 5',
   },
@@ -281,21 +282,25 @@ export function LearnScreen({ navigation }: LearnScreenProps) {
                                   ? unit.themeColor
                                   : isCurrent
                                   ? unit.themeColor
-                                  : isUnlocked
-                                  ? colors.surface
-                                  : colors.surface2,
+                                  : themeMode === 'dark'
+                                  ? '#2A273D'
+                                  : '#FFFFFF',
                                 borderBottomColor: isCompleted
                                   ? unit.lipColor
                                   : isCurrent
                                   ? unit.lipColor
-                                  : isUnlocked
-                                  ? colors.surface2
-                                  : colors.surface2,
+                                  : themeMode === 'dark'
+                                  ? '#1C1A29'
+                                  : '#C8C5D8',
                                 borderColor: isCurrent
                                   ? '#FFFFFF'
+                                  : isCompleted
+                                  ? unit.lipColor
                                   : isUnlocked
                                   ? unit.themeColor
-                                  : 'transparent',
+                                  : themeMode === 'dark'
+                                  ? '#3F3B57'
+                                  : '#D8D5E6',
                               },
                             ]}
                             disabled={isLocked}
@@ -320,11 +325,11 @@ export function LearnScreen({ navigation }: LearnScreenProps) {
                                 {probIdx + 1}
                               </Text>
                             ) : (
-                              <Lock size={18} color="#9CA3AF" strokeWidth={2.4} />
+                              <Lock size={20} color={themeMode === 'dark' ? '#7F7B99' : '#73708A'} strokeWidth={2.6} />
                             )}
                           </TouchableOpacity>
 
-                          {/* Node Title & Stars */}
+                          {/* Node Title & Completed Status Star */}
                           <View style={styles.nodeLabelWrap}>
                             <Text
                               numberOfLines={1}
@@ -337,10 +342,8 @@ export function LearnScreen({ navigation }: LearnScreenProps) {
                               {prob.title}
                             </Text>
                             {isCompleted && (
-                              <View style={styles.starsRow}>
-                                <Sparkles size={13} color="#F59E0B" strokeWidth={2.4} />
-                                <Sparkles size={13} color="#F59E0B" strokeWidth={2.4} />
-                                <Sparkles size={13} color="#F59E0B" strokeWidth={2.4} />
+                              <View style={styles.starBadgeWrap}>
+                                <Star size={13} color="#F59E0B" fill="#F59E0B" strokeWidth={1} />
                               </View>
                             )}
                           </View>
@@ -398,32 +401,15 @@ export function LearnScreen({ navigation }: LearnScreenProps) {
                     })}
                   </View>
 
-                  {/* Unit Milestone Trophy at the end of the Unit */}
+                  {/* Golden Unit Milestone Monument */}
                   <View style={styles.milestoneRow}>
                     <TouchableOpacity
-                      style={[
-                        styles.milestoneStone,
-                        {
-                          backgroundColor: isUnitFullyCompleted ? '#F59E0B' : colors.surface2,
-                          borderBottomColor: isUnitFullyCompleted ? '#D97706' : colors.surface2,
-                          borderColor: isUnitFullyCompleted ? '#FDE68A' : 'transparent',
-                        },
-                      ]}
-                      disabled={!isUnitFullyCompleted}
-                      activeOpacity={0.8}
+                      style={styles.milestoneStone}
+                      activeOpacity={0.85}
                     >
-                      {isUnitFullyCompleted ? (
-                        <Trophy size={26} color="#FFFFFF" strokeWidth={2.4} />
-                      ) : (
-                        <Gift size={26} color={colors.textMuted} strokeWidth={2.4} />
-                      )}
+                      <Trophy size={28} color="#FFFFFF" strokeWidth={2.4} />
                     </TouchableOpacity>
-                    <Text
-                      style={[
-                        styles.milestoneLabel,
-                        { color: isUnitFullyCompleted ? '#F59E0B' : colors.textMuted },
-                      ]}
-                    >
+                    <Text style={styles.milestoneLabel}>
                       {isUnitFullyCompleted ? 'Unit Mastered!' : 'Unit Milestone'}
                     </Text>
                   </View>
@@ -433,6 +419,9 @@ export function LearnScreen({ navigation }: LearnScreenProps) {
           })}
         </View>
       </ScrollView>
+
+      {/* Day streak badge exclusively rendered on Learn page */}
+      <FixedStreakBadge bottom={16} />
     </View>
   );
 }
@@ -620,16 +609,16 @@ const styles = StyleSheet.create({
     width: 78,
     height: 74,
     borderRadius: 39,
-    borderWidth: 2,
-    borderBottomWidth: 6,
+    borderWidth: 2.5,
+    borderBottomWidth: 8,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 5,
+    elevation: 4,
   },
   stoneIcon: {
     color: '#FFFFFF',
@@ -656,46 +645,54 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 8,
     maxWidth: 160,
-    gap: 3,
+    gap: 4,
   },
   nodeTitle: {
     fontSize: 13,
     fontWeight: '700',
     textAlign: 'center',
   },
-  starsRow: {
-    flexDirection: 'row',
-  },
-  starText: {
-    fontSize: 12,
-  },
-
-  /* Unit Milestone / Trophy */
-  milestoneRow: {
-    alignItems: 'center',
-    marginTop: 6,
-    gap: 6,
-  },
-  milestoneStone: {
-    width: 70,
-    height: 66,
-    borderRadius: 35,
-    borderWidth: 2,
-    borderBottomWidth: 6,
+  starBadgeWrap: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(245, 158, 11, 0.16)',
+    borderWidth: 1,
+    borderColor: 'rgba(245, 158, 11, 0.4)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 3,
   },
-  milestoneIcon: {
-    fontSize: 30,
+
+  /* Golden Unit Milestone Monument */
+  milestoneRow: {
+    alignItems: 'center',
+    marginTop: 8,
+    gap: 8,
+  },
+  milestoneStone: {
+    width: 76,
+    height: 72,
+    borderTopLeftRadius: 38,
+    borderTopRightRadius: 38,
+    borderBottomLeftRadius: 18,
+    borderBottomRightRadius: 18,
+    backgroundColor: '#F59E0B',
+    borderWidth: 2.5,
+    borderColor: '#FDE68A',
+    borderBottomWidth: 8,
+    borderBottomColor: '#B45309',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#B45309',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 6,
+    elevation: 4,
   },
   milestoneLabel: {
     fontSize: 13,
-    fontWeight: '800',
-    letterSpacing: 0.2,
+    fontWeight: '900',
+    color: '#D97706',
+    letterSpacing: 0.3,
   },
 });

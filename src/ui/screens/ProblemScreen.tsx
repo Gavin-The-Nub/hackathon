@@ -271,15 +271,11 @@ export function ProblemScreen({ route, navigation }: ProblemScreenProps) {
             <ArrowLeft size={22} color={colors.text} />
           </TouchableOpacity>
 
-          {/* Problem Title & Offline Badge */}
+          {/* Problem Title */}
           <View style={styles.headerTitleWrap}>
             <Text numberOfLines={1} style={[styles.headerTitle, { color: colors.text }]}>
               {problem.title}
             </Text>
-            <View style={[styles.offlineChip, { backgroundColor: colors.surface2 }]}>
-              <Text style={[styles.offlineChipDot, { color: colors.success }]}>●</Text>
-              <Text style={[styles.offlineChipText, { color: colors.primary }]}>OFFLINE</Text>
-            </View>
           </View>
 
           {/* Header Right Action Group */}
