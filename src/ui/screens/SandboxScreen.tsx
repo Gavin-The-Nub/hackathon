@@ -53,7 +53,7 @@ interface ConsoleLogEntry {
 const JS_TEMPLATES = [
   {
     label: 'Hello World',
-    code: `// JavaScript Playground\nconst message = "Hello from CodeChamp!";\nconsole.log(message);\n\nconst user = { role: "Developer", xp: 150 };\nconsole.log("Profile:", user);\nuser;`,
+    code: `// JavaScript Playground\nconst message = "Hello from LOCODE!";\nconsole.log(message);\n\nconst user = { role: "Developer", xp: 150 };\nconsole.log("Profile:", user);\nuser;`,
   },
   {
     label: 'Array Methods',
@@ -76,7 +76,7 @@ const JS_TEMPLATES = [
 const PYTHON_TEMPLATES = [
   {
     label: 'Hello World',
-    code: `# Python Playground\nname = "CodeChamp"\nprint(f"Hello, {name}!")\n\nprofile = {"role": "Developer", "xp": 150}\nprint("Profile:", profile)`,
+    code: `# Python Playground\nname = "LOCODE"\nprint(f"Hello, {name}!")\n\nprofile = {"role": "Developer", "xp": 150}\nprint("Profile:", profile)`,
   },
   {
     label: 'List Comprehension',
@@ -628,7 +628,7 @@ export function SandboxScreen({ navigation }: SandboxScreenProps) {
                     <View style={[styles.aiCard, { backgroundColor: colors.surface2 }]}>
                       <ActivityIndicator size="small" color={colors.primary} />
                       <Text style={[styles.aiLoadingText, { color: colors.primary }]}>
-                        Analyzing code with CodeChamp AI...
+                        Analyzing code with LOCODE AI...
                       </Text>
                     </View>
                   )}

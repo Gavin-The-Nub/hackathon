@@ -1,4 +1,4 @@
-# CodeChamp — Offline Coding Tutor
+# LOCODE — Offline Coding Tutor
 
 A beginner-friendly coding tutor for phones (JavaScript and Python paths) whose AI tutor runs **entirely on-device**. Built for the AppBuildersPH Hackathon 2026 (theme: Local AI).
 

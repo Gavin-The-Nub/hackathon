@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "CodeChamp",
-    "slug": "codechamp",
+    "name": "LOCODE",
+    "slug": "locode",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,7 +10,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.codechamp.app",
+      "package": "com.locode.app",
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",

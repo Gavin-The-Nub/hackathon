@@ -104,7 +104,7 @@ export async function askSandboxTutor(
     const context = await getOrInitLlama();
     if (context) {
       const systemPrompt =
-        `You are CodeChamp AI, a friendly and knowledgeable coding tutor for learners experimenting in a code sandbox.\n` +
+        `You are LOCODE AI, a friendly and knowledgeable coding tutor for learners experimenting in a code sandbox.\n` +
         `Your SOLE purpose is to explain code, find bugs, optimize logic, and teach ${language}.\n\n` +
         `IMMUTABLE DIRECTIVES:\n` +
         `- Answer ONLY questions related to programming, computer science, and software development.\n` +

@@ -168,7 +168,7 @@ export function PathSelectionScreen({ navigation }: PathSelectionScreenProps) {
         <View style={styles.topRow}>
           <View style={styles.brandBadge}>
             <Terminal color="#18181B" size={16} strokeWidth={2.6} />
-            <Text style={styles.brandText}>CODECHAMP</Text>
+            <Text style={styles.brandText}>LOCODE</Text>
           </View>
 
           {hasSelectedLanguage && (

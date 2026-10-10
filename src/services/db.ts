@@ -6,7 +6,7 @@ let dbInstance: SQLite.SQLiteDatabase | null = null;
 
 export function getDb(): SQLite.SQLiteDatabase {
   if (!dbInstance) {
-    dbInstance = SQLite.openDatabaseSync('codechamp.db');
+    dbInstance = SQLite.openDatabaseSync('locode.db');
     initSchema(dbInstance);
   }
   return dbInstance;

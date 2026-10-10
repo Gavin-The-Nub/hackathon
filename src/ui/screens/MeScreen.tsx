@@ -29,7 +29,7 @@ export function MeScreen() {
         <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
           <Trophy color="#FFFFFF" size={32} strokeWidth={2.4} />
         </View>
-        <Text style={[styles.name, { color: colors.text }]}>CodeChamp</Text>
+        <Text style={[styles.name, { color: colors.text }]}>LOCODE</Text>
         <Text style={[styles.subtitle, { color: colors.textMuted }]}>Offline Coding Gym</Text>
       </View>
 

@@ -23,7 +23,7 @@ export const PYTHON_LESSONS: Record<ConceptId, LessonData> = {
       },
       {
         "term": "Data Types (Numbers & Strings)",
-        "definition": "Numbers are raw digits (e.g. 10, 3.14). Strings are text wrapped in quotes (e.g. \"CodeChamp\", 'Python').",
+        "definition": "Numbers are raw digits (e.g. 10, 3.14). Strings are text wrapped in quotes (e.g. \"LOCODE\", 'Python').",
         "syntaxTip": "name = \"Alex\"\nage = 18"
       },
       {

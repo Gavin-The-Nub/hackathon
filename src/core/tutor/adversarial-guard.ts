@@ -1,5 +1,5 @@
 /**
- * Adversarial Prompt Injection & Jailbreak Guardrail for CodeChamp AI Tutor.
+ * Adversarial Prompt Injection & Jailbreak Guardrail for LOCODE AI Tutor.
  *
  * Enforces strict boundary defense:
  * 1. Pre-LLM heuristic & pattern inspection against prompt injection, role hijacking,
@@ -14,7 +14,7 @@ export interface GuardInspectionResult {
 }
 
 export const SAFE_TUTOR_REFUSAL =
-  "I am your CodeChamp AI coding tutor and can only assist with programming, code logic, syntax, and debugging. Let me know what code or error you'd like help with!";
+  "I am your LOCODE AI coding tutor and can only assist with programming, code logic, syntax, and debugging. Let me know what code or error you'd like help with!";
 
 /**
  * Regex patterns identifying prompt injection, jailbreak, and instruction overrides
