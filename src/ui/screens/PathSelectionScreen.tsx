@@ -10,6 +10,7 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
   StatusBar as RNStatusBar,
+  Animated,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -27,8 +28,6 @@ import {
   ChartBar,
   Cloud,
   X,
-  BookOpen,
-  Layers,
 } from 'lucide-react-native';
 
 import { useUserStore } from '../../state/userStore';
@@ -55,11 +54,11 @@ export function PathSelectionScreen({ navigation }: PathSelectionScreenProps) {
   const setSelectedLanguage = useUserStore((s) => s.setSelectedLanguage);
 
   // Active carousel page (0 = JavaScript, 1 = Python)
-  const [activeIndex, setActiveIndex] = useState<number>(
-    selectedLanguage === 'python' && hasSelectedLanguage ? 1 : 0
-  );
+  const initialIndex = selectedLanguage === 'python' && hasSelectedLanguage ? 1 : 0;
+  const [activeIndex, setActiveIndex] = useState<number>(initialIndex);
 
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollX = useRef(new Animated.Value(initialIndex * screenWidth)).current;
+  const scrollRef = useRef<any>(null);
 
   const isSmallScreen = screenHeight < 720;
   const topPadding = Math.max(insets.top, Platform.OS === 'android' ? (RNStatusBar.currentHeight ?? 24) : 0, 16);
@@ -76,14 +75,6 @@ export function PathSelectionScreen({ navigation }: PathSelectionScreenProps) {
   const handleTabPress = (index: number) => {
     setActiveIndex(index);
     scrollRef.current?.scrollTo({ x: index * screenWidth, animated: true });
-  };
-
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offsetX = event.nativeEvent.contentOffset.x;
-    const page = Math.round(offsetX / screenWidth);
-    if (page !== activeIndex && (page === 0 || page === 1)) {
-      setActiveIndex(page);
-    }
   };
 
   const handleChooseJavaScript = () => {
@@ -111,79 +102,184 @@ export function PathSelectionScreen({ navigation }: PathSelectionScreenProps) {
     ? { fontFamily: 'Geologica_900Black' }
     : { fontWeight: '900' as const };
 
+  // Smooth background color interpolation between JS (pastel yellow) and Python (pastel lilac)
+  const backgroundColor = scrollX.interpolate({
+    inputRange: [0, screenWidth],
+    outputRange: ['#FEE75C', '#DDD6FE'],
+    extrapolate: 'clamp',
+  });
+
+  // Smooth sliding pill indicator width & offset
+  const containerPadding = 22;
+  const innerTabsPadding = 4;
+  const tabsGap = 4;
+  const tabsAvailableWidth = screenWidth - (containerPadding * 2);
+  const singleTabWidth = (tabsAvailableWidth - (innerTabsPadding * 2) - tabsGap) / 2;
+
+  const indicatorTranslateX = scrollX.interpolate({
+    inputRange: [0, screenWidth],
+    outputRange: [0, singleTabWidth + tabsGap],
+    extrapolate: 'clamp',
+  });
+
+  // Animated text color for tabs
+  const jsTextColor = scrollX.interpolate({
+    inputRange: [0, screenWidth],
+    outputRange: ['#FFFFFF', '#3F3F46'],
+    extrapolate: 'clamp',
+  });
+
+  const pyTextColor = scrollX.interpolate({
+    inputRange: [0, screenWidth],
+    outputRange: ['#3F3F46', '#FFFFFF'],
+    extrapolate: 'clamp',
+  });
+
+  // Pagination dots interpolation
+  const dot0Width = scrollX.interpolate({
+    inputRange: [0, screenWidth],
+    outputRange: [22, 7],
+    extrapolate: 'clamp',
+  });
+  const dot0Opacity = scrollX.interpolate({
+    inputRange: [0, screenWidth],
+    outputRange: [1, 0.28],
+    extrapolate: 'clamp',
+  });
+
+  const dot1Width = scrollX.interpolate({
+    inputRange: [0, screenWidth],
+    outputRange: [7, 22],
+    extrapolate: 'clamp',
+  });
+  const dot1Opacity = scrollX.interpolate({
+    inputRange: [0, screenWidth],
+    outputRange: [0.28, 1],
+    extrapolate: 'clamp',
+  });
+
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, { backgroundColor }]}>
       <StatusBar style="dark" />
 
-      {/* FULL-SCREEN HORIZONTAL CAROUSEL */}
-      <ScrollView
+      {/* ================= TOP PINNED HEADER ================= */}
+      <View style={[styles.headerSection, { paddingTop: topPadding + 6 }]}>
+        {/* Brand & Close Row */}
+        <View style={styles.topRow}>
+          <View style={styles.brandBadge}>
+            <Terminal color="#18181B" size={16} strokeWidth={2.6} />
+            <Text style={styles.brandText}>CODECHAMP</Text>
+          </View>
+
+          {hasSelectedLanguage && (
+            <TouchableOpacity
+              style={styles.closeBtn}
+              onPress={handleClose}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+              activeOpacity={0.7}
+              accessibilityLabel="Close path picker"
+            >
+              <X color="#18181B" size={18} strokeWidth={2.8} />
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Top Segmented Navigation Tabs with Smooth Sliding Indicator */}
+        <View style={styles.segmentedTabsContainer}>
+          {/* Animated active sliding background pill */}
+          <Animated.View
+            style={[
+              styles.slidingIndicator,
+              {
+                width: singleTabWidth,
+                transform: [{ translateX: indicatorTranslateX }],
+              },
+            ]}
+          />
+
+          {/* JavaScript Tab */}
+          <TouchableOpacity
+            style={styles.tabButton}
+            onPress={() => handleTabPress(0)}
+            activeOpacity={0.8}
+          >
+            <Code2
+              color={activeIndex === 0 ? '#FFFFFF' : '#3F3F46'}
+              size={15}
+              strokeWidth={2.6}
+            />
+            <Animated.Text style={[styles.tabText, { color: jsTextColor }]}>
+              JavaScript
+            </Animated.Text>
+            {isJsActive && (
+              <View style={styles.activeDot}>
+                <Check color="#FFFFFF" size={10} strokeWidth={3.5} />
+              </View>
+            )}
+          </TouchableOpacity>
+
+          {/* Python Tab */}
+          <TouchableOpacity
+            style={styles.tabButton}
+            onPress={() => handleTabPress(1)}
+            activeOpacity={0.8}
+          >
+            <Terminal
+              color={activeIndex === 1 ? '#FFFFFF' : '#3F3F46'}
+              size={15}
+              strokeWidth={2.6}
+            />
+            <Animated.Text style={[styles.tabText, { color: pyTextColor }]}>
+              Python
+            </Animated.Text>
+            {isPyActive && (
+              <View style={styles.activeDot}>
+                <Check color="#FFFFFF" size={10} strokeWidth={3.5} />
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* ================= FULL-SCREEN HORIZONTAL CAROUSEL ================= */}
+      <Animated.ScrollView
         ref={scrollRef}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={handleScroll}
         scrollEventThrottle={16}
         bounces={false}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          {
+            useNativeDriver: false,
+            listener: (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+              const offsetX = event.nativeEvent.contentOffset.x;
+              const page = Math.round(offsetX / screenWidth);
+              if (page !== activeIndex && (page === 0 || page === 1)) {
+                setActiveIndex(page);
+              }
+            },
+          }
+        )}
         style={styles.carousel}
       >
-        {/* ================= PAGE 1: JAVASCRIPT (PASTEL YELLOW) ================= */}
-        <View style={[styles.page, { width: screenWidth, backgroundColor: '#FEE75C' }]}>
+        {/* ================= PAGE 1: JAVASCRIPT ================= */}
+        <View style={[styles.page, { width: screenWidth }]}>
           <ScrollView
-            contentContainerStyle={[
-              styles.pageScrollContent,
-              {
-                paddingTop: topPadding + 6,
-                paddingBottom: 12,
-              },
-            ]}
+            contentContainerStyle={styles.pageScrollContent}
             showsVerticalScrollIndicator={false}
           >
-            {/* Top Navigation Row - Offline tag removed */}
-            <View style={styles.topRow}>
-              <View style={styles.brandBadge}>
-                <Terminal color="#18181B" size={16} strokeWidth={2.6} />
-                <Text style={styles.brandText}>CODECHAMP</Text>
-              </View>
-
-              {hasSelectedLanguage && (
-                <TouchableOpacity
-                  style={styles.closeBtn}
-                  onPress={handleClose}
-                  hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-                  activeOpacity={0.7}
-                  accessibilityLabel="Close path picker"
-                >
-                  <X color="#18181B" size={18} strokeWidth={2.8} />
-                </TouchableOpacity>
-              )}
-            </View>
-
-            {/* Title Section: Bigger & Geologica font */}
+            {/* Title Section */}
             <View style={styles.heroTextSection}>
               <Text style={[styles.bigHeroTitle, titleFontStyle]}>
                 Code with{'\n'}Confidence
               </Text>
             </View>
 
-            {/* Hero Row: 3D Logo on Left + Message Bubbles on Right side pointing at logo */}
-            <View style={styles.heroRow}>
-              <JavaScriptHeroLogo size={isSmallScreen ? 108 : 124} />
-
-              <View style={styles.speechBubblesCol}>
-                {/* Bubble 1: 5 Units */}
-                <View style={styles.speechBubble}>
-                  <View style={styles.bubblePointerLeft} />
-                  <Layers color="#18181B" size={15} strokeWidth={2.6} />
-                  <Text style={styles.speechBubbleText}>5 Units</Text>
-                </View>
-
-                {/* Bubble 2: 25 Interactive Lessons */}
-                <View style={styles.speechBubble}>
-                  <View style={styles.bubblePointerLeft} />
-                  <BookOpen color="#18181B" size={15} strokeWidth={2.6} />
-                  <Text style={styles.speechBubbleText}>25 Interactive Lessons</Text>
-                </View>
-              </View>
+            {/* Centered 3D Logo (Message Bubbles Removed) */}
+            <View style={styles.heroLogoCenter}>
+              <JavaScriptHeroLogo size={isSmallScreen ? 116 : 134} />
             </View>
 
             {/* Centered Real-World Outcomes Pills */}
@@ -206,119 +302,40 @@ export function PathSelectionScreen({ navigation }: PathSelectionScreenProps) {
               </View>
             </View>
 
-            {/* Pagination Dots */}
+            {/* Smooth Pagination Dots */}
             <View style={styles.paginationDotsContainer}>
-              <View style={[styles.dotPill, styles.dotPillActive]} />
-              <View style={styles.dotCircle} />
+              <Animated.View
+                style={[
+                  styles.animatedDot,
+                  { width: dot0Width, opacity: dot0Opacity },
+                ]}
+              />
+              <Animated.View
+                style={[
+                  styles.animatedDot,
+                  { width: dot1Width, opacity: dot1Opacity },
+                ]}
+              />
             </View>
           </ScrollView>
-
-          {/* Bottom Dock: Tab Identifiers directly on top of Select Path Button */}
-          <View style={[styles.bottomDock, { paddingBottom: bottomPadding }]}>
-            {/* Tab Identifiers at top of button */}
-            <View style={styles.segmentedTabsContainer}>
-              <TouchableOpacity
-                style={[styles.tabPill, styles.tabPillActive]}
-                activeOpacity={0.9}
-              >
-                <Code2 color="#FFFFFF" size={15} strokeWidth={2.6} />
-                <Text style={[styles.tabText, styles.tabTextActive]}>JavaScript</Text>
-                {isJsActive && (
-                  <View style={styles.activeDot}>
-                    <Check color="#FFFFFF" size={10} strokeWidth={3.5} />
-                  </View>
-                )}
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.tabPill}
-                onPress={() => handleTabPress(1)}
-                activeOpacity={0.7}
-              >
-                <Terminal color="#3F3F46" size={15} strokeWidth={2.6} />
-                <Text style={styles.tabText}>Python</Text>
-                {isPyActive && (
-                  <View style={styles.activeDot}>
-                    <Check color="#FFFFFF" size={10} strokeWidth={3.5} />
-                  </View>
-                )}
-              </TouchableOpacity>
-            </View>
-
-            {/* Select Path Button */}
-            <TouchableOpacity
-              style={styles.primaryPillButton}
-              onPress={handleChooseJavaScript}
-              activeOpacity={0.88}
-            >
-              <Text style={styles.primaryButtonText}>
-                {isJsActive ? 'Continue JavaScript' : 'Start JavaScript Path'}
-              </Text>
-              <View style={styles.buttonArrowPill}>
-                <ArrowRight color="#FFFFFF" size={18} strokeWidth={3} />
-              </View>
-            </TouchableOpacity>
-          </View>
         </View>
 
-        {/* ================= PAGE 2: PYTHON (PASTEL LILAC) ================= */}
-        <View style={[styles.page, { width: screenWidth, backgroundColor: '#DDD6FE' }]}>
+        {/* ================= PAGE 2: PYTHON ================= */}
+        <View style={[styles.page, { width: screenWidth }]}>
           <ScrollView
-            contentContainerStyle={[
-              styles.pageScrollContent,
-              {
-                paddingTop: topPadding + 6,
-                paddingBottom: 12,
-              },
-            ]}
+            contentContainerStyle={styles.pageScrollContent}
             showsVerticalScrollIndicator={false}
           >
-            {/* Top Navigation Row - Offline tag removed */}
-            <View style={styles.topRow}>
-              <View style={styles.brandBadge}>
-                <Terminal color="#18181B" size={16} strokeWidth={2.6} />
-                <Text style={styles.brandText}>CODECHAMP</Text>
-              </View>
-
-              {hasSelectedLanguage && (
-                <TouchableOpacity
-                  style={styles.closeBtn}
-                  onPress={handleClose}
-                  hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-                  activeOpacity={0.7}
-                  accessibilityLabel="Close path picker"
-                >
-                  <X color="#18181B" size={18} strokeWidth={2.8} />
-                </TouchableOpacity>
-              )}
-            </View>
-
-            {/* Title Section: Bigger & Geologica font */}
+            {/* Title Section */}
             <View style={styles.heroTextSection}>
               <Text style={[styles.bigHeroTitle, titleFontStyle]}>
                 Learn, anytime,{'\n'}anywhere
               </Text>
             </View>
 
-            {/* Hero Row: 3D Logo on Left + Message Bubbles on Right side pointing at logo */}
-            <View style={styles.heroRow}>
-              <PythonHeroLogo size={isSmallScreen ? 108 : 124} />
-
-              <View style={styles.speechBubblesCol}>
-                {/* Bubble 1: 5 Units */}
-                <View style={styles.speechBubble}>
-                  <View style={styles.bubblePointerLeft} />
-                  <Layers color="#18181B" size={15} strokeWidth={2.6} />
-                  <Text style={styles.speechBubbleText}>5 Units</Text>
-                </View>
-
-                {/* Bubble 2: 25 Interactive Lessons */}
-                <View style={styles.speechBubble}>
-                  <View style={styles.bubblePointerLeft} />
-                  <BookOpen color="#18181B" size={15} strokeWidth={2.6} />
-                  <Text style={styles.speechBubbleText}>25 Interactive Lessons</Text>
-                </View>
-              </View>
+            {/* Centered 3D Logo (Message Bubbles Removed) */}
+            <View style={styles.heroLogoCenter}>
+              <PythonHeroLogo size={isSmallScreen ? 116 : 134} />
             </View>
 
             {/* Centered Real-World Outcomes Pills */}
@@ -341,86 +358,64 @@ export function PathSelectionScreen({ navigation }: PathSelectionScreenProps) {
               </View>
             </View>
 
-            {/* Pagination Dots */}
+            {/* Smooth Pagination Dots */}
             <View style={styles.paginationDotsContainer}>
-              <View style={styles.dotCircle} />
-              <View style={[styles.dotPill, styles.dotPillActive]} />
+              <Animated.View
+                style={[
+                  styles.animatedDot,
+                  { width: dot0Width, opacity: dot0Opacity },
+                ]}
+              />
+              <Animated.View
+                style={[
+                  styles.animatedDot,
+                  { width: dot1Width, opacity: dot1Opacity },
+                ]}
+              />
             </View>
           </ScrollView>
-
-          {/* Bottom Dock: Tab Identifiers directly on top of Select Path Button */}
-          <View style={[styles.bottomDock, { paddingBottom: bottomPadding }]}>
-            {/* Tab Identifiers at top of button */}
-            <View style={styles.segmentedTabsContainer}>
-              <TouchableOpacity
-                style={styles.tabPill}
-                onPress={() => handleTabPress(0)}
-                activeOpacity={0.7}
-              >
-                <Code2 color="#3F3F46" size={15} strokeWidth={2.6} />
-                <Text style={styles.tabText}>JavaScript</Text>
-                {isJsActive && (
-                  <View style={styles.activeDot}>
-                    <Check color="#FFFFFF" size={10} strokeWidth={3.5} />
-                  </View>
-                )}
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.tabPill, styles.tabPillActive]}
-                activeOpacity={0.9}
-              >
-                <Terminal color="#FFFFFF" size={15} strokeWidth={2.6} />
-                <Text style={[styles.tabText, styles.tabTextActive]}>Python</Text>
-                {isPyActive && (
-                  <View style={styles.activeDot}>
-                    <Check color="#FFFFFF" size={10} strokeWidth={3.5} />
-                  </View>
-                )}
-              </TouchableOpacity>
-            </View>
-
-            {/* Select Path Button */}
-            <TouchableOpacity
-              style={styles.primaryPillButton}
-              onPress={handleChoosePython}
-              activeOpacity={0.88}
-            >
-              <Text style={styles.primaryButtonText}>
-                {isPyActive ? 'Continue Python' : 'Choose Python Path'}
-              </Text>
-              <View style={styles.buttonArrowPill}>
-                <ArrowRight color="#FFFFFF" size={18} strokeWidth={3} />
-              </View>
-            </TouchableOpacity>
-          </View>
         </View>
-      </ScrollView>
-    </View>
+      </Animated.ScrollView>
+
+      {/* ================= BOTTOM PINNED ACTION BUTTON ================= */}
+      <View style={[styles.bottomDock, { paddingBottom: bottomPadding }]}>
+        <TouchableOpacity
+          style={styles.primaryPillButton}
+          onPress={activeIndex === 0 ? handleChooseJavaScript : handleChoosePython}
+          activeOpacity={0.88}
+        >
+          <Text style={styles.primaryButtonText}>
+            {activeIndex === 0
+              ? isJsActive
+                ? 'Continue JavaScript'
+                : 'Start JavaScript Path'
+              : isPyActive
+              ? 'Continue Python'
+              : 'Choose Python Path'}
+          </Text>
+          <View style={styles.buttonArrowPill}>
+            <ArrowRight color="#FFFFFF" size={18} strokeWidth={3} />
+          </View>
+        </TouchableOpacity>
+      </View>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FEE75C',
   },
-  carousel: {
-    flex: 1,
-  },
-  page: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  pageScrollContent: {
+  headerSection: {
     paddingHorizontal: 22,
-    alignItems: 'stretch',
+    backgroundColor: 'transparent',
+    zIndex: 10,
   },
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   brandBadge: {
     flexDirection: 'row',
@@ -441,8 +436,66 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  segmentedTabsContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(24, 24, 27, 0.08)',
+    borderRadius: 24,
+    padding: 4,
+    gap: 4,
+    position: 'relative',
+    marginBottom: 8,
+  },
+  slidingIndicator: {
+    position: 'absolute',
+    top: 4,
+    left: 4,
+    bottom: 4,
+    backgroundColor: '#18181B',
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.16,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  tabButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: 20,
+    gap: 6,
+    zIndex: 2,
+  },
+  tabText: {
+    fontSize: 14,
+    fontWeight: '800',
+  },
+  activeDot: {
+    width: 15,
+    height: 15,
+    borderRadius: 7.5,
+    backgroundColor: '#10B981',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 2,
+  },
+  carousel: {
+    flex: 1,
+  },
+  page: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  pageScrollContent: {
+    paddingHorizontal: 22,
+    paddingTop: 12,
+    paddingBottom: 16,
+    alignItems: 'stretch',
+  },
   heroTextSection: {
-    marginBottom: 14,
+    marginBottom: 12,
     marginTop: 2,
   },
   bigHeroTitle: {
@@ -451,59 +504,17 @@ const styles = StyleSheet.create({
     letterSpacing: -1.6,
     color: '#18181B',
   },
-  heroRow: {
-    flexDirection: 'row',
+  heroLogoCenter: {
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 16,
-    marginVertical: 10,
-  },
-  speechBubblesCol: {
-    gap: 10,
-    justifyContent: 'center',
-    flexShrink: 1,
-  },
-  speechBubble: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 7,
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 13,
-    paddingVertical: 9,
-    borderRadius: 16,
-    position: 'relative',
-    shadowColor: '#18181B',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.14,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  bubblePointerLeft: {
-    position: 'absolute',
-    left: -8,
-    top: '50%',
-    marginTop: -6,
-    width: 0,
-    height: 0,
-    borderTopWidth: 6,
-    borderBottomWidth: 6,
-    borderRightWidth: 8,
-    borderTopColor: 'transparent',
-    borderBottomColor: 'transparent',
-    borderRightColor: '#FFFFFF',
-  },
-  speechBubbleText: {
-    fontSize: 12.5,
-    fontWeight: '900',
-    color: '#18181B',
-    letterSpacing: 0.1,
+    marginVertical: 16,
   },
   tagChipsWrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
     gap: 7,
-    marginVertical: 12,
+    marginVertical: 14,
   },
   tagChip: {
     flexDirection: 'row',
@@ -526,69 +537,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    marginVertical: 6,
+    marginTop: 4,
+    marginBottom: 8,
   },
-  dotCircle: {
-    width: 7,
+  animatedDot: {
     height: 7,
     borderRadius: 3.5,
-    backgroundColor: 'rgba(24, 24, 27, 0.25)',
-  },
-  dotPill: {
-    height: 7,
-    borderRadius: 3.5,
-    backgroundColor: 'rgba(24, 24, 27, 0.25)',
-  },
-  dotPillActive: {
-    width: 22,
     backgroundColor: '#18181B',
   },
   bottomDock: {
     paddingHorizontal: 22,
-    paddingTop: 8,
-    gap: 10,
+    paddingTop: 10,
     backgroundColor: 'transparent',
-  },
-  segmentedTabsContainer: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(24, 24, 27, 0.08)',
-    borderRadius: 24,
-    padding: 4,
-    gap: 4,
-  },
-  tabPill: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    borderRadius: 20,
-    gap: 6,
-  },
-  tabPillActive: {
-    backgroundColor: '#18181B',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  tabText: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: '#3F3F46',
-  },
-  tabTextActive: {
-    color: '#FFFFFF',
-  },
-  activeDot: {
-    width: 15,
-    height: 15,
-    borderRadius: 7.5,
-    backgroundColor: '#10B981',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 2,
+    zIndex: 10,
   },
   primaryPillButton: {
     backgroundColor: '#18181B',
